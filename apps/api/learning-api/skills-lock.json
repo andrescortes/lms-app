@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "skills": {
+    "java-21": {
+      "source": "Gentleman-Programming/Gentleman-Skills",
+      "sourceType": "github",
+      "skillPath": "community/java-21/SKILL.md",
+      "computedHash": "452466025458799b75694298b1af06a457a53174c4d8267fad0bc553ccfb0a03"
+    },
+    "java-springboot": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "skillPath": "skills/java-springboot/SKILL.md",
+      "computedHash": "7a3a5343773c126e788966041eca919180e3347f01b66d5dea8dd9923cafd897"
+    },
+    "spring-boot-security-jwt": {
+      "source": "giuseppe-trisciuoglio/developer-kit",
+      "sourceType": "github",
+      "skillPath": "plugins/developer-kit-java/skills/spring-boot-security-jwt/SKILL.md",
+      "computedHash": "ccffb834b93b0e9eb72b18a321011088c6dfc1e7f5b450726fb809c982ab6d70"
+    },
+    "spring-webflux": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "skillPath": "skills/backend-frameworks/spring-webflux/SKILL.md",
+      "computedHash": "1305bfca8fdc249ff940da1adcf9fb1401df930c7c1079689c881f37009fad89"
+    },
+    "spring-webflux-testing": {
+      "source": "spring-ai-community/spring-testing-skills",
+      "sourceType": "github",
+      "skillPath": "skills/spring-webflux-testing/SKILL.md",
+      "computedHash": "ac090f4d457f85ab3daf9d38dc0dd7b45cfc0285f43955d805c8ad37b308414c"
+    },
+    "springboot-security": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "skillPath": "skills/springboot-security/SKILL.md",
+      "computedHash": "0d3a005019c4fb8512303a71b30850765f59e03b4a495181aaf6e4477287444c"
+    }
+  }
+}
