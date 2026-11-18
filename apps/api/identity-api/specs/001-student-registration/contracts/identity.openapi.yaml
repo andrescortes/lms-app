@@ -1,0 +1,202 @@
+openapi: 3.1.0
+info:
+  title: Identity Service API
+  version: 1.0.0
+  description: >-
+    Contract for the Identity service. This version covers student registration
+    (CU-AUTH-01 / HU-01). Canonical copy: shared/contracts/identity.openapi.yaml.
+servers:
+  - url: /
+    description: Relative to the deployed Identity service base URL
+tags:
+  - name: Identity
+    description: Registration and identity lifecycle operations
+paths:
+  /api/identity/auth/register:
+    post:
+      tags:
+        - Identity
+      operationId: registerUser
+      summary: Register a new student account
+      description: >-
+        Creates a STUDENT account and an associated empty profile from an email
+        and password. The email is normalized (trimmed and lowercased) and must be
+        unique. The password must be at least 8 characters and contain at least one
+        uppercase letter and one digit. The plaintext password is never returned or
+        stored. A successful registration emits an internal UserRegistered event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUserRequest'
+            examples:
+              withDisplayName:
+                summary: Registration with an explicit display name
+                value:
+                  email: Student@Example.com
+                  password: Learn123
+                  displayName: Student One
+              withoutDisplayName:
+                summary: Registration without a display name (defaults to email local part)
+                value:
+                  email: student@example.com
+                  password: Learn123
+      responses:
+        '201':
+          description: Account created. The new user ID is returned.
+          headers:
+            Location:
+              description: Canonical location of the created user resource.
+              schema:
+                type: string
+                format: uri-reference
+              example: /api/identity/users/9f1c7d3e-6b2a-4c88-9f0e-2a5b1c3d4e6f
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterUserResponse'
+              example:
+                userId: 9f1c7d3e-6b2a-4c88-9f0e-2a5b1c3d4e6f
+        '400':
+          description: The request body is malformed or contains unknown fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: invalid_request
+                message: Request body is malformed or contains unknown fields
+                timestamp: '2026-11-18T10:15:30.123Z'
+                path: /api/identity/auth/register
+        '409':
+          description: >-
+            The normalized email is already registered. No details about the
+            existing account are disclosed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: email_already_exists
+                message: An account with this email already exists
+                timestamp: '2026-11-18T10:15:30.123Z'
+                path: /api/identity/auth/register
+        '422':
+          description: >-
+            The request is well-formed but violates the email format or password
+            policy. The message names the violated rule.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidEmail:
+                  value:
+                    code: validation_error
+                    message: email must be a valid address
+                    timestamp: '2026-11-18T10:15:30.123Z'
+                    path: /api/identity/auth/register
+                weakPassword:
+                  value:
+                    code: validation_error
+                    message: password must contain at least one uppercase letter
+                    timestamp: '2026-11-18T10:15:30.123Z'
+                    path: /api/identity/auth/register
+        '429':
+          description: >-
+            The visitor exceeded the per-visitor attempt limit and is temporarily
+            locked out. The response does not reveal remaining lockout time and no
+            Retry-After header is sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: rate_limited
+                message: Too many registration attempts; please try again later
+                timestamp: '2026-11-18T10:15:30.123Z'
+                path: /api/identity/auth/register
+        '500':
+          description: An unexpected error occurred. Details are logged server-side only.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: internal_error
+                message: An unexpected error occurred
+                timestamp: '2026-11-18T10:15:30.123Z'
+                path: /api/identity/auth/register
+components:
+  schemas:
+    RegisterUserRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: >-
+            Email address. Trimmed and lowercased before validation, uniqueness
+            checking, and storage.
+          maxLength: 320
+          examples:
+            - Student@Example.com
+        password:
+          type: string
+          description: >-
+            Plaintext password. At least 8 characters with at least one uppercase
+            letter and one digit. Never echoed in any response or event.
+          minLength: 8
+          format: password
+        displayName:
+          type: string
+          description: >-
+            Optional display name. When omitted or blank, defaults to the local
+            part of the normalized email.
+          maxLength: 200
+          examples:
+            - Student One
+    RegisterUserResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - userId
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: Identifier of the newly created user.
+          examples:
+            - 9f1c7d3e-6b2a-4c88-9f0e-2a5b1c3d4e6f
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+        - timestamp
+        - path
+      properties:
+        code:
+          type: string
+          description: Stable machine-readable error code.
+          examples:
+            - validation_error
+        message:
+          type: string
+          description: >-
+            Human-readable message. For validation errors it names the specific
+            violated rule. Never contains passwords or existing-account details.
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO-8601 UTC time at which the error was produced.
+        path:
+          type: string
+          description: Request path that produced the error.
+          examples:
+            - /api/identity/auth/register
