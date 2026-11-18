@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "skills": {
+    "golang-database": {
+      "source": "samber/cc-skills-golang",
+      "commit": "d68d80aec298e1b74b37c2a472c002b5217248b3",
+      "sourceType": "github",
+      "skillPath": "skills/golang-database/SKILL.md",
+      "computedHash": "d56ece0241eacc7a15cd3679300b80100d527c3a83d5b475f631bb8c7ddd8bff"
+    },
+    "golang-design-patterns": {
+      "source": "samber/cc-skills-golang",
+      "commit": "d68d80aec298e1b74b37c2a472c002b5217248b3",
+      "sourceType": "github",
+      "skillPath": "skills/golang-design-patterns/SKILL.md",
+      "computedHash": "d3e4f4be5506709261b6fa43eee3d52f968c37ca5d83f4408c43a1d1f9c0da86"
+    },
+    "golang-documentation": {
+      "source": "samber/cc-skills-golang",
+      "commit": "d68d80aec298e1b74b37c2a472c002b5217248b3",
+      "sourceType": "github",
+      "skillPath": "skills/golang-documentation/SKILL.md",
+      "computedHash": "5cbd30122d143c70c06ef2f903db21d12586cc532ad285da9bce9c647c6ba03a"
+    },
+    "golang-rest": {
+      "source": "fabianoflorentino/golang-agent-skills",
+      "commit": "884d4936c31a7a41c74d108a1e3a46ad63be525a",
+      "sourceType": "github",
+      "skillPath": "skills/golang-rest/SKILL.md",
+      "computedHash": "35d1aca17c3ab960ea619a7d38f9f11e6d4f55d06176000c6b5777c50b48b6aa"
+    },
+    "golang-security": {
+      "source": "samber/cc-skills-golang",
+      "commit": "d68d80aec298e1b74b37c2a472c002b5217248b3",
+      "sourceType": "github",
+      "skillPath": "skills/golang-security/SKILL.md",
+      "computedHash": "050d04076da4c392e80620b26688de64aab74da46f486f1fc784fa8a2f3b0444"
+    }
+  }
+}
