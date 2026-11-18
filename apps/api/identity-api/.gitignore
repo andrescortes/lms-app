@@ -1,0 +1,7 @@
+# SQLite runtime data (database file and WAL/SHM sidecars)
+data/*.db*
+
+# Go build and test artifacts
+*.exe
+*.test
+*.out

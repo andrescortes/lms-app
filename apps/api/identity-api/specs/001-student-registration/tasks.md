@@ -28,16 +28,16 @@ add `testify` (no ADR needed). Migration SQL is human-reviewed before `goose` ap
 
 **Purpose**: Resolve the remaining layout drift, initialize the root module, and publish the contract.
 
-- [ ] T001 Update `specs/001-student-registration/quickstart.md`: replace the nested-service bootstrap commands with `go.mod` at the microservice root and `services/go.work` using `use ..`; remove the stale testify-ADR note; update scenarios for the 8–72 password and sixth-attempt lockout. `plan.md` is already aligned.
-- [ ] T002 Initialize `go.mod` at the microservice root: module `lms-english/identity-service`, Go 1.23+ with `toolchain`, `CGO_ENABLED=0` build; pin only approved direct dependencies (`chi/v5`, `chi/cors`, `modernc.org/sqlite`, `golang.org/x/crypto`, `golang-jwt/jwt/v5`, `pressly/goose/v3`) and create `go.sum`; do not add testify.
-- [ ] T003 [P] Create `services/go.work` referencing the root module via `use ..`; verify `GOWORK` points to its absolute path and `go list ./...` resolves the module.
-- [ ] T004 [P] Create `sqlc.yaml`: `engine: "sqlite"`, `schema: "db/migrations"`, `queries: "db/queries"`, generated Go under `internal/adapter/sqlite/sqlc/`.
-- [ ] T005 [P] Create `.env.example` documenting `APP_ENV`, `HTTP_PORT=8081`, `DB_PATH=./data/identity.db`; no real secrets or absolute paths.
-- [ ] T006 [P] Add `data/*.db*` to `.gitignore` (including `-wal`/`-shm` sidecars).
-- [ ] T007 Sync `specs/001-student-registration/contracts/identity.openapi.yaml` to `repo:shared/contracts/identity.openapi.yaml`; verify byte-identical before any handler work (constitution contract-first gate).
-- [ ] T008 [P] Scaffold directories: `cmd/api/`, `internal/domain/`, `internal/usecase/`, `internal/adapter/{http,sqlite,security,event}/`, `db/{migrations,queries}/`.
-- [ ] T009 [P] Add `.golangci.yml` at the microservice root enabling `bodyclose`, `sqlclosecheck`, `errcheck`, `govet`, `staticcheck` per the security skill.
-- [ ] T010 [P] Add a local copy of the contract at `contracts/identity.openapi.yaml` for handler authors, matching the feature and shared copies.
+- [X] T001 Update `specs/001-student-registration/quickstart.md`: replace the nested-service bootstrap commands with `go.mod` at the microservice root and `services/go.work` using `use ..`; remove the stale testify-ADR note; update scenarios for the 8–72 password and sixth-attempt lockout. `plan.md` is already aligned.
+- [X] T002 Initialize `go.mod` at the microservice root: module `lms-english/identity-service`, Go 1.23+ with `toolchain`, `CGO_ENABLED=0` build; pin only approved direct dependencies (`chi/v5`, `chi/cors`, `modernc.org/sqlite`, `golang.org/x/crypto`, `golang-jwt/jwt/v5`, `pressly/goose/v3`) and create `go.sum`; do not add testify.
+- [X] T003 [P] Create `services/go.work` referencing the root module via `use ..`; verify `GOWORK` points to its absolute path and `go list ./...` resolves the module.
+- [X] T004 [P] Create `sqlc.yaml`: `engine: "sqlite"`, `schema: "db/migrations"`, `queries: "db/queries"`, generated Go under `internal/adapter/sqlite/sqlc/`.
+- [X] T005 [P] Create `.env.example` documenting `APP_ENV`, `HTTP_PORT=8081`, `DB_PATH=./data/identity.db`; no real secrets or absolute paths.
+- [X] T006 [P] Add `data/*.db*` to `.gitignore` (including `-wal`/`-shm` sidecars).
+- [X] T007 Sync `specs/001-student-registration/contracts/identity.openapi.yaml` to `repo:shared/contracts/identity.openapi.yaml`; verify byte-identical before any handler work (constitution contract-first gate).
+- [X] T008 [P] Scaffold directories: `cmd/api/`, `internal/domain/`, `internal/usecase/`, `internal/adapter/{http,sqlite,security,event}/`, `db/{migrations,queries}/`.
+- [X] T009 [P] Add `.golangci.yml` at the microservice root enabling `bodyclose`, `sqlclosecheck`, `errcheck`, `govet`, `staticcheck` per the security skill.
+- [X] T010 [P] Add a local copy of the contract at `contracts/identity.openapi.yaml` for handler authors, matching the feature and shared copies.
 
 **Checkpoint**: Root module, workspace, tooling, and canonical contract ready.
 
@@ -45,13 +45,13 @@ add `testify` (no ADR needed). Migration SQL is human-reviewed before `goose` ap
 
 **Purpose**: Reviewed migrations, generated queries, and SQLite connection foundation (blocking).
 
-- [ ] T011 Have a database owner author and review `db/migrations/00001_create_users_and_profiles.sql`: goose Up/Down; `STRICT` `users` and `profiles`; role `CHECK`; `UNIQUE` normalized email; `ON DELETE CASCADE`; ISO-8601 UTC `TEXT` timestamps; Down drops `profiles` before `users`. Apply [data-model.md](data-model.md) `User.ID`, `User.Email`, `User.PasswordHash`, `User.DisplayName`, `User.Role`, `User.CEFRLevel`, `User.CreatedAt`, `Profile.UserID`, `Profile.NativeLanguage`, `Profile.Goals`, `Profile.Timezone`, `Profile.AvatarURL`.
-- [ ] T012 Have a database owner author and review `db/migrations/00002_create_registration_events.sql`: `STRICT` `registration_events` outbox with `id`, `event_type`, `payload`, `status` (`pending|delivered`), `attempts`, `created_at`, `delivered_at`; independent Down.
-- [ ] T013 Write parameterized `db/queries/users.sql`: `CreateUser :one`, `GetUserByEmail :one`, `CreateProfile :exec`.
-- [ ] T014 Write parameterized `db/queries/events.sql`: `CreateEvent :exec`, `ListPendingEvents :many`, `MarkEventDelivered :exec`; all context-aware, no string concatenation.
-- [ ] T015 Run `sqlc generate`; inspect `internal/adapter/sqlite/sqlc/` for `users`, `profiles`, and `registration_events` models; verify a second run produces no drift, including untracked files.
-- [ ] T016 Implement `internal/adapter/sqlite/db.go`: `modernc.org/sqlite`, env-supplied `DB_PATH`, DSN `_pragma=journal_mode(WAL)&_pragma=synchronous(NORMAL)&_pragma=foreign_keys(ON)&_pragma=busy_timeout(5000)&_pragma=cache_size(-64000)`, `SetMaxOpenConns(1)`, startup pragma verification.
-- [ ] T017 Add `internal/adapter/sqlite/db_test.go`: connection init, foreign-key enforcement, and file-backed WAL verification on a temporary database.
+- [X] T011 Have a database owner author and review `db/migrations/00001_create_users_and_profiles.sql`: goose Up/Down; `STRICT` `users` and `profiles`; role `CHECK`; `UNIQUE` normalized email; `ON DELETE CASCADE`; ISO-8601 UTC `TEXT` timestamps; Down drops `profiles` before `users`. Apply [data-model.md](data-model.md) `User.ID`, `User.Email`, `User.PasswordHash`, `User.DisplayName`, `User.Role`, `User.CEFRLevel`, `User.CreatedAt`, `Profile.UserID`, `Profile.NativeLanguage`, `Profile.Goals`, `Profile.Timezone`, `Profile.AvatarURL`.
+- [X] T012 Have a database owner author and review `db/migrations/00002_create_registration_events.sql`: `STRICT` `registration_events` outbox with `id`, `event_type`, `payload`, `status` (`pending|delivered`), `attempts`, `created_at`, `delivered_at`; independent Down.
+- [X] T013 Write parameterized `db/queries/users.sql`: `CreateUser :one`, `GetUserByEmail :one`, `CreateProfile :exec`.
+- [X] T014 Write parameterized `db/queries/events.sql`: `CreateEvent :exec`, `ListPendingEvents :many`, `MarkEventDelivered :exec`; all context-aware, no string concatenation.
+- [X] T015 Run `sqlc generate`; inspect `internal/adapter/sqlite/sqlc/` for `users`, `profiles`, and `registration_events` models; verify a second run produces no drift, including untracked files.
+- [X] T016 Implement `internal/adapter/sqlite/db.go`: `modernc.org/sqlite`, env-supplied `DB_PATH`, DSN `_pragma=journal_mode(WAL)&_pragma=synchronous(NORMAL)&_pragma=foreign_keys(ON)&_pragma=busy_timeout(5000)&_pragma=cache_size(-64000)`, `SetMaxOpenConns(1)`, startup pragma verification.
+- [X] T017 Add `internal/adapter/sqlite/db_test.go`: connection init, foreign-key enforcement, and file-backed WAL verification on a temporary database.
 
 **Checkpoint**: Reviewed schema, reproducible generated queries, testable connection layer. No story work starts before this.
 
@@ -63,30 +63,30 @@ add `testify` (no ADR needed). Migration SQL is human-reviewed before `goose` ap
 
 ### Tests for User Story 1 (write first; confirm they fail)
 
-- [ ] T018 [P] [US1] Write table-driven `internal/domain/registration_test.go`: entities/roles and validation boundaries — trim+lowercase email, 8/72 accepted and 7/73 rejected, uppercase and digit rules.
-- [ ] T019 [P] [US1] Write `internal/usecase/register_user_test.go` with fakes: success, invalid email, weak/too-long password, hash failure, store rollback, unique conflict, event recorded, publisher failure not failing registration, context cancellation; assert Execute returns without invoking the publisher/hook (delivery is the worker's responsibility).
-- [ ] T020 [P] [US1] Write `internal/adapter/sqlite/registration_store_test.go` on goose-migrated `:memory:` DB: atomic user+profile+outbox insert, rollback on profile failure, `UNIQUE` → `ErrEmailAlreadyExists`, exactly one outbox row.
-- [ ] T021 [P] [US1] Write `internal/adapter/event/publisher_test.go`: claim pending, dispatch to hook, mark delivered, retry on failure, reprocess pending after simulated restart, and no duplicate downstream effect for a repeated event id; assert a slow/failing hook does not delay or fail registration.
-- [ ] T022 [P] [US1] Write `internal/adapter/http/register_success_test.go` with `httptest`: `201`, only `userId` body, `Location` header, no password disclosure.
-- [ ] T023 [P] [US1] Write `internal/adapter/http/visitor_limit_test.go` with a fake clock: attempts 1–5 allowed, 6th → `429`, no remaining-time disclosure, no `Retry-After`, other visitor unaffected, 30-minute expiry, window boundary.
+- [X] T018 [P] [US1] Write table-driven `internal/domain/registration_test.go`: entities/roles and validation boundaries — trim+lowercase email, 8/72 accepted and 7/73 rejected, uppercase and digit rules.
+- [X] T019 [P] [US1] Write `internal/usecase/register_user_test.go` with fakes: success, invalid email, weak/too-long password, hash failure, store rollback, unique conflict, event recorded, publisher failure not failing registration, context cancellation; assert Execute returns without invoking the publisher/hook (delivery is the worker's responsibility).
+- [X] T020 [P] [US1] Write `internal/adapter/sqlite/registration_store_test.go` on goose-migrated `:memory:` DB: atomic user+profile+outbox insert, rollback on profile failure, `UNIQUE` → `ErrEmailAlreadyExists`, exactly one outbox row.
+- [X] T021 [P] [US1] Write `internal/adapter/event/publisher_test.go`: claim pending, dispatch to hook, mark delivered, retry on failure, reprocess pending after simulated restart, and no duplicate downstream effect for a repeated event id; assert a slow/failing hook does not delay or fail registration.
+- [X] T022 [P] [US1] Write `internal/adapter/http/register_success_test.go` with `httptest`: `201`, only `userId` body, `Location` header, no password disclosure.
+- [X] T023 [P] [US1] Write `internal/adapter/http/visitor_limit_test.go` with a fake clock: attempts 1–5 allowed, 6th → `429`, no remaining-time disclosure, no `Retry-After`, other visitor unaffected, 30-minute expiry, window boundary.
 
 ### Implementation for User Story 1
 
-- [ ] T024 [P] [US1] Implement stdlib-only entities in `internal/domain/user.go`: `Role` enum (`RoleUnknown=0`, `RoleStudent=1`, ...), `CEFRLevel`, `User`. Cite [data-model.md](data-model.md) → `User.ID`, `User.Email`, `User.PasswordHash`, `User.DisplayName`, `User.Role`, `User.CEFRLevel`, `User.CreatedAt` and its `Role`/`CEFRLevel` definitions.
-- [ ] T025 [P] [US1] Implement `internal/domain/profile.go`: `Profile` struct. Cite [data-model.md](data-model.md) → `Profile.UserID`, `Profile.NativeLanguage`, `Profile.Goals`, `Profile.Timezone`, `Profile.AvatarURL`.
-- [ ] T026 [P] [US1] Implement `internal/domain/event.go`: `UserRegisteredEvent`. Cite [data-model.md](data-model.md) → `UserRegisteredEvent.UserID`, `UserRegisteredEvent.Email`, `UserRegisteredEvent.Role`, `UserRegisteredEvent.OccurredAt`.
-- [ ] T027 [P] [US1] Define sentinel errors in `internal/domain/errors.go`: `ErrInvalidEmail`, `ErrWeakPassword`, `ErrEmailAlreadyExists`, plus `ErrInvalidCredentials`, `ErrForbidden`, `ErrNotFound`.
-- [ ] T028 [P] [US1] Implement `internal/domain/email.go`: trim + lowercase `NormalizeEmail`, package-level compiled `regexp` format check in `ValidateEmail`, `ErrInvalidEmail`.
-- [ ] T029 [P] [US1] Implement `internal/domain/password.go`: `ValidatePasswordPolicy` — 8–72 characters counted as runes, ≥1 uppercase, ≥1 digit, `ErrWeakPassword`; no plaintext retained (cite [data-model.md](data-model.md) → Password Validation Rules).
-- [ ] T030 [US1] Define consumer ports in `internal/usecase/ports.go`: `UserRegistrationStore`, `PasswordHasher`, `IDGenerator`, `Clock`, `DomainEventPublisher`, plus the constitution-mandated `UserRepository`, `PasswordVerifier`, `TokenProvider`, `RefreshTokenRepository`; domain + stdlib imports only.
-- [ ] T031 [US1] Implement `RegisterUserUseCase.Execute(ctx, cmd)` in `internal/usecase/register_user.go`: normalize/validate, hash, generate ID, default `displayName`, and call the store port once to atomically write user, profile, and the outbox event row. The use case MUST NOT invoke downstream hooks or wait for delivery — the outbox worker (T034/T038) dispatches after commit, so a slow or failing hook cannot delay or fail registration. Propagate `context.Context` and wrap with `fmt.Errorf("...: %w", err)`.
-- [ ] T032 [P] [US1] Implement `internal/adapter/security/bcrypt_hasher.go`: `BcryptHasher` hashing/verifying 8–72-character passwords with no silent truncation.
-- [ ] T033 [US1] Implement `internal/adapter/sqlite/registration_store.go`: `BeginTx` + `Queries.WithTx`, `CreateUser` → `CreateProfile` → `CreateEvent`, commit/rollback, translate the users-email `UNIQUE` violation to `domain.ErrEmailAlreadyExists`; add a compile-time interface assertion. Cite [data-model.md](data-model.md) → `User.Email`, `Profile.UserID`.
-- [ ] T034 [US1] Implement `internal/adapter/event/publisher.go`: outbox-backed `DomainEventPublisher` with in-process hooks, backoff retry checking `ctx.Err()`, startup recovery of `pending` rows, `MarkEventDelivered`, and stable event-id idempotency at consumers (cite [data-model.md](data-model.md) → registration_events columns and `UserRegisteredEvent`).
-- [ ] T035 [P] [US1] Implement `internal/adapter/http/respond_error.go`: centralized `respondError(w, r, err)` with `{"code","message","timestamp","path"}`, `errors.Is`/`errors.As` mapping (400/409/422/429/500), redacted messages; validation/conflict name the rule, other outcomes use standard codes (SC-004 scope).
-- [ ] T036 [P] [US1] Implement `internal/adapter/http/visitor_limit.go`: bounded, mutex-protected in-memory map keyed on the peer host from `r.RemoteAddr`; first five attempts in 15 minutes allowed, sixth → 30-minute lockout; no remaining time, no `Retry-After`; untrusted forwarding headers ignored; expired/pruned entries bounded.
-- [ ] T037 [US1] Implement `internal/adapter/http/register_handler.go` and `router.go`: `chi.NewRouter()` with `middleware.RequestID`, `middleware.Recoverer`, `log/slog`, `chi/cors`; `POST /api/identity/auth/register` `http.HandlerFunc`; bounded `MaxBytesReader` + one `DisallowUnknownFields` decode; `201` with only `userId` and `Location`; inject the use case and `respondError`.
-- [ ] T038 [US1] Implement `cmd/api/main.go` and `cmd/api/main_test.go`: load documented env config, initialize/migrate SQLite, manual constructor DI, start the outbox retry worker, explicit `http.Server` timeouts, graceful shutdown of server and worker.
+- [X] T024 [P] [US1] Implement stdlib-only entities in `internal/domain/user.go`: `Role` enum (`RoleUnknown=0`, `RoleStudent=1`, ...), `CEFRLevel`, `User`. Cite [data-model.md](data-model.md) → `User.ID`, `User.Email`, `User.PasswordHash`, `User.DisplayName`, `User.Role`, `User.CEFRLevel`, `User.CreatedAt` and its `Role`/`CEFRLevel` definitions.
+- [X] T025 [P] [US1] Implement `internal/domain/profile.go`: `Profile` struct. Cite [data-model.md](data-model.md) → `Profile.UserID`, `Profile.NativeLanguage`, `Profile.Goals`, `Profile.Timezone`, `Profile.AvatarURL`.
+- [X] T026 [P] [US1] Implement `internal/domain/event.go`: `UserRegisteredEvent`. Cite [data-model.md](data-model.md) → `UserRegisteredEvent.UserID`, `UserRegisteredEvent.Email`, `UserRegisteredEvent.Role`, `UserRegisteredEvent.OccurredAt`.
+- [X] T027 [P] [US1] Define sentinel errors in `internal/domain/errors.go`: `ErrInvalidEmail`, `ErrWeakPassword`, `ErrEmailAlreadyExists`, plus `ErrInvalidCredentials`, `ErrForbidden`, `ErrNotFound`.
+- [X] T028 [P] [US1] Implement `internal/domain/email.go`: trim + lowercase `NormalizeEmail`, package-level compiled `regexp` format check in `ValidateEmail`, `ErrInvalidEmail`.
+- [X] T029 [P] [US1] Implement `internal/domain/password.go`: `ValidatePasswordPolicy` — 8–72 characters counted as runes, ≥1 uppercase, ≥1 digit, `ErrWeakPassword`; no plaintext retained (cite [data-model.md](data-model.md) → Password Validation Rules).
+- [X] T030 [US1] Define consumer ports in `internal/usecase/ports.go`: `UserRegistrationStore`, `PasswordHasher`, `IDGenerator`, `Clock`, `DomainEventPublisher`, plus the constitution-mandated `UserRepository`, `PasswordVerifier`, `TokenProvider`, `RefreshTokenRepository`; domain + stdlib imports only.
+- [X] T031 [US1] Implement `RegisterUserUseCase.Execute(ctx, cmd)` in `internal/usecase/register_user.go`: normalize/validate, hash, generate ID, default `displayName`, and call the store port once to atomically write user, profile, and the outbox event row. The use case MUST NOT invoke downstream hooks or wait for delivery — the outbox worker (T034/T038) dispatches after commit, so a slow or failing hook cannot delay or fail registration. Propagate `context.Context` and wrap with `fmt.Errorf("...: %w", err)`.
+- [X] T032 [P] [US1] Implement `internal/adapter/security/bcrypt_hasher.go`: `BcryptHasher` hashing/verifying 8–72-character passwords with no silent truncation.
+- [X] T033 [US1] Implement `internal/adapter/sqlite/registration_store.go`: `BeginTx` + `Queries.WithTx`, `CreateUser` → `CreateProfile` → `CreateEvent`, commit/rollback, translate the users-email `UNIQUE` violation to `domain.ErrEmailAlreadyExists`; add a compile-time interface assertion. Cite [data-model.md](data-model.md) → `User.Email`, `Profile.UserID`.
+- [X] T034 [US1] Implement `internal/adapter/event/publisher.go`: outbox-backed `DomainEventPublisher` with in-process hooks, backoff retry checking `ctx.Err()`, startup recovery of `pending` rows, `MarkEventDelivered`, and stable event-id idempotency at consumers (cite [data-model.md](data-model.md) → registration_events columns and `UserRegisteredEvent`).
+- [X] T035 [P] [US1] Implement `internal/adapter/http/respond_error.go`: centralized `respondError(w, r, err)` with `{"code","message","timestamp","path"}`, `errors.Is`/`errors.As` mapping (400/409/422/429/500), redacted messages; validation/conflict name the rule, other outcomes use standard codes (SC-004 scope).
+- [X] T036 [P] [US1] Implement `internal/adapter/http/visitor_limit.go`: bounded, mutex-protected in-memory map keyed on the peer host from `r.RemoteAddr`; first five attempts in 15 minutes allowed, sixth → 30-minute lockout; no remaining time, no `Retry-After`; untrusted forwarding headers ignored; expired/pruned entries bounded.
+- [X] T037 [US1] Implement `internal/adapter/http/register_handler.go` and `router.go`: `chi.NewRouter()` with `middleware.RequestID`, `middleware.Recoverer`, `log/slog`, `chi/cors`; `POST /api/identity/auth/register` `http.HandlerFunc`; bounded `MaxBytesReader` + one `DisallowUnknownFields` decode; `201` with only `userId` and `Location`; inject the use case and `respondError`.
+- [X] T038 [US1] Implement `cmd/api/main.go` and `cmd/api/main_test.go`: load documented env config, initialize/migrate SQLite, manual constructor DI, start the outbox retry worker, explicit `http.Server` timeouts, graceful shutdown of server and worker.
 
 **Checkpoint**: US1 is independently functional and verified; MVP complete.
 
@@ -96,10 +96,10 @@ add `testify` (no ADR needed). Migration SQL is human-reviewed before `goose` ap
 
 **Independent Test**: Submit addresses with no `@`, no dot, trailing dot, or empty local part; each returns `422 validation_error` naming the email rule and creates no account/outbox row.
 
-- [ ] T039 [P] [US2] Add table-driven cases in `internal/domain/email_invalid_test.go` for missing `@`/dot, trailing dot, empty local part, whitespace-trimmed-valid, and disallowed characters.
-- [ ] T040 [P] [US2] Add `internal/adapter/http/register_invalid_email_test.go`: `422`, `validation_error`, email rule named, no account/outbox side effects.
-- [ ] T041 [US2] Extend `internal/domain/email.go` to satisfy T039 while honoring [data-model.md](data-model.md) → `User.Email` and its Email Validation Rules; preserve `errors.Is` sentinel matching.
-- [ ] T042 [US2] Extend `internal/adapter/http/respond_error.go` and `register_handler.go` to return the email validation rule in the `422` message; run T039–T040.
+- [X] T039 [P] [US2] Add table-driven cases in `internal/domain/email_invalid_test.go` for missing `@`/dot, trailing dot, empty local part, whitespace-trimmed-valid, and disallowed characters.
+- [X] T040 [P] [US2] Add `internal/adapter/http/register_invalid_email_test.go`: `422`, `validation_error`, email rule named, no account/outbox side effects.
+- [X] T041 [US2] Extend `internal/domain/email.go` to satisfy T039 while honoring [data-model.md](data-model.md) → `User.Email` and its Email Validation Rules; preserve `errors.Is` sentinel matching.
+- [X] T042 [US2] Extend `internal/adapter/http/respond_error.go` and `register_handler.go` to return the email validation rule in the `422` message; run T039–T040.
 
 **Checkpoint**: US2 independently verifiable on the US1 foundation.
 
@@ -109,10 +109,10 @@ add `testify` (no ADR needed). Migration SQL is human-reviewed before `goose` ap
 
 **Independent Test**: Submit passwords of length 7 and 73, no uppercase, and no digit; each returns `422` naming the rule, with no account/outbox row and no plaintext in any response.
 
-- [ ] T043 [P] [US3] Add table-driven cases in `internal/domain/password_invalid_test.go` for <8, >72, no uppercase, no digit, exactly 72 valid, and symbols/spaces/accented characters allowed.
-- [ ] T044 [P] [US3] Add `internal/adapter/http/register_weak_password_test.go`: `422` naming length/uppercase/digit, no plaintext echoed, no account/outbox side effects.
-- [ ] T045 [US3] Extend `internal/domain/password.go` and `bcrypt_hasher.go` for T043 boundaries per [data-model.md](data-model.md) → Password Validation Rules; never truncate.
-- [ ] T046 [US3] Extend `respond_error.go` and `register_handler.go` for actionable weak-password messages; run T043–T044.
+- [X] T043 [P] [US3] Add table-driven cases in `internal/domain/password_invalid_test.go` for <8, >72, no uppercase, no digit, exactly 72 valid, and symbols/spaces/accented characters allowed.
+- [X] T044 [P] [US3] Add `internal/adapter/http/register_weak_password_test.go`: `422` naming length/uppercase/digit, no plaintext echoed, no account/outbox side effects.
+- [X] T045 [US3] Extend `internal/domain/password.go` and `bcrypt_hasher.go` for T043 boundaries per [data-model.md](data-model.md) → Password Validation Rules; never truncate.
+- [X] T046 [US3] Extend `respond_error.go` and `register_handler.go` for actionable weak-password messages; run T043–T044.
 
 **Checkpoint**: US3 independently verifiable without weakening US1/US2.
 
@@ -122,10 +122,10 @@ add `testify` (no ADR needed). Migration SQL is human-reviewed before `goose` ap
 
 **Independent Test**: Register an address, then submit case variants and concurrent duplicates; verify `409`, a stable code, one account/profile/outbox row total, and no event for rejected attempts.
 
-- [ ] T047 [P] [US4] Add `internal/adapter/sqlite/registration_duplicate_test.go`: case-normalized duplicate, concurrent duplicate (one success/one conflict), email-specific constraint mapping, exactly one outbox row (winner only), rollback on failure.
-- [ ] T048 [P] [US4] Add `internal/adapter/http/register_duplicate_test.go`: `409`, `email_already_exists`, no existing-account details, no password.
-- [ ] T049 [US4] Extend `registration_store.go` so only the confirmed users-email uniqueness violation maps to `domain.ErrEmailAlreadyExists` with cause preserved; cite [data-model.md](data-model.md) → `User.Email`; run T047.
-- [ ] T050 [US4] Extend `respond_error.go` and `register_handler.go` for the reviewed `409` contract; run T048.
+- [X] T047 [P] [US4] Add `internal/adapter/sqlite/registration_duplicate_test.go`: case-normalized duplicate, concurrent duplicate (one success/one conflict), email-specific constraint mapping, exactly one outbox row (winner only), rollback on failure.
+- [X] T048 [P] [US4] Add `internal/adapter/http/register_duplicate_test.go`: `409`, `email_already_exists`, no existing-account details, no password.
+- [X] T049 [US4] Extend `registration_store.go` so only the confirmed users-email uniqueness violation maps to `domain.ErrEmailAlreadyExists` with cause preserved; cite [data-model.md](data-model.md) → `User.Email`; run T047.
+- [X] T050 [US4] Extend `respond_error.go` and `register_handler.go` for the reviewed `409` contract; run T048.
 
 **Checkpoint**: Duplicate handling is independently testable and concurrency-safe.
 
@@ -133,14 +133,14 @@ add `testify` (no ADR needed). Migration SQL is human-reviewed before `goose` ap
 
 **Purpose**: Encode the constitution's gate and validate clarified end-to-end behavior.
 
-- [ ] T051 Create `repo:.github/workflows/ci-identity.yml`: module-root working dir with explicit `GOWORK`, pinned `sqlc`/lint tooling, `sqlc generate` drift check (including untracked), `golangci-lint run`, `CGO_ENABLED=0 go build ./cmd/api`, and `go test -race ./...` in a race-capable environment.
-- [ ] T052 [P] Add a timed acceptance check for SC-001 ("under 3 seconds under normal conditions") in `internal/adapter/http/register_success_test.go` with documented normal conditions.
-- [ ] T053 Add an SC-006 audit check in `internal/adapter/sqlite/registration_store_test.go` verifying no plaintext password in stored data, event payloads, error bodies, or logs across success/validation/conflict outcomes.
-- [ ] T054 Run the full verification gate locally — `sqlc generate` (no drift), `golangci-lint run`, `go test -race ./...`, `CGO_ENABLED=0 go build ./cmd/api` — and document results in the pull request (constitution governance requires PR-recorded verification).
-- [ ] T055 Execute the updated `quickstart.md` scenarios (201/409/422/400/429) against a running service, using fresh visitors or reset state so the 429 lockout does not mask other cases; confirm the 8–72 password and sixth-attempt boundaries against the contract.
-- [ ] T056 [P] Review `internal/` and `cmd/` for inward-only imports, redacted structured logs, `context.Context` propagation, graceful shutdown, env-only config, and exported-symbol godoc comments.
-- [ ] T057 [P] Verify the feature, module-local, and `repo:shared/contracts/` OpenAPI copies remain byte-identical after all changes.
-- [ ] T058 Record the deferred service-wide mandates (JWT/RBAC middleware, JWT signing/validation, token issuance) in the project backlog with a follow-up feature reference; do not implement them in this feature (Principle I explicit deferral).
+- [X] T051 Create `repo:.github/workflows/ci-identity.yml`: module-root working dir with explicit `GOWORK`, pinned `sqlc`/lint tooling, `sqlc generate` drift check (including untracked), `golangci-lint run`, `CGO_ENABLED=0 go build ./cmd/api`, and `go test -race ./...` in a race-capable environment.
+- [X] T052 [P] Add a timed acceptance check for SC-001 ("under 3 seconds under normal conditions") in `internal/adapter/http/register_success_test.go` with documented normal conditions.
+- [X] T053 Add an SC-006 audit check in `internal/adapter/sqlite/registration_store_test.go` verifying no plaintext password in stored data, event payloads, error bodies, or logs across success/validation/conflict outcomes.
+- [X] T054 Run the full verification gate locally — `sqlc generate` (no drift), `golangci-lint run`, `go test -race ./...`, `CGO_ENABLED=0 go build ./cmd/api` — and document results in the pull request (constitution governance requires PR-recorded verification).
+- [X] T055 Execute the updated `quickstart.md` scenarios (201/409/422/400/429) against a running service, using fresh visitors or reset state so the 429 lockout does not mask other cases; confirm the 8–72 password and sixth-attempt boundaries against the contract.
+- [X] T056 [P] Review `internal/` and `cmd/` for inward-only imports, redacted structured logs, `context.Context` propagation, graceful shutdown, env-only config, and exported-symbol godoc comments.
+- [X] T057 [P] Verify the feature, module-local, and `repo:shared/contracts/` OpenAPI copies remain byte-identical after all changes.
+- [X] T058 Record the deferred service-wide mandates (JWT/RBAC middleware, JWT signing/validation, token issuance) in the project backlog with a follow-up feature reference; do not implement them in this feature (Principle I explicit deferral).
 
 **Checkpoint**: All user stories complete; constitution verification gate satisfied.
 
@@ -192,3 +192,25 @@ Separate owners can prepare independent test files and adapters once foundationa
 - The outbox (T012/T034) needs no new dependency and no ADR; testify is excluded entirely.
 - No JWT/RBAC or token-issuance tasks are included: registration is public and those are separate service-wide capabilities; keep this feature's scope bounded.
 - Write each story's tests first and confirm they fail before implementation; commit after each task or logical group.
+
+## Phase 8: Convergence
+
+- [X] T059 Carry the precise violated password rule (length vs uppercase vs digit) through the domain error and surface it in the `422` message so FR-003 and SC-004 name the specific rule rather than a combined message per FR-003 (partial)
+- [X] T060 Decide and implement per-case email format detail so the `422` outcome names the specific violated email rule (e.g. missing `@`, missing dot, trailing dot, empty local part) per FR-002 / SC-004 (partial)
+- [X] T061 Reconcile `internal/adapter/event/publisher.go` `Publish` with the plan's worker-only delivery model: remove the unbounded per-call goroutine and ensure a single, bounded dispatch path per FR-009 / plan: event delivery (partial)
+- [X] T062 Resolve the unused approved-stack component `github.com/go-chi/httprate`: either adopt it for the coarse rate-limit layer or record in `plan.md`/`research.md` that the hand-rolled limiter supersedes it per Constitution II / Approved Technology Stack (contradicts)
+- [X] T063 Re-add or explicitly document the absence of the approved `github.com/golang-jwt/jwt/v5` dependency for the deferred JWT work per plan: dependencies (missing)
+
+## Phase 9: Convergence
+
+- [X] T064 Align password hashing with the 8–72-character policy: the domain counts runes while `BcryptHasher.Hash` rejects inputs over 72 bytes, so a valid 72-character multibyte password fails hashing with `500`; accept every policy-valid password (for example via a SHA-256 pre-hash before bcrypt) and add a 72-character multibyte end-to-end test per FR-003 / US3/AC1 (contradicts)
+- [X] T065 Remove the per-call goroutine in `internal/adapter/event/publisher.go` `Publish` and rely solely on the startup dispatch plus `runEventWorker`, so registration cannot spawn unbounded concurrent `Dispatch` passes; add a test that `Publish` enqueues no delivery work per FR-009 / plan: event delivery (partial)
+- [X] T066 Add table-driven domain and HTTP tests asserting each specific validation rule (`password_too_short`, `password_too_long`, `password_no_uppercase`, `password_no_digit`, email format) through the `422` envelope, replacing the current `contains "email"/"password"` assertions per FR-002 / FR-003 / SC-004 (partial)
+- [X] T067 Explicitly document that `github.com/golang-jwt/jwt/v5` is intentionally not pinned in `go.mod` until the deferred authentication feature lands, reconciling T002/T058 with the current dependency set per plan: dependencies / T063 (partial)
+- [X] T068 Remove or justify the unused exported `PasswordPolicyDescription` helper in `internal/domain/password.go` per plan: focused changes (unrequested)
+
+## Phase 10: Convergence
+
+- [X] T069 Update `data-model.md` password constraint wording to describe the implemented SHA-256 pre-hash before bcrypt instead of claiming the 72-character cap stays within bcrypt's 72-byte input limit, so the canonical constraint matches `BcryptHasher` per FR-003 / plan: password hashing (contradicts)
+- [X] T070 Update `plan.md` (Testing), `research.md` (testing decision), and `quickstart.md` to state that SQLite integration tests use temp-file databases rather than `:memory:`, because the configured WAL/page-cache PRAGMAs require a file-backed database, matching `testsupport_test.go` per plan: testing / T020 (contradicts)
+- [X] T071 Reconcile `plan.md` storage wording ("Default `DB_PATH=./data/identity.db`") with `loadConfig` and `.env.example`: `DB_PATH` is required and the path is an example, not a hardcoded default, per Constitution IV (contradicts)

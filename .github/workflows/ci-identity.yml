@@ -1,0 +1,69 @@
+name: ci-identity
+
+on:
+  push:
+    paths:
+      - "apps/api/identity-api/**"
+      - "shared/contracts/**"
+      - ".github/workflows/ci-identity.yml"
+  pull_request:
+    paths:
+      - "apps/api/identity-api/**"
+      - "shared/contracts/**"
+      - ".github/workflows/ci-identity.yml"
+
+defaults:
+  run:
+    working-directory: apps/api/identity-api
+
+env:
+  GOWORK: ${{ github.workspace }}/apps/api/identity-api/services/go.work
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+          cache-dependency-path: apps/api/identity-api/go.sum
+
+      # sqlc is pinned so generated code is reproducible across runs.
+      - name: Install sqlc
+        run: go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0
+
+      - name: Verify sqlc generate has no drift
+        run: |
+          sqlc generate
+          if [ -n "$(git status --porcelain -- internal/adapter/sqlite/sqlc)" ]; then
+            echo "::error::sqlc generated code is out of date; run 'sqlc generate' and commit the result"
+            git --no-pager diff -- internal/adapter/sqlite/sqlc
+            git status --porcelain -- internal/adapter/sqlite/sqlc
+            exit 1
+          fi
+
+      - name: gofmt
+        run: |
+          unformatted="$(gofmt -l .)"
+          if [ -n "$unformatted" ]; then
+            echo "::error::gofmt found unformatted files:"; echo "$unformatted"; exit 1
+          fi
+
+      - name: Build (CGO disabled)
+        run: CGO_ENABLED=0 go build ./cmd/api
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v2.1.6
+          working-directory: apps/api/identity-api
+          args: ./...
+
+      # CGO is enabled so the race detector is available.
+      - name: Test with race detector
+        env:
+          CGO_ENABLED: "1"
+        run: go test -race ./...

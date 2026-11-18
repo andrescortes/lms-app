@@ -34,18 +34,21 @@ implementation time; no CGO, build with `CGO_ENABLED=0`).
 **Primary Dependencies**: `github.com/go-chi/chi/v5`, `github.com/go-chi/cors`,
 `github.com/go-chi/httprate` (approved stack; usage decided in [research.md](./research.md)),
 `modernc.org/sqlite`, `golang.org/x/crypto/bcrypt`, `github.com/golang-jwt/jwt/v5`
-(service-level, not exercised by this feature), `github.com/pressly/goose/v3` and `sqlc` as
-build/dev tools, and `log/slog` from the standard library. Tests use Go `testing`/`httptest`
-only; `github.com/stretchr/testify` is excluded, so no ADR is required.
+(service-level; intentionally **not** pinned in `go.mod` until the deferred authentication
+feature lands, so the unused module is not carried — see T058/T067), `github.com/pressly/goose/v3`
+and `sqlc` as build/dev tools, and `log/slog` from the standard library. Tests use Go
+`testing`/`httptest` only; `github.com/stretchr/testify` is excluded, so no ADR is required.
 
-**Storage**: Isolated SQLite 3 database via pure-Go `modernc.org/sqlite`. Default
-`DB_PATH=./data/identity.db`. DSN enables WAL, `synchronous=NORMAL`, `foreign_keys=ON`,
+**Storage**: Isolated SQLite 3 database via pure-Go `modernc.org/sqlite`. `DB_PATH` is required
+and supplied by the environment; `./data/identity.db` is a local example, not a hardcoded
+default. DSN enables WAL, `synchronous=NORMAL`, `foreign_keys=ON`,
 `busy_timeout=5000`, and `cache_size=-64000`; `SetMaxOpenConns(1)` serializes v1 access. The
 `registration_events` outbox table stores one logical `UserRegistered` event per registration
 for restart-safe delivery.
 
 **Testing**: `go test -race ./...`; table-driven unit tests with fakes for the use case and
-domain; `net/http/httptest` handler tests; SQLite integration tests on `:memory:` with `goose`
+domain; `net/http/httptest` handler tests; SQLite integration tests on isolated temp-file
+databases (the configured WAL/page-cache PRAGMAs require a file-backed database) with `goose`
 migrations applied, covering atomic rollback, duplicate-email conflict, outbox record creation,
 restart-safe redelivery, and duplicate-event idempotency at consumers. `golangci-lint run` and a
 clean `sqlc generate` (no drift) are part of the verification gate.

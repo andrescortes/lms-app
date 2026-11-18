@@ -185,12 +185,13 @@ Rationale / Alternatives considered.
 ## R13 — Test strategy and the testify ADR
 
 - **Decision**: Write table-driven tests at every layer: domain validation (pure), use case
-  (fakes for store/hasher/id generator/clock/publisher), SQLite adapter on `:memory:` with goose
+  (fakes for store/hasher/id generator/clock/publisher), SQLite adapter on an isolated temp-file
+  database (the configured WAL/page-cache PRAGMAs require a file-backed database) with goose
   migrations and `foreign_keys=ON`, and HTTP handlers with `net/http/httptest`. Run
   `go test -race ./...`. If the ADR for `github.com/stretchr/testify` is approved, use it for
   assertions; otherwise use stdlib `testing` assertions.
 - **Rationale**: The constitution requires tests for every use case and repository adapter, and
-  the verification gate requires the race detector. In-memory SQLite with migrations applied
+  the verification gate requires the race detector. File-backed SQLite with migrations applied
   exercises the real constraint and transaction behavior without external services.
 - **Alternatives considered**: Mocking the database entirely was rejected because it would not
   verify the UNIQUE violation mapping or rollback; a containerized database was rejected as

@@ -85,8 +85,9 @@ consumers MUST tolerate rare duplicate deliveries of the same event without dupl
 - **Password** (`domain.ValidatePasswordPolicy`, sentinel `ErrWeakPassword`):
   - Length 8 through 72 characters inclusive (counted as characters/runes, not bytes); shorter
     and longer values are rejected with the length rule named in the validation outcome
-    (spec clarification 2026-11-18). The 72-character maximum keeps every accepted password
-    within bcrypt's 72-byte input limit.
+    (spec clarification 2026-11-18). Because 72 characters can exceed bcrypt's 72-byte input
+    limit for multibyte text, the hasher SHA-256 pre-hashes every password into a fixed 64-byte
+    hex digest before bcrypt, so every policy-valid password is accepted without truncation.
   - At least one uppercase letter and at least one digit.
   - No other restrictions (symbols, spaces, and accented characters are allowed).
   - The plaintext password is never stored, logged, returned, or included in an event; only its

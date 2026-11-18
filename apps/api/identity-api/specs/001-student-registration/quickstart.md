@@ -15,23 +15,24 @@ an implementation guide. All commands are run from the Spec Kit project root
 - `golangci-lint` available on `PATH` for the verification gate.
 - Ports: `HTTP_PORT` (default `8081`) free.
 
-## 1. Bootstrap the greenfield workspace (implementation must create these)
+## 1. Module and workspace layout
+
+The Go module `lms-english/identity-service` is rooted at the project root
+`apps/api/identity-api/` (where `go.mod` lives). `services/go.work` includes it via `use ..`.
 
 ```bash
-cd services
-go work init
-mkdir -p identity-service
-cd identity-service
-go mod init lms-english/identity-service
-go work use .
+# from apps/api/identity-api/
+export GOWORK="$PWD/services/go.work"   # workspace lives below the module
+go list ./...
 ```
 
-Expected: `services/go.work` exists and includes `./identity-service`.
+Expected: `go list ./...` resolves the module; `services/go.work` reports `use ..`.
 
 ## 2. Generate and migrate
 
 ```bash
-cd services/identity-service
+# from apps/api/identity-api/
+export GOWORK="$PWD/services/go.work"
 sqlc generate
 go run github.com/pressly/goose/v3/cmd/goose -dir db/migrations sqlite3 ./data/identity.db up
 ```
@@ -57,18 +58,21 @@ export DB_PATH=./data/identity.db
 ## 4. Run the automated checks
 
 ```bash
-cd services/identity-service
-go test -race ./...
+# from apps/api/identity-api/
+export GOWORK="$PWD/services/go.work"
+go test ./...            # add -race in a CGO-capable environment
 golangci-lint run
 ```
 
-Expected: both pass. Integration tests use `:memory:` SQLite with migrations applied and cover
-atomic rollback and duplicate-email conflict; handler tests use `net/http/httptest`.
+Expected: both pass. Integration tests use isolated temp-file SQLite databases with migrations
+applied and cover atomic rollback and duplicate-email conflict; handler tests use
+`net/http/httptest`.
 
 ## 5. Start the service and validate the contract
 
 ```bash
-cd services/identity-service
+# from apps/api/identity-api/
+export GOWORK="$PWD/services/go.work"
 go run ./cmd/api
 ```
 
@@ -121,12 +125,12 @@ Expected: `400` with `code: invalid_request`.
 
 ### Scenario E — Per-visitor lockout (429)
 
-Submit more than 5 registration attempts from the same client within 15 minutes (including
-invalid attempts), then submit one more.
+Submit five registration attempts from the same client within 15 minutes (the first five are
+allowed, including invalid attempts), then submit a sixth.
 
-Expected: `429` with `code: rate_limited`, a fixed message, **no `Retry-After` header**, and no
-remaining-time disclosure. A different client IP is unaffected. After 30 minutes the visitor can
-register again.
+Expected: the sixth returns `429` with `code: rate_limited`, a fixed message, **no `Retry-After`
+header**, and no remaining-time disclosure. A different client IP is unaffected. After 30 minutes
+the visitor can register again.
 
 ## 6. Contract conformance
 
@@ -139,7 +143,6 @@ different error shape.
 
 - `sqlc generate` produces no uncommitted drift.
 - `golangci-lint run` passes.
-- `go test -race ./...` passes.
+- `go test -race ./...` passes (in a CGO-capable environment).
 - All five curl scenarios match the expected outcomes in the contract.
-- The tracked `testify` ADR (see [plan.md](./plan.md)) is resolved before implementation starts.
 - `ci-identity.yml` encodes the verification gate and passes in CI.
