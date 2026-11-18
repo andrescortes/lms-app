@@ -35,9 +35,8 @@ implementation time; no CGO, build with `CGO_ENABLED=0`).
 `github.com/go-chi/httprate` (approved stack; usage decided in [research.md](./research.md)),
 `modernc.org/sqlite`, `golang.org/x/crypto/bcrypt`, `github.com/golang-jwt/jwt/v5`
 (service-level, not exercised by this feature), `github.com/pressly/goose/v3` and `sqlc` as
-build/dev tools, `log/slog` from the standard library. `github.com/stretchr/testify` is
-requested for tests and is a test-only dependency outside the enumerated stack — see the
-Constitution Check and Complexity Tracking below for the required ADR follow-up.
+build/dev tools, and `log/slog` from the standard library. Tests use Go `testing`/`httptest`
+only; `github.com/stretchr/testify` is excluded, so no ADR is required.
 
 **Storage**: Isolated SQLite 3 database via pure-Go `modernc.org/sqlite`. Default
 `DB_PATH=./data/identity.db`. DSN enables WAL, `synchronous=NORMAL`, `foreign_keys=ON`,
@@ -74,19 +73,18 @@ A distributed rate limiter and an external broker remain explicitly deferred
 
 | # | Principle | Status | Notes |
 |---|-----------|--------|-------|
-| I | Inward-only dependencies and contract-first HTTP | PASS | Layer mapping in [data-model.md](./data-model.md) matches the mandated boundaries. `internal/domain` imports only the standard library. Use case defines consumer-side ports and depends only on the domain. HTTP adapter owns `chi.NewRouter()`, `http.HandlerFunc`, JSON DTOs, and `respondError`. SQLite adapter wraps sqlc queries in an explicit `*sql.Tx`. Manual DI in `cmd/api/main.go`. OpenAPI contract is completed in Phase 1 before any handler work. |
+| I | Inward-only dependencies and contract-first HTTP | PARTIAL — service-wide mandates deferred | This feature implements the inward-only boundaries and contract-first HTTP (stdlib-only domain, consumer ports, chi/http.HandlerFunc/DTOs/respondError, sqlc-backed adapter, manual DI). The constitution's service-wide MUSTs for JWT/RBAC middleware in `internal/adapter/http` and JWT signing/validation in `internal/adapter/security` are not delivered by this public-registration feature and are tracked in tasks.md Phase 7 (T058). This is a scope deferral, not a reinterpretation. |
 | II | Approved stack and idiomatic Go | PASS | Stack is the approved set. Errors are wrapped with `fmt.Errorf("...: %w", err)` and matched with `errors.Is`/`errors.As`. |
 | III | Phase-scoped Go skills | PASS | All five `.agents/skills/*/SKILL.md` were loaded for this plan phase. Spec and clarify phases remained technology-agnostic. |
 | IV | Secure configuration and verified changes | PASS | All runtime settings come from env vars documented in `.env.example` (to be created in implementation). Passwords are bcrypt-hashed and never returned. Unit + integration tests are planned for every use case and repository adapter. Verification gate matches `ci-identity.yml` (to be created). |
-| V | Focused changes and dependency discipline | **VIOLATION (tracked)** | `github.com/stretchr/testify` is requested for tests but is not in the enumerated approved stack. An explicit ADR is required before it is added to `go.mod`; the stdlib-only alternative is documented in Complexity Tracking. All other dependencies are approved. |
+| V | Focused changes and dependency discipline | PASS | Only approved dependencies are used; tests use Go stdlib `testing`/`httptest`, so testify and its ADR are not needed. |
 
-**Pre-design gate result**: PASS with one tracked violation (test-only `testify`, ADR required).
-The violation does not block design because it affects test ergonomics only, not architecture or
-runtime behavior. It must be resolved before implementation begins.
+**Pre-design gate result**: PASS. Only approved dependencies are used; tests use Go stdlib
+`testing`/`httptest`, so no test-dependency ADR is needed.
 
-**Post-design re-check (Phase 1 complete; clarifications applied)**: PASS with the same tracked
-violation. No new violations were introduced by the research, contract design, or the 2026-11-18
-clarifications. The design decisions that could have created violations were resolved as follows:
+**Post-design re-check (Phase 1 complete; clarifications applied)**: PASS. No new violations
+were introduced by the research, contract design, or the 2026-11-18 clarifications. The design
+decisions that could have created violations were resolved as follows:
 (a) UUID generation uses `crypto/rand` from the standard library, so no UUID dependency is
 introduced; (b) the per-visitor lockout is an in-process middleware rather than a new dependency,
 and `httprate` remains an approved-stack option documented in research; (c) restart-safe event
@@ -114,53 +112,53 @@ specs/001-student-registration/
 ### Source Code (repository root)
 
 ```text
-apps/api/identity-api/                      # Spec Kit project root (plan artifacts above)
+apps/api/identity-api/                      # Spec Kit project root AND Go module root
+├── go.mod                                  # module lms-english/identity-service
+├── cmd/
+│   └── api/
+│       └── main.go                         # config, DB init, manual DI, graceful shutdown
+├── internal/
+│   ├── domain/                             # stdlib-only entities, value objects, sentinel errors
+│   │   ├── user.go                         # User, Role enum, CEFRLevel value object
+│   │   ├── profile.go                      # Profile
+│   │   ├── event.go                        # UserRegisteredEvent
+│   │   ├── email.go                        # NormalizeEmail / ValidateEmail
+│   │   ├── password.go                     # ValidatePasswordPolicy
+│   │   └── errors.go                       # ErrInvalidEmail, ErrWeakPassword,
+│   │                                       # ErrEmailAlreadyExists (+ constitution sentinels)
+│   ├── usecase/                            # depends only on domain + stdlib
+│   │   ├── register_user.go                # RegisterUserUseCase.Execute
+│   │   └── ports.go                        # consumer-defined interfaces
+│   └── adapter/
+│       ├── http/                           # chi router, DTOs, respondError, rate-limit middleware
+│       │   ├── router.go
+│       │   ├── register_handler.go
+│       │   ├── respond_error.go
+│       │   └── visitor_limit.go
+│       ├── sqlite/                         # DB init + repository adapter over sqlc queries
+│       │   ├── db.go                       # SQLite connection initializer
+│       │   └── registration_store.go       # atomic RegisterUser transaction
+│       ├── security/
+│       │   └── bcrypt_hasher.go            # BcryptHasher implements PasswordHasher
+│       └── event/                          # in-process hooks + outbox retry worker
+│           └── publisher.go                # DomainEventPublisher; restart-safe redelivery
+├── db/
+│   ├── migrations/
+│   │   ├── 00001_create_users_and_profiles.sql   # goose Up/Down
+│   │   └── 00002_create_registration_events.sql  # outbox (human-reviewed)
+│   └── queries/
+│       ├── users.sql                       # CreateUser :one, GetUserByEmail :one,
+│       │                                   # CreateProfile :exec
+│       └── events.sql                      # CreateEvent, ListPending, MarkDelivered
+├── sqlc.yaml                               # engine: sqlite; schema: db/migrations;
+│                                           # queries: db/queries
+├── contracts/
+│   └── identity.openapi.yaml               # module-local working copy of the contract
+├── .env.example                            # APP_ENV, HTTP_PORT, DB_PATH (no real secrets)
+└── data/                                   # runtime DB directory (gitignored)
+
 services/
-├── go.work                                 # Go workspace (module set created at implementation)
-└── identity-service/                       # module lms-english/identity-service
-    ├── go.mod
-    ├── cmd/
-    │   └── api/
-    │       └── main.go                     # config, DB init, manual DI, graceful shutdown
-    ├── internal/
-    │   ├── domain/                         # stdlib-only entities, value objects, sentinel errors
-    │   │   ├── user.go                     # User, Role enum, CEFRLevel value object
-    │   │   ├── profile.go                  # Profile
-    │   │   ├── event.go                    # UserRegisteredEvent
-    │   │   ├── email.go                    # NormalizeEmail / ValidateEmail
-    │   │   ├── password.go                 # ValidatePasswordPolicy
-    │   │   └── errors.go                   # ErrInvalidEmail, ErrWeakPassword,
-    │   │                                   # ErrEmailAlreadyExists (+ constitution sentinels)
-    │   ├── usecase/                        # depends only on domain + stdlib
-    │   │   ├── register_user.go            # RegisterUserUseCase.Execute
-    │   │   └── ports.go                    # consumer-defined interfaces
-    │   └── adapter/
-    │       ├── http/                       # chi router, DTOs, respondError, rate-limit middleware
-    │       │   ├── router.go
-    │       │   ├── register_handler.go
-    │       │   ├── respond_error.go
-    │       │   └── visitor_limit.go
-    │       ├── sqlite/                     # DB init + repository adapter over sqlc queries
-    │       │   ├── db.go                   # SQLite connection initializer
-    │       │   └── registration_store.go   # atomic RegisterUser transaction
-    │       ├── security/
-    │       │   └── bcrypt_hasher.go        # BcryptHasher implements PasswordHasher
-    │       └── event/                      # in-process hooks + outbox retry worker
-    │           └── publisher.go            # DomainEventPublisher; restart-safe redelivery
-    ├── db/
-    │   ├── migrations/
-    │   │   ├── 00001_create_users_and_profiles.sql   # goose Up/Down
-    │   │   └── 00002_create_registration_events.sql  # outbox (human-reviewed)
-    │   └── queries/
-    │       ├── users.sql                   # CreateUser :one, GetUserByEmail :one,
-    │       │                               # CreateProfile :exec
-    │       └── events.sql                  # CreateEvent, ListPending, MarkDelivered
-    ├── sqlc.yaml                           # engine: sqlite; schema: db/migrations;
-    │                                       # queries: db/queries
-    ├── contracts/
-    │   └── identity.openapi.yaml           # module-local working copy of the contract
-    ├── .env.example                        # APP_ENV, HTTP_PORT, DB_PATH (no real secrets)
-    └── data/                               # runtime DB directory (gitignored)
+└── go.work                                 # workspace referencing root module via `use ..`
 
 shared/
 └── contracts/
@@ -168,20 +166,20 @@ shared/
                                             # from specs/.../contracts/identity.openapi.yaml)
 ```
 
-**Structure Decision**: The source tree is anchored at the Spec Kit project root
-`apps/api/identity-api/`: a `services/go.work` workspace holds the single module
-`lms-english/identity-service`. This follows the constitution's "inside the `services/` Go
-workspace" rule. The canonical cross-service OpenAPI document is published to the monorepo
-`shared/contracts/identity.openapi.yaml`; the module keeps a local copy under `contracts/` for
-handler authors, and the design artifact under this feature's `contracts/` is the source of
-truth for both. Because the repository is greenfield, all of these paths are created by the
-implementation phase; the plan only defines them.
+**Structure Decision**: The Go module `lms-english/identity-service` is rooted directly at the
+Spec Kit project root `apps/api/identity-api/`; `services/go.work` includes that root module via
+`use ..`, satisfying the constitution's workspace requirement without a nested service directory.
+Commands set `GOWORK` to the workspace's absolute path. The canonical cross-service OpenAPI
+document is published to the monorepo `shared/contracts/identity.openapi.yaml`; the module keeps a
+local copy under `contracts/` for handler authors, and the design artifact under this feature's
+`contracts/` is the source of truth for both. Because the repository is greenfield, all of these
+paths are created by the implementation phase; the plan only defines them.
 
 ## Complexity Tracking
 
 > Fill ONLY if Constitution Check has violations that must be justified
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
+| Violation / Deferred Item | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| `github.com/stretchr/testify` is a test-only dependency outside the approved stack (Principle V) | Requested plan-phase test strategy uses testify for expressive table-driven assertions and fake setup across domain, use case, SQLite, and HTTP tests | Stdlib `testing` with plain `if got != want { t.Errorf(...) }` is viable and requires no ADR. If an ADR is not approved before implementation, use stdlib-only tests instead of adding testify. |
-| In-memory per-visitor lockout state (Principle IV / single-instance scope) | FR-011 requires a 30-minute lockout and suppression of remaining-time disclosure; a shared store is out of v1 scope | `github.com/go-chi/httprate` provides per-IP sliding windows but cannot express "5 attempts in 15 minutes → 30-minute penalty box" or suppress remaining-time disclosure cleanly; a distributed store would add an unapproved dependency. Documented as a v1 limitation with a deferred durable/distributed follow-up. |
+| Deferred service-wide mandates (Principle I) | Registration is unauthenticated; JWT/RBAC and token issuance belong to a later auth feature | Adding token endpoints here would exceed CU-AUTH-01/HU-01 scope; tracked explicitly in tasks.md T058 instead of silently omitted |
+| In-memory per-visitor lockout state (Principle IV / single-instance scope) | FR-011 requires a 30-minute lockout (first five attempts allowed, sixth triggers) and suppression of remaining-time disclosure; a shared store is out of v1 scope | `github.com/go-chi/httprate` provides per-IP sliding windows but cannot express "first five allowed, sixth → 30-minute penalty box" or suppress remaining-time disclosure cleanly; a distributed store would add an unapproved dependency. Documented as a v1 limitation with a deferred durable/distributed follow-up. |

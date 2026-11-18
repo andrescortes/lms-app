@@ -74,10 +74,11 @@ consumers MUST tolerate rare duplicate deliveries of the same event without dupl
 - **Email** (`domain.ValidateEmail`, sentinel `ErrInvalidEmail`):
   - Trim surrounding whitespace, then lowercase (Unicode-aware lowercase); normalization is
     applied before uniqueness checks and before storage.
-  - Format: exactly one `@`, non-empty local part, non-empty domain containing at least one dot
-    with non-empty labels, no whitespace, and a conservative allowed character set. Use a
-    package-level compiled `regexp` (compile once). This is intentionally stricter than full
-    RFC 5322 to keep validation predictable and testable.
+  - Format (canonical, used by both implementation and tests): exactly one `@`; local part
+    `[A-Za-z0-9._%+-]+`; domain `([A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}`;
+    no whitespace; no other characters allowed. Compile once as a package-level `regexp`.
+    This is intentionally stricter than full RFC 5322. Disallowed test cases: missing `@`,
+    missing dot, trailing dot, empty local part, embedded spaces, and out-of-set characters.
   - Surrounding whitespace is trimmed as normalization; a well-formed address with leading or
     trailing spaces is accepted once trimmed, and an address still malformed after trimming is
     rejected (spec clarification 2026-11-18).

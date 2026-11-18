@@ -50,6 +50,9 @@
   duplicate-conflict rejections? → A: Only validation failures and
   duplicate-email conflicts must name the specific rule; other outcomes use
   their own standard codes and messages.
+- Q: What identifies a "visitor" for the per-visitor registration lockout? → A: The
+  server-observed peer network address; forwarding headers are not trusted. Visitors sharing
+  a public IP or proxy share one lockout budget in v1.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -197,6 +200,8 @@ account's details.
   minutes are allowed; a visitor who makes a sixth attempt in that window is
   temporarily locked out for 30 minutes and cannot submit further attempts
   until the lockout expires; the lockout applies per-visitor, not globally.
+- **Shared network address**: two visitors behind the same public IP or proxy share one
+  lockout budget in v1; a lockout from one affects attempts from that address.
 
 ## Requirements *(mandatory)*
 
@@ -310,3 +315,5 @@ account's details.
   email address, or profile data are returned.
 - Simultaneous duplicate submissions are a rare but real case; the system
   must never create two accounts for the same email.
+- A visitor is identified by the server-observed peer network address; visitors sharing a
+  public IP or proxy share the lockout budget in v1 (documented limitation).
