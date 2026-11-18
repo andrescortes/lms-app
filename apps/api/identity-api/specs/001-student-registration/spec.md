@@ -28,6 +28,28 @@
   the response reveal how much lockout time remains, or only that they are
   rate-limited? → A: The response only says the visitor is rate-limited,
   without revealing remaining lockout time.
+- Q: Must the promise that every successful registration's `UserRegistered`
+  notification eventually lands still hold after a service restart? → A: Yes —
+  the event is recorded and delivery resumes after a restart; "exactly one"
+  means one logical event per registration, and consumers tolerate rare
+  duplicate deliveries.
+- Q: When a visitor reaches the registration attempt limit, is it the fifth
+  attempt within 15 minutes that triggers the 30-minute lockout, or only an
+  attempt beyond the fifth? → A: The first five attempts within 15 minutes are
+  allowed; the sixth attempt triggers the 30-minute lockout.
+- Q: When a visitor enters a well-formed email surrounded by leading or
+  trailing spaces, should the system accept it after removing those spaces, or
+  reject it as invalid? → A: Accept it after trimming the surrounding spaces,
+  then normalize case and store the trimmed form.
+- Q: Is there a maximum accepted password length, or are passwords accepted at
+  any length as long as they meet the 8-character, uppercase, and digit rules? →
+  A: Yes — accept 8 through 72 characters; a longer password is rejected with a
+  validation error naming the length rule.
+- Q: Should SC-004's requirement that every rejection name the specific
+  violated rule apply to all rejection outcomes, or only to validation and
+  duplicate-conflict rejections? → A: Only validation failures and
+  duplicate-email conflicts must name the specific rule; other outcomes use
+  their own standard codes and messages.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -144,14 +166,18 @@ account's details.
 - **Case-insensitive email handling**: `Student@Example.com` and
   `student@example.com` are the same email; uniqueness is checked and the
   email is kept using one consistent normalized form.
-- **Whitespace or unusual characters**: trailing spaces around the email are
-  not accepted as part of the address; a registration attempt with a
-  well-formed email plus surrounding spaces fails validation.
+- **Whitespace or unusual characters**: leading and trailing spaces around the
+  email are trimmed before validation, case normalization, uniqueness checking,
+  and storage. A well-formed email with surrounding spaces is accepted once
+  trimmed; an address that is still malformed after trimming fails validation.
 - **Password at exactly 8 characters**: a password of exactly 8 characters
   that contains at least one uppercase letter and one digit is accepted.
 - **Special characters in password**: a password meeting the policy is
   accepted even if it contains symbols, spaces, or accented characters; the
   policy checks only length, uppercase, and digit requirements.
+- **Password above the maximum**: a password longer than 72 characters is
+  rejected with a validation error naming the length rule; a password of
+  exactly 72 characters meeting the other rules is accepted.
 - **Simultaneous registration of the same email**: if two visitors submit the
   same email at the same moment, exactly one account is created and the other
   visitor receives a conflict outcome.
@@ -160,30 +186,34 @@ account's details.
   nothing and emits no notification.
 - **Failed user-registered notification delivery**: a new account whose
   user-registered notification cannot be delivered is not rolled back; the
-  visitor's registration succeeds, and the notification is retried
-  automatically until it is delivered, so no successful registration loses
-  its notification permanently.
+  visitor's registration succeeds, and the notification is recorded and
+  retried automatically (including across a service restart) until it is
+  delivered, so no successful registration loses its notification permanently.
+  Duplicate deliveries of the same logical event are tolerated by consumers.
 - **Rejected attempt does not leak account existence beyond the conflict
   code**: conflict responses reveal only that an account exists for that
   email, not the stored email, creation date, or any profile data.
-- **Rate-limited visitor**: a visitor who submits more than 5 registration
-  attempts within 15 minutes is temporarily locked out for 30 minutes and
-  cannot submit further attempts until the lockout expires; the lockout
-  applies per-visitor, not globally.
+- **Rate-limited visitor**: the first five registration attempts within 15
+  minutes are allowed; a visitor who makes a sixth attempt in that window is
+  temporarily locked out for 30 minutes and cannot submit further attempts
+  until the lockout expires; the lockout applies per-visitor, not globally.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
 - **FR-001**: The system MUST accept a registration request consisting of an
-  email address and a password, and MUST treat the email case-insensitively
-  when comparing against existing accounts and when keeping the email on
-  record.
+  email address and a password, and MUST normalize the email by trimming
+  surrounding whitespace and applying case-insensitive normalization before
+  validating its format, checking uniqueness against existing accounts, and
+  storing it. The normalized form MUST be what is stored and compared.
 - **FR-002**: The system MUST reject a registration whose email is not a
   well-formed address, and MUST name the email-format rule that was
   violated in the validation outcome.
-- **FR-003**: The system MUST reject a registration whose password is shorter
-  than 8 characters, contains no uppercase letter, or contains no numeric
+- **FR-003**: The system MUST accept a password of 8 through 72 characters
+  (inclusive) that contains at least one uppercase letter and at least one
+  numeric digit. It MUST reject a password shorter than 8 characters, longer
+  than 72 characters, containing no uppercase letter, or containing no numeric
   digit, and MUST name the violated password rule in the validation outcome.
 - **FR-004**: The system MUST reject a registration whose normalized email is
   already registered, with a conflict outcome that carries a standard error
@@ -200,20 +230,24 @@ account's details.
   user's identifier so the visitor can proceed to sign in.
 - **FR-008**: The system MUST reject two simultaneous registrations of the
   same normalized email so that at most one account exists for any email.
-- **FR-009**: On every successful registration, the system MUST emit an
-  internal user-registered notification that carries the new user's
-  identifier, the normalized email, and the assigned role. A notification
-  delivery failure MUST NOT block or roll back the registration; the
-  notification MUST be retried automatically until it is delivered.
+- **FR-009**: On every successful registration, the system MUST emit exactly
+  one logical internal user-registered notification that carries the new
+  user's identifier, the normalized email, and the assigned role. A
+  notification delivery failure MUST NOT block or roll back the registration;
+  the notification MUST be recorded so delivery resumes after a service
+  restart and MUST be retried automatically until delivered. "Exactly one"
+  means one logical event per registration; downstream consumers MUST tolerate
+  rare duplicate deliveries of the same logical event.
 - **FR-010**: The system MUST NOT emit a user-registered notification, nor
   create any account, for a rejected registration attempt.
 - **FR-011**: The system MUST apply a per-visitor limit on registration
-  attempts: a visitor who submits more than 5 registration attempts within 15
-  minutes MUST be temporarily locked out for 30 minutes from submitting
-  further attempts. The lockout MUST apply per visitor and MUST NOT slow down
-  or lock out other visitors. A submission while locked out MUST be rejected
-  with an outcome that states the visitor is rate-limited, without revealing
-  how much lockout time remains.
+  attempts: the first five registration attempts within any 15-minute window
+  MUST be allowed, and from the sixth attempt onward the visitor MUST be
+  temporarily locked out for 30 minutes from submitting further attempts. The
+  lockout MUST apply per visitor and MUST NOT slow down or lock out other
+  visitors. A submission while locked out MUST be rejected with an outcome that
+  states the visitor is rate-limited, without revealing how much lockout time
+  remains.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -243,12 +277,15 @@ account's details.
 - **SC-003**: No email, in any letter case, appears more than once among
   registered accounts; every conflicting duplicate submission is rejected
   with the conflict outcome.
-- **SC-004**: 100% of rejected attempts are met with an outcome that names
-  the specific violated rule (email format, password length, uppercase,
-  digit, or duplicate email) and reveals no existing account's details.
-- **SC-005**: 100% of successful registrations produce exactly one
-  user-registered notification carrying the identifier, normalized email,
-  and role.
+- **SC-004**: 100% of validation failures and duplicate-email conflicts are
+  met with an outcome that names the specific violated rule (email format,
+  password length, uppercase, digit, or duplicate email) and reveals no
+  existing account's details. Rate-limited, malformed-request, and unexpected
+  rejection outcomes use their own standard codes and messages instead.
+- **SC-005**: 100% of successful registrations produce exactly one logical
+  user-registered notification carrying the identifier, normalized email, and
+  role; a restart before delivery does not lose it, and duplicate deliveries
+  of the same logical event do not cause duplicate downstream effects.
 - **SC-006**: A reviewer auditing stored account data finds no plaintext
   password for any registered user, across all outcomes (success,
   validation failure, or conflict).
@@ -264,10 +301,11 @@ account's details.
   assigns any other role.
 - Profile fields (native language, learning goals, timezone, avatar URL)
   are filled in by a later feature; they stay unset at registration.
-- A single user-registered notification is emitted once per successful
-  registration, not once per rejected attempt; delivery is best-effort with
-  retries, so a temporary notification failure does not prevent the
-  registration from succeeding.
+- A single logical user-registered notification is emitted once per successful
+  registration, not once per rejected attempt; it is recorded and retried
+  until delivered, including after a service restart, so a temporary
+  notification failure does not prevent the registration from succeeding.
+  Downstream consumers tolerate rare duplicate deliveries.
 - The visitor receives only the user identifier on success; no credentials,
   email address, or profile data are returned.
 - Simultaneous duplicate submissions are a rare but real case; the system

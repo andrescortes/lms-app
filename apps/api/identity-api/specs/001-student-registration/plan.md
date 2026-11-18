@@ -8,15 +8,19 @@ plan-phase design input supplied with the `/speckit.plan` invocation.
 ## Summary
 
 Register a visitor as a `STUDENT` through `POST /api/identity/auth/register`. The handler
-stays thin: it decodes a JSON DTO and delegates to `RegisterUserUseCase.Execute`, which
-normalizes and validates the email, enforces the password policy, hashes the password with
-bcrypt, and atomically inserts a `users` row plus an empty `profiles` row inside one explicit
-`*sql.Tx` built from `sqlc`-generated queries. A successful registration emits an in-process
-`UserRegistered` event to downstream hooks via a best-effort, retrying publisher; failures of
-that publisher never roll back the account. Duplicate normalized emails (case-insensitive) map
-to a `409` conflict; validation failures map to `422`, malformed input to `400`, and an exceeded
-per-visitor attempt budget to `429`. Configuration comes from environment variables; dependency
-wiring is manual constructor injection in `cmd/api/main.go`.
+stays thin: it decodes a JSON DTO and delegates to `RegisterUserUseCase.Execute`, which trims
+and case-normalizes the email, enforces the 8–72-character password policy, hashes the password
+with bcrypt, and atomically inserts a `users` row plus an empty `profiles` row inside one explicit
+`*sql.Tx` built from `sqlc`-generated queries. A successful registration records one logical
+`UserRegistered` event in SQLite (durable outbox) and dispatches it to in-process downstream
+hooks; delivery is retried and resumes after a service restart, and duplicate deliveries of the
+same logical event do not cause duplicate downstream effects. Dispatch failures never roll back
+the account. Duplicate normalized emails (case-insensitive) map to a `409` conflict; validation
+failures (email format, password length/uppercase/digit) map to `422` and name the specific rule,
+malformed input to `400`, and an exceeded per-visitor attempt budget to `429` (sixth attempt in a
+15-minute window; other rejection outcomes use their own standard codes/messages). Configuration
+comes from environment variables; dependency wiring is manual constructor injection in
+`cmd/api/main.go`.
 
 The service is greenfield: no `go.work`, `go.mod`, `sqlc.yaml`, `goose` migrations, or
 `ci-identity.yml` exists yet. Those are created as part of implementation; this plan is the
@@ -37,12 +41,15 @@ Constitution Check and Complexity Tracking below for the required ADR follow-up.
 
 **Storage**: Isolated SQLite 3 database via pure-Go `modernc.org/sqlite`. Default
 `DB_PATH=./data/identity.db`. DSN enables WAL, `synchronous=NORMAL`, `foreign_keys=ON`,
-`busy_timeout=5000`, and `cache_size=-64000`; `SetMaxOpenConns(1)` serializes v1 access.
+`busy_timeout=5000`, and `cache_size=-64000`; `SetMaxOpenConns(1)` serializes v1 access. The
+`registration_events` outbox table stores one logical `UserRegistered` event per registration
+for restart-safe delivery.
 
 **Testing**: `go test -race ./...`; table-driven unit tests with fakes for the use case and
 domain; `net/http/httptest` handler tests; SQLite integration tests on `:memory:` with `goose`
-migrations applied, covering atomic rollback and duplicate-email conflict. `golangci-lint run`
-and a clean `sqlc generate` (no drift) are part of the verification gate.
+migrations applied, covering atomic rollback, duplicate-email conflict, outbox record creation,
+restart-safe redelivery, and duplicate-event idempotency at consumers. `golangci-lint run` and a
+clean `sqlc generate` (no drift) are part of the verification gate.
 
 **Target Platform**: Linux container/server, single-instance v1, `CGO_ENABLED=0`.
 
@@ -56,9 +63,10 @@ interfaces; manual dependency injection (no reflection DI); OpenAPI contract def
 handlers; no raw SQL in handlers or use cases; no hardcoded secrets, keys, or paths; no new
 third-party dependency without an ADR.
 
-**Scale/Scope**: Single instance for v1. In-process event hooks and in-process per-visitor
-lockout state; no external broker or shared rate-limit store. A durable outbox and a
-distributed rate limiter are explicitly deferred (see [research.md](./research.md)).
+**Scale/Scope**: Single instance for v1. Durable outbox table plus in-process hooks for event
+delivery (no external broker); in-process per-visitor lockout state; no shared rate-limit store.
+A distributed rate limiter and an external broker remain explicitly deferred
+(see [research.md](./research.md)).
 
 ## Constitution Check
 
@@ -76,12 +84,14 @@ distributed rate limiter are explicitly deferred (see [research.md](./research.m
 The violation does not block design because it affects test ergonomics only, not architecture or
 runtime behavior. It must be resolved before implementation begins.
 
-**Post-design re-check (Phase 1 complete)**: PASS with the same tracked violation. No new
-violations were introduced by the research or contract design. The two design decisions that
-could have created violations were resolved as follows: (a) UUID generation uses
-`crypto/rand` from the standard library, so no UUID dependency is introduced; (b) the
-per-visitor lockout is an in-process middleware rather than a new dependency, and `httprate`
-remains an approved-stack option documented in research.
+**Post-design re-check (Phase 1 complete; clarifications applied)**: PASS with the same tracked
+violation. No new violations were introduced by the research, contract design, or the 2026-11-18
+clarifications. The design decisions that could have created violations were resolved as follows:
+(a) UUID generation uses `crypto/rand` from the standard library, so no UUID dependency is
+introduced; (b) the per-visitor lockout is an in-process middleware rather than a new dependency,
+and `httprate` remains an approved-stack option documented in research; (c) restart-safe event
+delivery uses a SQLite outbox table and in-process hooks only — no external broker or new
+dependency — so Principle V remains unaffected.
 
 ## Project Structure
 
@@ -133,14 +143,18 @@ services/
     │       ├── sqlite/                     # DB init + repository adapter over sqlc queries
     │       │   ├── db.go                   # SQLite connection initializer
     │       │   └── registration_store.go   # atomic RegisterUser transaction
-    │       └── security/
-    │           └── bcrypt_hasher.go        # BcryptHasher implements PasswordHasher
+    │       ├── security/
+    │       │   └── bcrypt_hasher.go        # BcryptHasher implements PasswordHasher
+    │       └── event/                      # in-process hooks + outbox retry worker
+    │           └── publisher.go            # DomainEventPublisher; restart-safe redelivery
     ├── db/
     │   ├── migrations/
-    │   │   └── 00001_create_users_and_profiles.sql   # goose Up/Down
+    │   │   ├── 00001_create_users_and_profiles.sql   # goose Up/Down
+    │   │   └── 00002_create_registration_events.sql  # outbox (human-reviewed)
     │   └── queries/
-    │       └── users.sql                   # CreateUser :one, GetUserByEmail :one,
-    │                                       # CreateProfile :exec
+    │       ├── users.sql                   # CreateUser :one, GetUserByEmail :one,
+    │       │                               # CreateProfile :exec
+    │       └── events.sql                  # CreateEvent, ListPending, MarkDelivered
     ├── sqlc.yaml                           # engine: sqlite; schema: db/migrations;
     │                                       # queries: db/queries
     ├── contracts/

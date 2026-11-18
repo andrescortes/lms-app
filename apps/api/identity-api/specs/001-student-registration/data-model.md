@@ -54,14 +54,20 @@ transaction. The profile is empty at registration and populated by a later featu
 | Role | Role | Role assigned at registration (`STUDENT`). |
 | OccurredAt | time.Time | UTC timestamp from the injected `Clock`. |
 
-Emitted to the in-process `DomainEventPublisher` after the transaction commits. Delivery is
-best-effort with automatic retries; delivery failure never fails the registration.
+Exactly one logical event is recorded per successful registration (outbox row written inside
+the commit boundary) and dispatched to in-process hooks via `DomainEventPublisher`. Delivery is
+retried automatically and resumes after a service restart; a delivery failure never fails or
+rolls back the registration. "Exactly one" is one logical event, not one dispatch attempt:
+consumers MUST tolerate rare duplicate deliveries of the same event without duplicate effects.
 
 ### RegistrationAttempt (transient, not persisted)
 
 - Holds the raw request DTO (`email`, `password`, optional `displayName`) and the derived
   visitor key used by the rate-limit middleware. Exists only for the duration of the request.
 - The per-visitor lockout state is held in process by `visitor_limit.go`, not in the database.
+  The first five attempts in a 15-minute window are allowed; the sixth attempt starts a
+  30-minute lockout, and lockout responses reveal no remaining time (spec clarification
+  2026-11-18).
 
 ## Validation Rules
 
@@ -72,11 +78,14 @@ best-effort with automatic retries; delivery failure never fails the registratio
     with non-empty labels, no whitespace, and a conservative allowed character set. Use a
     package-level compiled `regexp` (compile once). This is intentionally stricter than full
     RFC 5322 to keep validation predictable and testable.
-  - Surrounding whitespace is trimmed as normalization; an email that is malformed after trim is
-    rejected. The spec's "trailing spaces fail validation" edge case is satisfied by rejecting
-    any address that is not well-formed after normalization.
+  - Surrounding whitespace is trimmed as normalization; a well-formed address with leading or
+    trailing spaces is accepted once trimmed, and an address still malformed after trimming is
+    rejected (spec clarification 2026-11-18).
 - **Password** (`domain.ValidatePasswordPolicy`, sentinel `ErrWeakPassword`):
-  - Minimum 8 characters (counted as characters/runes, not bytes).
+  - Length 8 through 72 characters inclusive (counted as characters/runes, not bytes); shorter
+    and longer values are rejected with the length rule named in the validation outcome
+    (spec clarification 2026-11-18). The 72-character maximum keeps every accepted password
+    within bcrypt's 72-byte input limit.
   - At least one uppercase letter and at least one digit.
   - No other restrictions (symbols, spaces, and accented characters are allowed).
   - The plaintext password is never stored, logged, returned, or included in an event; only its
@@ -109,12 +118,26 @@ profiles
   timezone        TEXT NULL
   avatar_url      TEXT NULL
 
--- Both tables use STRICT mode. Timestamps are ISO-8601 UTC TEXT.
--- Down migration drops profiles before users (foreign-key dependency order).
+registration_events            -- durable outbox; one logical event per registration
+  id              TEXT PRIMARY KEY NOT NULL          -- stable logical event id
+  event_type      TEXT NOT NULL                     -- 'UserRegistered'
+  payload         TEXT NOT NULL                     -- JSON: userID, email, role, occurredAt
+  status          TEXT NOT NULL                     -- pending | delivered
+  attempts        INTEGER NOT NULL DEFAULT 0
+  created_at      TEXT NOT NULL                     -- ISO-8601 UTC
+  delivered_at    TEXT NULL
+
+-- All tables use STRICT mode. Timestamps are ISO-8601 UTC TEXT.
+-- Down migration drops profiles before users (foreign-key dependency order); drops
+-- registration_events independently.
 ```
 
-The schema is a design specification only; the migration SQL must be human-reviewed before
-`goose` applies it, per the database skill's schema-review guidance.
+The event row is written in the same transaction as the `users` and `profiles` inserts so a
+registration cannot commit without its outbox record. A retry worker claims `pending` rows,
+invokes in-process hooks, and marks rows `delivered`; on startup it reprocesses any `pending`
+rows, giving restart-safe delivery. Consumers use the stable event `id` to tolerate duplicate
+deliveries. This outbox is a design specification only; the migration SQL must be human-reviewed
+before `goose` applies it, per the database skill's schema-review guidance.
 
 ## sqlc Queries (db/queries/users.sql)
 
@@ -123,20 +146,26 @@ The schema is a design specification only; the migration SQL must be human-revie
 | `CreateUser` | `:one` | Insert a user row and return the generated row (used inside the transaction). |
 | `GetUserByEmail` | `:one` | Look up a normalized email; supports duplicate-check tests and later login flows. The UNIQUE constraint remains authoritative for concurrency. |
 | `CreateProfile` | `:exec` | Insert the empty profile row inside the same transaction. |
+| `CreateEvent` | `:exec` | Insert the `UserRegistered` outbox row inside the same transaction (logical event id). |
+| `ListPendingEvents` | `:many` | Claim `pending` outbox rows for delivery/retry, including after startup. |
+| `MarkEventDelivered` | `:exec` | Mark one outbox row `delivered` after successful hook dispatch. |
 
-Generated query code is bound to the transaction with `Queries.WithTx(tx)` in the SQLite
-adapter. No handwritten SQL appears in handlers or use cases.
+Queries live in `db/queries/users.sql` and `db/queries/events.sql`. Generated query code is bound
+to the transaction with `Queries.WithTx(tx)` in the SQLite adapter. No handwritten SQL appears in
+handlers or use cases.
 
 ## Error-to-Response Mapping (HTTP adapter)
 
 | Cause | HTTP | Error `code` | Detail disclosure |
 |-------|------|--------------|-------------------|
 | `domain.ErrInvalidEmail` | 422 | `validation_error` | Names the email format rule only |
-| `domain.ErrWeakPassword` | 422 | `validation_error` | Names the violated password rule only |
+| `domain.ErrWeakPassword` | 422 | `validation_error` | Names the violated password rule (length, uppercase, or digit) |
 | `domain.ErrEmailAlreadyExists` | 409 | `email_already_exists` | No existing-account details |
-| Malformed JSON / unknown fields | 400 | `invalid_request` | Generic parse guidance |
+| Malformed JSON / unknown fields | 400 | `invalid_request` | Generic parse guidance; no specific rule required |
 | Visitor lockout | 429 | `rate_limited` | Fixed message; no remaining time, no `Retry-After` |
 | Unexpected error | 500 | `internal_error` | Generic message; details logged server-side |
 
-All non-2xx responses use the single `respondError` envelope
-`{"code","message","timestamp","path"}` defined in the OpenAPI contract.
+Only validation failures and duplicate-email conflicts name the specific violated rule
+(SC-004 scope, 2026-11-18 clarification); rate-limited, malformed-request, and unexpected
+outcomes use their own standard codes and messages. All non-2xx responses use the single
+`respondError` envelope `{"code","message","timestamp","path"}` defined in the OpenAPI contract.

@@ -35,6 +35,10 @@
   functional outcome classes (success confirmation, conflict, validation) so
   the spec stays implementation-agnostic; concrete outcome values are a
   planning decision.
+- The source requirement's `201`/`409`/`400`/`422` outcomes are expressed as
+  functional outcome classes (success confirmation, conflict, validation) so
+  the spec stays implementation-agnostic; concrete outcome values are a
+  planning decision.
 - No clarification questions were needed: the requirement text is explicit on
   scope, rules, and outcomes, and remaining gaps (no email verification,
   student role only, empty profile) were resolved with documented defaults in
