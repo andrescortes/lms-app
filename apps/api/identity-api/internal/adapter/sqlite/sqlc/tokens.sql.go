@@ -72,6 +72,22 @@ func (q *Queries) InsertRefreshToken(ctx context.Context, arg InsertRefreshToken
 	return err
 }
 
+const revokeAllRefreshTokensForUser = `-- name: RevokeAllRefreshTokensForUser :exec
+UPDATE refresh_tokens
+SET revoked_at = ?
+WHERE user_id = ? AND revoked_at IS NULL
+`
+
+type RevokeAllRefreshTokensForUserParams struct {
+	RevokedAt interface{} `json:"revoked_at"`
+	UserID    string      `json:"user_id"`
+}
+
+func (q *Queries) RevokeAllRefreshTokensForUser(ctx context.Context, arg RevokeAllRefreshTokensForUserParams) error {
+	_, err := q.db.ExecContext(ctx, revokeAllRefreshTokensForUser, arg.RevokedAt, arg.UserID)
+	return err
+}
+
 const revokeRefreshToken = `-- name: RevokeRefreshToken :exec
 UPDATE refresh_tokens
 SET revoked_at = ?

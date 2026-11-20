@@ -26,6 +26,9 @@ import (
 	"lms-english/identity-service/internal/usecase"
 )
 
+// accessTokenTTL is the access token lifetime issued at sign-in and refreshed.
+const accessTokenTTL = 15 * time.Minute
+
 // config holds runtime configuration loaded from the environment.
 type config struct {
 	env       string
@@ -103,18 +106,17 @@ func run() error {
 	}
 	go runEventWorker(ctx, publisher, logger)
 
-	loginUc := usecase.NewLoginUserUseCase(
-		adaptersqlite.NewUserRepository(db),
-		hasher,
-		security.NewJwtTokenProvider(cfg.jwtSecret, 15*time.Minute),
-		adaptersqlite.NewRefreshTokenRepository(db),
-		ids,
-		clock,
-	)
+	// One instance per adapter, shared by every use case that needs it.
+	users := adaptersqlite.NewUserRepository(db)
+	refreshTokens := adaptersqlite.NewRefreshTokenRepository(db)
+	tokens := security.NewJwtTokenProvider(cfg.jwtSecret, accessTokenTTL)
+
+	loginUc := usecase.NewLoginUserUseCase(users, hasher, tokens, refreshTokens, ids, clock)
 	uc := usecase.NewRegisterUserUseCase(store, hasher, ids, clock, publisher)
+	refreshUc := usecase.NewRefreshTokenUseCase(users, tokens, refreshTokens, ids, clock)
 
 	limiter := adapterhttp.NewVisitorLimiter()
-	router := adapterhttp.NewRouter(uc, loginUc, limiter, logger)
+	router := adapterhttp.NewRouter(uc, loginUc, refreshUc, limiter, logger)
 
 	srv := &http.Server{
 		Addr:              ":" + cfg.httpPort,

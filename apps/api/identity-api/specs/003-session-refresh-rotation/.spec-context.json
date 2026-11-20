@@ -1,0 +1,613 @@
+{
+  "workflow": "companion",
+  "specName": "Session Refresh Rotation (CU-AUTH-03 / HU-03)",
+  "branch": "feature/identity-api",
+  "currentStep": "converge",
+  "status": "completed",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:25:05.532Z"
+    },
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T00:25:28.250Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:25:30.851Z"
+    },
+    {
+      "step": "plan",
+      "substep": "research",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:26:02.791Z"
+    },
+    {
+      "step": "plan",
+      "substep": "design",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:26:02.985Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:26:03.230Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:26:05.309Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:26:29.800Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:26:33.091Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T001",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:33.712Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T002",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:33.712Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T003",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:33.720Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T004",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:33.720Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T005",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:33.928Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T006",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:33.929Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T007",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:33.929Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T008",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.142Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T009",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.142Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T010",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.143Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T011",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.143Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T012",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.370Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T013",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.371Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T014",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.371Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T015",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.594Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T016",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.595Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:30:34.671Z"
+    },
+    {
+      "step": "converge",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:30:43.978Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T017",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:31:31.460Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T018",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:31:31.461Z"
+    },
+    {
+      "step": "converge",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T00:32:23.328Z"
+    }
+  ],
+  "unattended": true,
+  "request": "Implement Session Refresh Rotation (CU-AUTH-03 / HU-03) at POST /api/identity/auth/refresh. Load and apply `.agents/skills/*/SKILL.md` and follow constitution rules:\n1. Domain (`internal/domain`, stdlib only): ensure `ErrInvalidToken` is used for malformed, expired, or revoked refresh tokens.\n2. Security Adapter (`internal/adapter/security/jwt_provider.go`): implement `Verify` using `github.com/golang-jwt/jwt/v5` restricted with `jwt.WithValidMethods([]string{\"HS256\"})`, validating signature and `exp`, and returning `domain.ErrInvalidToken` on any failure.\n3. Database (`db/queries/refresh_tokens.sql` + `sqlc generate`): add queries to fetch a refresh token record by `jti`, revoke a single token, revoke all active refresh tokens for a `user_id`, and insert a rotated refresh token. Keep compatibility with the existing `refresh_tokens` migration schema.\n4. SQLite Adapter (`internal/adapter/sqlite/refresh_token_store.go`): implement atomic refresh rotation inside `*sql.Tx`â€”when an active, unexpired token is presented, revoke it and insert the new 7-day token; when an already-revoked token is reused (CA2), revoke all refresh tokens for that `user_id` and return `domain.ErrInvalidToken`.\n5. Use Case (`internal/usecase/refresh_token.go`): implement `RefreshTokenUseCase.Execute(ctx, RefreshCommand{RefreshToken}) (AuthResult, error)` verifying the incoming token, loading the user (`UserRepository`), rotating the refresh token, and issuing a new 15-minute `accessToken` (`sub` and `role` claims) + new 7-day `refreshToken`.\n6. HTTP, OpenAPI & Wiring: expose `POST /api/identity/auth/refresh` accepting `{\"refreshToken\": \"...\"}` and returning `200 OK` with `{\"accessToken\": \"...\", \"refreshToken\": \"...\"}`; apply `github.com/go-chi/httprate` rate limiting (10 attempts/min/IP -> `429`); map `domain.ErrInvalidToken` -> `401` (`INVALID_TOKEN`) in `respondError`; update `contracts/identity.openapi.yaml` and `shared/contracts/identity.openapi.yaml`; wire `RefreshTokenUseCase` in `cmd/api/main.go`.\n7. Tests (stdlib `testing`): add unit tests for `RefreshTokenUseCase` (valid rotation, expired token, revoked token reuse revoking the entire user token chain), `:memory:` SQLite integration tests for atomic rotation and chain revocation, and `httptest` handler tests covering `200`, `400`, `401`, and `429`.",
+  "context": [
+    "area: internal/usecase (login_user.go, ports.go)",
+    "area: internal/adapter/sqlite (refresh_token_store.go, user_repository.go)",
+    "constraint: constitution mandates jwt/v5 with pinned HS256 and httprate for rate limits"
+  ],
+  "coverage": {
+    "FR-001": {
+      "title": "Refresh returns a new 15m access token and 7d refresh token",
+      "tasks": [
+        "T005",
+        "T007"
+      ],
+      "tests": [
+        "internal/adapter/http/refresh_handler_test.go::TestRefreshSuccessReturnsNewPair"
+      ]
+    },
+    "FR-002": {
+      "title": "The presented refresh token is revoked on use",
+      "tasks": [
+        "T006"
+      ],
+      "tests": [
+        "internal/adapter/sqlite/refresh_store_test.go::TestRotateReplacesActiveToken"
+      ]
+    },
+    "FR-003": {
+      "title": "Malformed, expired, and unknown tokens return 401 INVALID_TOKEN",
+      "tasks": [
+        "T008",
+        "T009"
+      ],
+      "tests": [
+        "internal/adapter/http/refresh_handler_test.go::TestRefreshSpentTokenReturnsInvalidToken"
+      ]
+    },
+    "FR-004": {
+      "title": "Replaying a revoked token revokes the whole chain for that user",
+      "tasks": [
+        "T010",
+        "T011"
+      ],
+      "tests": [
+        "internal/adapter/sqlite/refresh_store_test.go::TestRotateRefusesSpentTokenAndRevokesChain"
+      ]
+    },
+    "FR-005": {
+      "title": "Rotation is atomic: revoke and insert together or not at all",
+      "tasks": [
+        "T006"
+      ]
+    },
+    "FR-006": {
+      "title": "Refresh attempts are limited to 10 per minute per IP",
+      "tasks": [
+        "T012",
+        "T013"
+      ],
+      "tests": [
+        "internal/adapter/http/refresh_handler_test.go::TestRefreshRateLimitReturns429"
+      ]
+    }
+  },
+  "classification": {
+    "projectedFiles": 11,
+    "projectedTasks": 14,
+    "scopeSignal": "none",
+    "verdict": "normal"
+  },
+  "intent": "Add POST /api/identity/auth/refresh with atomic rotation, reuse detection that revokes the whole chain, and a per-IP rate limit.",
+  "size": "normal",
+  "source": "CU-AUTH-03",
+  "decisions": [
+    {
+      "decision": "Revoked refresh rows are kept with revoked_at set, never deleted.",
+      "why": "Reuse detection needs to tell a spent token from a never-issued one; deleting erases the signal.",
+      "rejected": "Delete the row on revoke",
+      "by": "agent",
+      "at": "2026-11-20T00:26:00.137Z"
+    },
+    {
+      "decision": "The transaction lives in one repository method, Rotate, over *sql.Tx.",
+      "why": "The adapter owns persistence; the use case should not orchestrate a transaction across calls.",
+      "rejected": "A TxManager port with several repository calls",
+      "by": "agent",
+      "at": "2026-11-20T00:26:00.137Z"
+    },
+    {
+      "decision": "The refresh token stays the opaque random string from login; the new Verify covers access tokens and is not on the refresh path.",
+      "why": "Login already stores the SHA-256 hash; rotation looks it up by hash and checks expiry and revocation.",
+      "rejected": "Make the refresh token a signed JWT",
+      "by": "agent",
+      "at": "2026-11-20T00:26:00.137Z"
+    },
+    {
+      "decision": "Refresh gets its own httprate bucket separate from sign-in.",
+      "why": "A shared limiter would let refresh attempts spend the sign-in budget.",
+      "rejected": "Reuse the login limiter instance",
+      "by": "agent",
+      "at": "2026-11-20T00:26:00.137Z"
+    }
+  ],
+  "step_summaries": {
+    "plan": {
+      "summary": "Plan: one Rotate method over a transaction, revoked rows kept for reuse detection, opaque refresh tokens.",
+      "key_finding": "Reuse detection only works if revoked rows survive; deletion would silently disable FR-004."
+    },
+    "tasks": {
+      "summary": "16 tasks across Setup, Foundational, US1 (MVP), US2, US3, US4, Polish."
+    },
+    "implement": {
+      "summary": "POST /api/identity/auth/refresh with atomic rotation, chain revocation on replay, INVALID_TOKEN mapping, and a separate rate-limit bucket."
+    },
+    "specify": {
+      "summary": "Converge appended T017-T018 (jti generation moved to the use case, adapters shared) and both are built; all 18 tasks pass."
+    }
+  },
+  "approach": "Add a RefreshTokenUseCase over a Rotate port; the SQLite adapter performs lookup, expiry and reuse checks plus revoke-and-insert inside *sql.Tx; the handler reuses the existing limiter shape and error envelope.",
+  "verified": [
+    {
+      "what": "test",
+      "command": "GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go test ./...",
+      "source": "derived",
+      "exitCode": 1,
+      "durationSeconds": 0.0,
+      "result": "'GOWORK' is not recognized as an internal or external command, · operable program or batch file.",
+      "warnings": [
+        "exited 1"
+      ],
+      "commit": "bd61ebf",
+      "tree": "cf8a057c223b8469e2c06c21cf5843079179b297"
+    },
+    {
+      "what": "lint",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && export GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work && golangci-lint run\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "0 issues.",
+      "commit": "bd61ebf",
+      "tree": "ce7885de9d9ab86097d3160749b4aa2032f1654e"
+    },
+    {
+      "what": "build",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && export GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work && CGO_ENABLED=0 go build ./cmd/api\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "no output",
+      "commit": "bd61ebf",
+      "tree": "7c9ccaaed80d4d1e63cb9b820f4fe08fb70e5f31"
+    },
+    {
+      "what": "unit-tests",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && export GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work && go test ./...\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.6,
+      "result": "?   \tlms-english/identity-service/internal/adapter/sqlite/sqlc\t[no test files] · ok  \tlms-english/identity-service/internal/domain\t(cached) · ok  \tlms-english/identity-service/internal/usecase\t(cached)",
+      "commit": "bd61ebf",
+      "tree": "361dc64c22485782739b46e24aa90cf000137391"
+    },
+    {
+      "what": "sqlc-drift",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && export GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work && sqlc generate && git status --porcelain -- internal/adapter/sqlite/sqlc\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.1,
+      "result": "M apps/api/identity-api/internal/adapter/sqlite/sqlc/tokens.sql.go ·  M apps/api/identity-api/internal/adapter/sqlite/sqlc/users.sql.go",
+      "commit": "bd61ebf",
+      "tree": "0dca852033841ab532c87a22947acc67c498ef43"
+    },
+    {
+      "what": "sqlc-no-drift",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && export GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work && sha1sum internal/adapter/sqlite/sqlc/*.go > /tmp/b.sha && sqlc generate && sha1sum -c /tmp/b.sha --quiet\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.1,
+      "result": "no output",
+      "commit": "bd61ebf",
+      "tree": "11c2fbeba5a5cd9391049d14072deeb4123d81df"
+    }
+  ],
+  "currentTask": null,
+  "task_summaries": {
+    "T001": {
+      "status": "DONE",
+      "did": "Contract synced, rotation queries, sqlc generate, Rotate port",
+      "files": [
+        "db/queries/tokens.sql",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go"
+      ]
+    },
+    "T002": {
+      "status": "DONE",
+      "did": "Contract synced, rotation queries, sqlc generate, Rotate port",
+      "files": [
+        "db/queries/tokens.sql",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go"
+      ]
+    },
+    "T003": {
+      "status": "DONE",
+      "did": "Contract synced, rotation queries, sqlc generate, Rotate port",
+      "files": [
+        "db/queries/tokens.sql",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go"
+      ]
+    },
+    "T004": {
+      "status": "DONE",
+      "did": "Contract synced, rotation queries, sqlc generate, Rotate port",
+      "files": [
+        "db/queries/tokens.sql",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go"
+      ]
+    },
+    "T005": {
+      "status": "DONE",
+      "did": "Rotation use case, atomic Rotate in SQLite, tests",
+      "files": [
+        "internal/usecase/refresh_token.go",
+        "internal/usecase/refresh_token_test.go",
+        "internal/adapter/sqlite/refresh_token_store.go"
+      ]
+    },
+    "T006": {
+      "status": "DONE",
+      "did": "Rotation use case, atomic Rotate in SQLite, tests",
+      "files": [
+        "internal/usecase/refresh_token.go",
+        "internal/usecase/refresh_token_test.go",
+        "internal/adapter/sqlite/refresh_token_store.go"
+      ]
+    },
+    "T007": {
+      "status": "DONE",
+      "did": "Rotation use case, atomic Rotate in SQLite, tests",
+      "files": [
+        "internal/usecase/refresh_token.go",
+        "internal/usecase/refresh_token_test.go",
+        "internal/adapter/sqlite/refresh_token_store.go"
+      ]
+    },
+    "T008": {
+      "status": "DONE",
+      "did": "Store tests for expiry and replay chain revocation; INVALID_TOKEN mapping",
+      "files": [
+        "internal/adapter/sqlite/refresh_store_test.go",
+        "internal/adapter/http/respond_error.go"
+      ]
+    },
+    "T009": {
+      "status": "DONE",
+      "did": "Store tests for expiry and replay chain revocation; INVALID_TOKEN mapping",
+      "files": [
+        "internal/adapter/sqlite/refresh_store_test.go",
+        "internal/adapter/http/respond_error.go"
+      ]
+    },
+    "T010": {
+      "status": "DONE",
+      "did": "Store tests for expiry and replay chain revocation; INVALID_TOKEN mapping",
+      "files": [
+        "internal/adapter/sqlite/refresh_store_test.go",
+        "internal/adapter/http/respond_error.go"
+      ]
+    },
+    "T011": {
+      "status": "DONE",
+      "did": "Store tests for expiry and replay chain revocation; INVALID_TOKEN mapping",
+      "files": [
+        "internal/adapter/sqlite/refresh_store_test.go",
+        "internal/adapter/http/respond_error.go"
+      ]
+    },
+    "T012": {
+      "status": "DONE",
+      "did": "Refresh handler, route with httprate, wiring",
+      "files": [
+        "internal/adapter/http/refresh_handler.go",
+        "internal/adapter/http/refresh_handler_test.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T013": {
+      "status": "DONE",
+      "did": "Refresh handler, route with httprate, wiring",
+      "files": [
+        "internal/adapter/http/refresh_handler.go",
+        "internal/adapter/http/refresh_handler_test.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T014": {
+      "status": "DONE",
+      "did": "Refresh handler, route with httprate, wiring",
+      "files": [
+        "internal/adapter/http/refresh_handler.go",
+        "internal/adapter/http/refresh_handler_test.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T015": {
+      "status": "DONE",
+      "did": "JWT Verify with pinned HS256 plus alg-none test; verification gate",
+      "files": [
+        "internal/adapter/security/jwt_token_provider.go",
+        "internal/adapter/security/jwt_token_provider_test.go"
+      ],
+      "wave": "T015-T016"
+    },
+    "T016": {
+      "status": "DONE",
+      "did": "JWT Verify with pinned HS256 plus alg-none test; verification gate",
+      "files": [
+        "internal/adapter/security/jwt_token_provider.go",
+        "internal/adapter/security/jwt_token_provider_test.go"
+      ],
+      "wave": "T015-T016"
+    },
+    "T017": {
+      "status": "DONE",
+      "did": "Replacement jti now comes from the use case via IDGenerator; adapters constructed once in main",
+      "files": [
+        "internal/usecase/ports.go",
+        "internal/usecase/refresh_token.go",
+        "internal/adapter/sqlite/refresh_token_store.go",
+        "cmd/api/main.go"
+      ],
+      "wave": "T017-T018"
+    },
+    "T018": {
+      "status": "DONE",
+      "did": "Replacement jti now comes from the use case via IDGenerator; adapters constructed once in main",
+      "files": [
+        "internal/usecase/ports.go",
+        "internal/usecase/refresh_token.go",
+        "internal/adapter/sqlite/refresh_token_store.go",
+        "cmd/api/main.go"
+      ],
+      "wave": "T017-T018"
+    }
+  },
+  "concerns": [
+    {
+      "note": "go test -race ./... could not run: the race detector requires cgo and no C compiler is installed here.",
+      "step": "implement"
+    }
+  ],
+  "last_action": "unit tests, lint 0 issues, build, and sqlc byte-stability all recorded green.",
+  "convergeStartedAt": "2026-11-20T00:30:44.083Z",
+  "convergePasses": [
+    {
+      "startedAt": "2026-11-20T00:30:44.202Z",
+      "by": "extension",
+      "finishedAt": "2026-11-20T00:32:23.539Z",
+      "added": [
+        "T017",
+        "T018"
+      ],
+      "completed": true
+    }
+  ]
+}

@@ -30,3 +30,8 @@ WHERE token_hash = ?;
 UPDATE refresh_tokens
 SET revoked_at = ?
 WHERE jti = ?;
+
+-- name: RevokeAllRefreshTokensForUser :exec
+UPDATE refresh_tokens
+SET revoked_at = ?
+WHERE user_id = ? AND revoked_at IS NULL;

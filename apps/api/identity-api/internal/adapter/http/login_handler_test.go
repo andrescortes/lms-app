@@ -24,6 +24,10 @@ func (f *loginStubUserRepo) FindByEmail(context.Context, string) (domain.User, e
 	return f.user, f.err
 }
 
+func (f *loginStubUserRepo) FindByID(context.Context, string) (domain.User, error) {
+	return f.user, f.err
+}
+
 type loginStubVerify struct{ err error }
 
 func (f *loginStubVerify) Verify(string, string) error { return f.err }
@@ -43,9 +47,13 @@ func (f *loginStubRefresh) Store(context.Context, string, string, string, time.T
 
 func (f *loginStubRefresh) Revoke(context.Context, string) error { return nil }
 
+func (f *loginStubRefresh) Rotate(context.Context, string, string, string, time.Time) (usecase.Rotation, error) {
+	return usecase.Rotation{}, nil
+}
+
 func newLoginRouter(t *testing.T, uc *usecase.LoginUserUseCase) http.Handler {
 	t.Helper()
-	return NewRouter(nil, uc, NewVisitorLimiter(), nil)
+	return NewRouter(nil, uc, nil, NewVisitorLimiter(), nil)
 }
 
 func postLogin(handler http.Handler, remoteAddr, body string) *httptest.ResponseRecorder {

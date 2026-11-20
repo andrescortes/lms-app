@@ -37,6 +37,18 @@ SELECT
 FROM users
 WHERE email = ?;
 
+-- name: GetUserByID :one
+SELECT
+    id,
+    email,
+    password_hash,
+    display_name,
+    role,
+    cefr_level,
+    created_at
+FROM users
+WHERE id = ?;
+
 -- name: CreateProfile :exec
 INSERT INTO profiles (
     user_id,

@@ -217,6 +217,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/identity/auth/refresh:
+    post:
+      tags:
+        - Identity
+      operationId: refreshSession
+      summary: Exchange a refresh token for a new token pair
+      description: >-
+        Revokes the presented refresh token and returns a new access token and a
+        new refresh token. A malformed, expired, unknown, or already-revoked token
+        is refused with 401 INVALID_TOKEN. Presenting an already-revoked token
+        also revokes every other active refresh token for that user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Rotated. Access token lives 15m; refresh token lives 7d.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshResponse'
+        '400':
+          description: The request body is malformed, carries unknown fields, or omits refreshToken.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: >-
+            The refresh token is malformed, expired, never issued, or already
+            revoked. The code is always INVALID_TOKEN and no tokens are returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_TOKEN
+                message: invalid token
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/auth/refresh
+        '429':
+          description: More than 10 refresh attempts in a minute from this client.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     RegisterUserRequest:
@@ -304,6 +353,29 @@ components:
           type: string
           description: >-
             Rotating refresh token, valid for 7d, persisted with a unique jti.
+    RefreshRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+          description: The refresh token issued by sign-in or a previous refresh.
+          minLength: 1
+    RefreshResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - accessToken
+        - refreshToken
+      properties:
+        accessToken:
+          type: string
+          description: Signed access token, valid for 15m, carrying the user id and role.
+        refreshToken:
+          type: string
+          description: Replacement refresh token, valid for 7d and persisted.
     ErrorResponse:
       type: object
       additionalProperties: false

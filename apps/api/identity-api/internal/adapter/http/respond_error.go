@@ -31,6 +31,7 @@ const (
 	codeForbidden       = "forbidden"
 	codeNotFound        = "not_found"
 	codeUnauthenticated = "invalid_credentials"
+	codeInvalidToken    = "INVALID_TOKEN"
 )
 
 // respondError maps a domain or transport error to the single error envelope.
@@ -63,6 +64,8 @@ func classify(err error) (int, string, string) {
 		return http.StatusConflict, codeEmailExists, "an account with this email already exists"
 	case errors.Is(err, domain.ErrInvalidCredentials):
 		return http.StatusUnauthorized, codeUnauthenticated, "invalid credentials"
+	case errors.Is(err, domain.ErrInvalidToken):
+		return http.StatusUnauthorized, codeInvalidToken, "invalid token"
 	case errors.Is(err, domain.ErrForbidden):
 		return http.StatusForbidden, codeForbidden, "forbidden"
 	case errors.Is(err, domain.ErrNotFound):

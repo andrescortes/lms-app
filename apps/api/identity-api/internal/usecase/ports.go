@@ -46,6 +46,7 @@ type (
 	// UserRepository reads and writes users outside the registration write path.
 	UserRepository interface {
 		FindByEmail(ctx context.Context, email string) (domain.User, error)
+		FindByID(ctx context.Context, id string) (domain.User, error)
 	}
 	// PasswordVerifier checks a plaintext password against a stored hash.
 	PasswordVerifier interface {
@@ -59,5 +60,32 @@ type (
 	RefreshTokenRepository interface {
 		Store(ctx context.Context, userID, jti, token string, expiresAt time.Time) error
 		Revoke(ctx context.Context, jti string) error
+		// Rotate consumes the presented refresh token and, when it is active,
+		// replaces it with the replacement token in one transaction. A token that
+		// was already spent revokes the caller's whole chain. The caller decides
+		// the replacement's jti so identifier policy stays in the application layer.
+		Rotate(ctx context.Context, presented, newJTI, replacement string, expiresAt time.Time) (Rotation, error)
 	}
 )
+
+// RotationOutcome classifies what a rotation attempt found.
+type RotationOutcome int
+
+const (
+	// RotationRotated reports an active token that was revoked and replaced.
+	RotationRotated RotationOutcome = iota + 1
+	// RotationSpent reports a token that had already been revoked. The whole
+	// chain for its user is revoked as a precaution.
+	RotationSpent
+	// RotationExpired reports a token whose lifetime had passed.
+	RotationExpired
+	// RotationUnknown reports a token the service never issued.
+	RotationUnknown
+)
+
+// Rotation reports the outcome of a rotation attempt and, when it succeeded, the
+// user whose tokens were rotated.
+type Rotation struct {
+	Outcome RotationOutcome
+	UserID  string
+}

@@ -1,0 +1,119 @@
+openapi: 3.1.0
+info:
+  title: Identity Service API - Refresh
+  version: 1.0.0
+  description: >-
+    Contract for session refresh (CU-AUTH-03 / HU-03). Covers
+    POST /api/identity/auth/refresh: rotating an unexpired, unused refresh token,
+    refusing invalid ones, and revoking the whole chain when a spent token is
+    replayed.
+servers:
+  - url: /
+tags:
+  - name: Identity
+    description: Registration and identity lifecycle operations
+paths:
+  /api/identity/auth/refresh:
+    post:
+      tags:
+        - Identity
+      operationId: refreshSession
+      summary: Exchange a refresh token for a new token pair
+      description: >-
+        Revokes the presented refresh token and returns a new access token and a
+        new refresh token. A malformed, expired, unknown, or already-revoked
+        token is refused with 401 INVALID_TOKEN. Presenting an already-revoked
+        token also revokes every other active refresh token for that user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+            example:
+              refreshToken: 3f9a7c1e8b2d4a6f...
+      responses:
+        '200':
+          description: >-
+            Rotated. The access token lives 15m and carries the user id and role;
+            the refresh token lives 7d and is persisted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshResponse'
+        '400':
+          description: The request body is malformed or contains unknown fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: >-
+            The refresh token is malformed, expired, never issued, or already
+            revoked. The code is always INVALID_TOKEN and no tokens are returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_TOKEN
+                message: invalid token
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/auth/refresh
+        '429':
+          description: >-
+            More than 10 refresh attempts in a minute from this client. No
+            Retry-After header is sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    RefreshRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+          description: The refresh token issued by sign-in or a previous refresh.
+          minLength: 1
+    RefreshResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - accessToken
+        - refreshToken
+      properties:
+        accessToken:
+          type: string
+          description: Signed access token, valid for 15m, carrying the user id and role.
+        refreshToken:
+          type: string
+          description: Replacement refresh token, valid for 7d and persisted.
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+        - timestamp
+        - path
+      properties:
+        code:
+          type: string
+          description: Stable machine-readable error code.
+          examples:
+            - INVALID_TOKEN
+        message:
+          type: string
+          description: Human-readable message. Never contains token values.
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+          examples:
+            - /api/identity/auth/refresh

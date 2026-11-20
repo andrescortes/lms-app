@@ -21,6 +21,10 @@ func (f *loginUserRepo) FindByEmail(_ context.Context, email string) (domain.Use
 	return f.user, f.err
 }
 
+func (f *loginUserRepo) FindByID(_ context.Context, _ string) (domain.User, error) {
+	return f.user, f.err
+}
+
 type loginVerify struct{ err error }
 
 func (f *loginVerify) Verify(string, string) error { return f.err }
@@ -43,6 +47,10 @@ func (f *loginRefresh) Store(context.Context, string, string, string, time.Time)
 }
 
 func (f *loginRefresh) Revoke(context.Context, string) error { return nil }
+
+func (f *loginRefresh) Rotate(context.Context, string, string, string, time.Time) (Rotation, error) {
+	return Rotation{}, nil
+}
 
 func newLoginUseCase(repo UserRepository, verify PasswordVerifier, token TokenProvider, refresh RefreshTokenRepository) *LoginUserUseCase {
 	return NewLoginUserUseCase(repo, verify, token, refresh, fakeID{}, fakeClock{})
