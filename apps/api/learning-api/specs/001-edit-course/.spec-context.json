@@ -1,0 +1,84 @@
+{
+  "workflow": "companion",
+  "specName": "Edit Course",
+  "branch": "feature/identity-api",
+  "currentStep": "specify",
+  "status": "specified",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T12:43:50.802Z"
+    },
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T12:44:44.165Z"
+    }
+  ],
+  "request": "\"Implement Edit Course (CU-CONT-02 / HU-08 CA5) at PATCH /api/learning/courses/{id}. Load and apply `.agents/skills/*/SKILL.md`, obey `.specify/memory/constitution.md`, and use Headroom MCP tools (`headroom_compress`, `headroom_retrieve`) when reading large generated files, OpenAPI specs, or verbose test outputs:\n1. Domain (`internal/domain`, stdlib only): reuse `Course` validation rules so partial metadata updates (`Title`, `Description`, `CEFRLevel`, `CoverURL`) enforce non-empty trimmed `Title` and valid `CEFRLevel` (`A1`, `A2`, `B1`, `B2`, `C1`, `C2`), returning `ErrValidation` on invalid values and `ErrNotFound` / `ErrForbidden` where appropriate.\n2. Database (`db/queries/courses.sql` + `sqlc generate`): add `GetCourseByID` and `UpdateCourse` queries against `courses` (`id`, `teacher_id`, `title`, `description`, `cefr_level`, `cover_url`, `status`, `created_at`) and run `sqlc generate`.\n3. SQLite Adapter (`internal/adapter/sqlite/course_store.go`): implement `GetByID(ctx, courseID) (domain.Course, error)` (mapping `sql.ErrNoRows` to `domain.ErrNotFound`) and `Update(ctx, domain.Course) (domain.Course, error)`.\n4. Use Case (`internal/usecase/update_course.go`): implement `UpdateCourseUseCase.Execute(ctx, UpdateCourseCommand{CourseID, TeacherID, Title, Description, CEFRLevel, CoverURL}) (domain.Course, error)` loading the existing course via a consumer-defined `CourseRepository` interface, verifying `course.TeacherID == cmd.TeacherID` (returning `domain.ErrForbidden` on mismatch), applying provided partial field updates, validating the resulting `domain.Course`, and persisting it.\n5. HTTP Middleware, Handler, OpenAPI & Wiring (`internal/adapter/http/`, `cmd/api/main.go`):\n   - Implement composable `chi` middleware `RequireCourseOwner(courseFinder)` (Â§11.4) extracting `chi.URLParam(r, \"id\")`, loading the course (returning `404` `NOT_FOUND` if missing), and verifying `course.TeacherID == claims.UserID` (returning `403` `FORBIDDEN` if owned by another teacher).\n   - Register `PATCH /api/learning/courses/{id}` under `Authenticate` + `RequireRole(\"TEACHER\")` + `RequireCourseOwner`, returning `200 OK` with `{\"id\", \"teacherId\", \"title\", \"description\", \"cefrLevel\", \"coverUrl\", \"status\", \"createdAt\"}`.\n   - Map `ErrNotFound` -> `404`, `ErrForbidden` -> `403`, `ErrValidation` -> `422`, and malformed JSON -> `400` via `respondError`.\n   - Update `shared/contracts/learning-api.yaml` (and `contracts/learning.openapi.yaml`); wire `UpdateCourseUseCase` and `RequireCourseOwner` in `cmd/api/main.go`.\n6. Tests (stdlib `testing`): add table-driven unit tests for `UpdateCourseUseCase` (partial updates, non-owner forbidden, not found, validation errors), `:memory:` SQLite integration tests for `GetByID` and `Update`, and `httptest` handler tests covering `200`, `400`, `401`, `403` (both non-`TEACHER` role and non-owner `TEACHER`), `404`, and `422`.",
+  "expectations": [
+    "supporting database tables, migrations, and auth claims plumbing already exist for tests against"
+  ],
+  "context": [
+    "area: greenfield lms-app/apps/api/learning-api",
+    "constraint: internal/domain imports stdlib only",
+    "constraint: chi + net/http handlers",
+    "constraint: log/slog structured logging with request_id",
+    "constraint: modernc.org/sqlite with WAL/NORMAL/foreign_keys=ON/busy_timeout=5000, SetMaxOpenConns(1)",
+    "constraint: goose migrations STRICT tables, ISO-8601 UTC TEXT timestamps, INTEGER booleans, CHECK json_valid on JSON columns",
+    "constraint: sqlc generate engine sqlite db/queries -> internal/adapter/sqlite/sqlcgen",
+    "constraint: jwt.WithValidMethods HS256, JWT_SECRET from env, no identity-service hot path",
+    "constraint: exercise JSON validation via santhosh-tekuri/jsonschema v6 against shared/contracts/exercise-schemas",
+    "constraint: SSE brokers sync.RWMutex + single-use Redis /sse-ticket tokens",
+    "constraint: coder/websocket one goroutine loop per room, r.Context().Done() cleanup"
+  ],
+  "coverage": {
+    "FR-001": {
+      "title": "Course metadata updates exposed at PATCH /api/learning/courses/{id}"
+    },
+    "FR-002": {
+      "title": "Only fields present in the request are updated"
+    },
+    "FR-003": {
+      "title": "Empty or whitespace-only title rejected as validation error"
+    },
+    "FR-004": {
+      "title": "CEFR level outside supported set rejected as validation error"
+    },
+    "FR-005": {
+      "title": "Missing course returns 404 NOT_FOUND"
+    },
+    "FR-006": {
+      "title": "Non-owner caller returns 403 FORBIDDEN"
+    },
+    "FR-007": {
+      "title": "Non-TEACHER role returns 403 FORBIDDEN"
+    },
+    "FR-008": {
+      "title": "Missing or invalid credentials rejected"
+    },
+    "FR-009": {
+      "title": "Malformed JSON body returns 400"
+    },
+    "FR-010": {
+      "title": "Success returns 200 OK with id, teacherId, title, description, cefrLevel, coverUrl, status, createdAt"
+    },
+    "FR-011": {
+      "title": "Errors use the JSON error envelope code, message, timestamp, path"
+    }
+  },
+  "classification": {
+    "projectedFiles": 14,
+    "projectedTasks": 16,
+    "scopeSignal": "none",
+    "verdict": "normal"
+  },
+  "intent": "Implement PATCH /api/learning/courses/{id} Edit Course per CU-CONT-02 / HU-08 CA5",
+  "size": "normal",
+  "unattended": true
+}
