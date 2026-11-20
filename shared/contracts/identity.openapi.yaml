@@ -4,7 +4,8 @@ info:
   version: 1.0.0
   description: >-
     Contract for the Identity service. This version covers student registration
-    (CU-AUTH-01 / HU-01). Canonical copy: shared/contracts/identity.openapi.yaml.
+    (CU-AUTH-01 / HU-01) and user login (CU-AUTH-02 / HU-02). Canonical copy:
+    shared/contracts/identity.openapi.yaml.
 servers:
   - url: /
     description: Relative to the deployed Identity service base URL
@@ -138,6 +139,84 @@ paths:
                 message: An unexpected error occurred
                 timestamp: '2026-11-18T10:15:30.123Z'
                 path: /api/identity/auth/register
+  /api/identity/auth/login:
+    post:
+      tags:
+        - Identity
+      operationId: loginUser
+      summary: Sign in with email and password
+      description: >-
+        Normalizes the submitted email by trimming and lowercasing it, verifies
+        the password against the stored protected hash, and returns an access
+        token valid for 15m and a rotating refresh token valid for 7d persisted
+        with a unique jti. Invalid credentials return a generic error that does
+        not reveal whether the account exists. Attempts are limited to 10 per
+        minute per visitor.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: Student@Example.com
+              password: Learn123
+      responses:
+        '200':
+          description: >-
+            Valid credentials. The access token is valid for 15m and carries the
+            user id and role; the refresh token is valid for 7d and persisted
+            with a unique jti.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                accessToken: eyJhbGciOiJIUzI1NiJ9...
+                refreshToken: 3f9a7c1e8b2d4a6f...
+        '400':
+          description: The request body is malformed or contains unknown fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: >-
+            The email or password is invalid. The code is always
+            invalid_credentials and the response never reveals whether an account
+            exists for the email.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: invalid_credentials
+                message: invalid credentials
+                timestamp: '2026-11-18T10:15:30.123Z'
+                path: /api/identity/auth/login
+        '422':
+          description: >-
+            The email is not a well-formed address after normalization; the
+            message names the violated rule.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: >-
+            The visitor exceeded the limit of 10 sign-in attempts per minute.
+            The response does not reveal remaining attempts and no Retry-After
+            header is sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred. Details are logged server-side only.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     RegisterUserRequest:
@@ -184,6 +263,47 @@ components:
           description: Identifier of the newly created user.
           examples:
             - 9f1c7d3e-6b2a-4c88-9f0e-2a5b1c3d4e6f
+    LoginRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: >-
+            Email address. Trimmed and lowercased before validation and
+            verification.
+          maxLength: 320
+          examples:
+            - Student@Example.com
+        password:
+          type: string
+          description: >-
+            Plaintext password. Verified against the stored protected hash and
+            never echoed in any response.
+          minLength: 8
+          maxLength: 72
+          format: password
+          examples:
+            - Learn123
+    LoginResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - accessToken
+        - refreshToken
+      properties:
+        accessToken:
+          type: string
+          description: >-
+            Signed access token, valid for 15m. Carries the user id as the subject
+            and the user role.
+        refreshToken:
+          type: string
+          description: >-
+            Rotating refresh token, valid for 7d, persisted with a unique jti.
     ErrorResponse:
       type: object
       additionalProperties: false

@@ -39,7 +39,7 @@ type VisitorLimiter struct {
 	cap     int
 }
 
-// NewVisitorLimiter builds a limiter with the documented policy.
+// NewVisitorLimiter builds a limiter with the documented registration policy.
 func NewVisitorLimiter() *VisitorLimiter {
 	return &VisitorLimiter{
 		now:     time.Now,

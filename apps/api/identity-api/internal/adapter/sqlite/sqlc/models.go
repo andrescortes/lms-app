@@ -12,6 +12,15 @@ type Profile struct {
 	AvatarUrl      interface{} `json:"avatar_url"`
 }
 
+type RefreshToken struct {
+	Jti       string      `json:"jti"`
+	TokenHash string      `json:"token_hash"`
+	UserID    string      `json:"user_id"`
+	ExpiresAt string      `json:"expires_at"`
+	RevokedAt interface{} `json:"revoked_at"`
+	CreatedAt string      `json:"created_at"`
+}
+
 type RegistrationEvent struct {
 	ID          string      `json:"id"`
 	EventType   string      `json:"event_type"`

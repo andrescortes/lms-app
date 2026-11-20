@@ -74,6 +74,9 @@ var (
 var (
 	// ErrInvalidCredentials reports failed authentication.
 	ErrInvalidCredentials = errors.New("invalid credentials")
+	// ErrInvalidToken reports a token that is malformed, expired, revoked, or
+	// signed with an unexpected method.
+	ErrInvalidToken = errors.New("invalid token")
 	// ErrForbidden reports an authenticated caller lacking permission.
 	ErrForbidden = errors.New("forbidden")
 	// ErrNotFound reports a missing resource.

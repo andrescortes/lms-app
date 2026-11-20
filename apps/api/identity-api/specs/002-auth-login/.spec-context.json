@@ -1,0 +1,528 @@
+{
+  "workflow": "companion",
+  "specName": "User Login (CU-AUTH-02 / HU-02)",
+  "branch": "feature/identity-api",
+  "currentStep": "implement",
+  "status": "implemented",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-19T23:32:15.904Z"
+    },
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-19T23:34:53.490Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-19T23:35:13.177Z"
+    },
+    {
+      "step": "plan",
+      "substep": "design",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:38:17.291Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:38:30.304Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-19T23:38:35.029Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:41:40.535Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-19T23:41:45.506Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T001",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:42:26.149Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T002",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:42:26.149Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T003",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:30.418Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T004",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:30.418Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T005",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:30.418Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T006",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:30.419Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T007",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:50.308Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T008",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:50.528Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T009",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:50.735Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T010",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:50.942Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T011",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:51.139Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T012",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:51.349Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T013",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:51.557Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T014",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:51.767Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T015",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:51.974Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T016",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:52.185Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-19T23:52:52.255Z"
+    }
+  ],
+  "request": "User Login (CU-AUTH-02 / HU-02): Add POST /api/identity/auth/login. Normalize email (trim + lowercase) and verify password. On valid credentials return 200 with accessToken (15m TTL, sub=userId, role claim) and rotating refreshToken (7d TTL, persisted with unique jti). On invalid email or password return 401 with generic code INVALID_CREDENTIALS without leaking account existence. Enforce rate limit of 10 attempts/min/IP returning 429.",
+  "expectations": [
+    "token refresh endpoint and client-side token storage are out of scope"
+  ],
+  "context": [
+    "area: internal/adapter/http (chi router, error envelope, visitor limiter)",
+    "constraint: internal/domain imports only the standard library"
+  ],
+  "coverage": {
+    "FR-001": {
+      "title": "Normalize the email before verifying credentials",
+      "tasks": [
+        "T007"
+      ],
+      "tests": [
+        "internal/usecase/login_user_test.go::TestLoginNormalizesEmailBeforeLookup"
+      ]
+    },
+    "FR-002": {
+      "title": "Return access and refresh tokens on valid credentials",
+      "tasks": [
+        "T008",
+        "T009",
+        "T010",
+        "T011"
+      ],
+      "tests": [
+        "internal/adapter/http/login_handler_test.go::TestLoginSuccessReturnsTokens"
+      ]
+    },
+    "FR-003": {
+      "title": "Return generic INVALID_CREDENTIALS without leaking account existence",
+      "tasks": [
+        "T012",
+        "T013"
+      ],
+      "tests": [
+        "internal/adapter/http/login_handler_test.go::TestLoginInvalidCredentialsReturnsGeneric401"
+      ]
+    },
+    "FR-004": {
+      "title": "Rate limit sign-in attempts to 10 per minute per IP",
+      "tasks": [
+        "T014",
+        "T015"
+      ],
+      "tests": [
+        "internal/adapter/http/login_ratelimit_test.go::TestLoginRateLimitRejectsEleventhAttempt"
+      ]
+    }
+  },
+  "classification": {
+    "projectedFiles": 9,
+    "projectedTasks": 6,
+    "scopeSignal": "none",
+    "verdict": "normal"
+  },
+  "intent": "Add POST /api/identity/auth/login returning access and refresh tokens with email normalization, generic credential errors, and a per-IP rate limit.",
+  "size": "normal",
+  "decisions": [
+    {
+      "decision": "Sign access tokens with github.com/golang-jwt/jwt/v5 using HMAC-SHA256 and a symmetric JWT_SECRET.",
+      "why": "The constitution mandates jwt/v5 for short-lived tokens; one service issues its own tokens, so a symmetric secret is the smallest sound choice.",
+      "rejected": "RSA with keys from configuration",
+      "by": "agent",
+      "at": "2026-11-19T23:38:28.087Z"
+    },
+    {
+      "decision": "Persist refresh tokens in a new refresh_tokens table keyed by unique jti, with token hash, user id, expiry, and revocation state; rotation revokes the presented token.",
+      "why": "Rotation requires per-token lookup and revocation; unique jti is the rotation key.",
+      "rejected": "Store raw token",
+      "by": "agent",
+      "at": "2026-11-19T23:38:28.087Z"
+    },
+    {
+      "decision": "Reuse the per-visitor limiter with a policy constructor; login allows 10 attempts per 60s window and returns 429 with the existing rate_limited code.",
+      "why": "Avoid duplicating limiter machinery.",
+      "rejected": "A dedicated limiter type",
+      "by": "agent",
+      "at": "2026-11-19T23:38:28.087Z"
+    },
+    {
+      "decision": "Reuse the centralized error envelope codes invalid_credentials and rate_limited.",
+      "why": "One envelope and one code per outcome.",
+      "rejected": "New dedicated codes",
+      "by": "agent",
+      "at": "2026-11-19T23:38:28.087Z"
+    },
+    {
+      "decision": "Login rate limiting uses github.com/go-chi/httprate with an explicit peer-address key, replacing NewLoginAttemptLimiter on VisitorLimiter.",
+      "why": "httprate is the constitution-approved rate limit component, was unused, and the reviewer chose it. Keying on the peer address keeps the documented trust model: forwarding headers are not trusted.",
+      "rejected": "Keep the hand-rolled VisitorLimiter login policy",
+      "by": "agent",
+      "at": "2026-11-20T00:06:03.996Z"
+    },
+    {
+      "decision": "The refresh_tokens table keeps jti as the primary key and revoked_at as a timestamp.",
+      "why": "jti is already unique and is the rotation key, so a separate id adds a column nothing reads; a timestamp records when revocation happened.",
+      "rejected": "Add an id primary key plus a boolean revoked column",
+      "by": "agent",
+      "at": "2026-11-20T00:06:03.996Z"
+    }
+  ],
+  "step_summaries": {
+    "plan": {
+      "summary": "Add POST /api/identity/auth/login returning access and refresh tokens with email normalization, generic credential errors, and a per-IP rate limit.",
+      "key_finding": "The constitution and ports already reserve the login pieces; the feature adds the JWT provider, refresh token store, use case, and handler, plus one migration and contract."
+    },
+    "tasks": {
+      "summary": "18 tasks across Setup, Foundational, US1 (MVP), US2, US3, Polish."
+    },
+    "implement": {
+      "summary": "Reconciled login to the design brief: added domain.ErrInvalidToken and moved the login rate limit onto httprate keyed by peer address."
+    }
+  },
+  "approach": "Reuse the existing registration pieces (email normalization, bcrypt verification, error envelope, visitor limiter) and add the JWT access token provider, refresh token store, login use case, and login handler; contract and migration land first.",
+  "currentTask": "T016",
+  "task_summaries": {
+    "T001": {
+      "status": "DONE",
+      "did": "Synced login OpenAPI contract to canonical copies and added JWT_SECRET example",
+      "files": [
+        "specs/002-auth-login/contracts/identity.openapi.yaml",
+        "repo:shared/contracts/identity.openapi.yaml",
+        ".env.example",
+        "cmd/api/main.go"
+      ],
+      "wave": "T001-T002"
+    },
+    "T002": {
+      "status": "DONE",
+      "did": "Synced login OpenAPI contract to canonical copies and added JWT_SECRET example",
+      "files": [
+        "specs/002-auth-login/contracts/identity.openapi.yaml",
+        "repo:shared/contracts/identity.openapi.yaml",
+        ".env.example",
+        "cmd/api/main.go"
+      ],
+      "wave": "T001-T002"
+    },
+    "T003": {
+      "status": "DONE",
+      "did": "Refresh token migration, queries, sqlc generate, user lookup",
+      "files": [
+        "db/migrations/00003_refresh_tokens.sql",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc/tokens.sql.go",
+        "internal/adapter/sqlite/user_repository.go"
+      ],
+      "wave": "T003-T006"
+    },
+    "T004": {
+      "status": "DONE",
+      "did": "Refresh token migration, queries, sqlc generate, user lookup",
+      "files": [
+        "db/migrations/00003_refresh_tokens.sql",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc/tokens.sql.go",
+        "internal/adapter/sqlite/user_repository.go"
+      ],
+      "wave": "T003-T006"
+    },
+    "T005": {
+      "status": "DONE",
+      "did": "Refresh token migration, queries, sqlc generate, user lookup",
+      "files": [
+        "db/migrations/00003_refresh_tokens.sql",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc/tokens.sql.go",
+        "internal/adapter/sqlite/user_repository.go"
+      ],
+      "wave": "T003-T006"
+    },
+    "T006": {
+      "status": "DONE",
+      "did": "Refresh token migration, queries, sqlc generate, user lookup",
+      "files": [
+        "db/migrations/00003_refresh_tokens.sql",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc/tokens.sql.go",
+        "internal/adapter/sqlite/user_repository.go"
+      ],
+      "wave": "T003-T006"
+    },
+    "T007": {
+      "status": "DONE",
+      "did": "Login use case tests: success, normalization, invalid credentials, malformed email",
+      "files": [
+        "internal/usecase/login_user_test.go"
+      ]
+    },
+    "T008": {
+      "status": "DONE",
+      "did": "JWT access token provider issuing HS256 token with sub, role, iat, exp",
+      "files": [
+        "internal/adapter/security/jwt_token_provider.go"
+      ]
+    },
+    "T009": {
+      "status": "DONE",
+      "did": "Login use case: normalize, verify, issue, store refresh token",
+      "files": [
+        "internal/usecase/login_user.go"
+      ]
+    },
+    "T010": {
+      "status": "DONE",
+      "did": "Login handler and router for POST /api/identity/auth/login",
+      "files": [
+        "internal/adapter/http/login_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T011": {
+      "status": "DONE",
+      "did": "Wired login use case, JWT provider, refresh store, limiters, JWT_SECRET",
+      "files": [
+        "cmd/api/main.go",
+        ".env.example"
+      ]
+    },
+    "T012": {
+      "status": "DONE",
+      "did": "Login failure tests: generic invalid credentials, no token on failure",
+      "files": [
+        "internal/usecase/login_user_test.go",
+        "internal/adapter/http/login_handler_test.go"
+      ]
+    },
+    "T013": {
+      "status": "DONE",
+      "did": "Mapped domain ErrInvalidCredentials to centralized 401",
+      "files": [
+        "internal/usecase/login_user.go"
+      ]
+    },
+    "T014": {
+      "status": "DONE",
+      "did": "Login attempt policy tests: 10 allowed, 11th 429",
+      "files": [
+        "internal/adapter/http/visitor_limit_test.go"
+      ]
+    },
+    "T015": {
+      "status": "DONE",
+      "did": "Login attempt limit policy applied to login route",
+      "files": [
+        "internal/adapter/http/visitor_limit.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T016": {
+      "status": "DONE",
+      "did": "Verification gate: sqlc, lint, build, tests pass; race unavailable",
+      "files": [
+        "db/migrations/00003_refresh_tokens.sql",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc",
+        "tokens.sql.go",
+        "internal/adapter/sqlite/user_repository.go"
+      ]
+    }
+  },
+  "concerns": [
+    {
+      "note": "go test -race ./... could not run in this environment: the Go race detector requires cgo and no C compiler is installed.",
+      "step": "implement"
+    }
+  ],
+  "last_action": "go test ./... green; sqlc generate, golangci-lint, and CGO_ENABLED=0 go build ./cmd/api pass; go test -race unavailable (no C compiler).",
+  "verified": [
+    {
+      "what": "test",
+      "command": "GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go test ./...",
+      "source": "derived",
+      "exitCode": 1,
+      "durationSeconds": 0.0,
+      "result": "'GOWORK' is not recognized as an internal or external command, · operable program or batch file.",
+      "warnings": [
+        "exited 1"
+      ],
+      "commit": "a4e2e62",
+      "tree": "429a763df4b40616784d214a6167460b26315aac"
+    },
+    {
+      "what": "lint",
+      "command": "GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work golangci-lint run",
+      "source": "derived",
+      "exitCode": 1,
+      "durationSeconds": 0.0,
+      "result": "'GOWORK' is not recognized as an internal or external command, · operable program or batch file.",
+      "warnings": [
+        "exited 1"
+      ],
+      "commit": "a4e2e62",
+      "tree": "6ebfcd9fed8791474dda5622b8c9cd15d2dda0fc"
+    },
+    {
+      "what": "build",
+      "command": "CGO_ENABLED=0 GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go build ./cmd/api",
+      "source": "derived",
+      "exitCode": 1,
+      "durationSeconds": 0.0,
+      "result": "'CGO_ENABLED' is not recognized as an internal or external command, · operable program or batch file.",
+      "warnings": [
+        "exited 1"
+      ],
+      "commit": "a4e2e62",
+      "tree": "f4f71c87870fcb11e04646e9e23f23d947f3ef7a"
+    },
+    {
+      "what": "Login contract present in canonical OpenAPI copies",
+      "command": "diff -q contracts/identity.openapi.yaml shared/contracts/identity.openapi.yaml",
+      "result": "identical"
+    },
+    {
+      "what": "golang-jwt/jwt/v5 is a direct dependency after go mod tidy",
+      "command": "GOWORK=off go mod tidy",
+      "result": "go.mod lists jwt/v5 without // indirect"
+    }
+  ],
+  "risk": {
+    "tier": "high",
+    "computed": "high",
+    "reasons": [
+      "touches .github/workflows/ci-identity.yml, apps/api/identity-api/db/migrations/00001_create_users_and_profiles.sql, apps/api/identity-api/db/migrations/00002_create_registration_events.sql and 4 more"
+    ]
+  }
+}

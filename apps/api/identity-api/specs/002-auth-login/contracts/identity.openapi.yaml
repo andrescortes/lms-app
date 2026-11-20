@@ -1,0 +1,149 @@
+openapi: 3.1.0
+info:
+  title: Identity Service API - Login
+  version: 1.0.0
+  description: >-
+    Contract for the login endpoint of the Identity service (CU-AUTH-02 / HU-02).
+    Covers POST /api/identity/auth/login: email normalization, password
+    verification, token issuance, and the per-IP attempt limit.
+servers:
+  - url: /
+    description: Relative to the deployed Identity service base URL
+tags:
+  - name: Identity
+    description: Registration and identity lifecycle operations
+paths:
+  /api/identity/auth/login:
+    post:
+      tags:
+        - Identity
+      operationId: loginUser
+      summary: Sign in with email and password
+      description: >-
+        Normalizes the submitted email, verifies the password against the stored
+        protected hash, and returns tokens on valid credentials. Invalid
+        credentials return a generic error that does not reveal account
+        existence. Attempts are throttled per visitor.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              signIn:
+                summary: Sign in with an email and password
+                value:
+                  email: Student@Example.com
+                  password: Learn123
+      responses:
+        '200':
+          description: >-
+            Valid credentials. Returns the access token, valid for 15m, carrying
+            the user id and role, and the refresh token, valid for 7d and persisted
+            with a unique jti.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                accessToken: <jwt>
+                refreshToken: <opaque-refresh-token>
+        '400':
+          description: The request body is malformed or contains unknown fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: >-
+            Invalid email or password. The error code is INVALID_CREDENTIALS and
+            the response does not reveal whether the account exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: >-
+            The email is not a well-formed address after normalization; the
+            response names the violated rule.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: >-
+            The visitor exceeded the login attempt limit of 10 attempts per minute
+            per IP. The response does not reveal remaining attempts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: >-
+            Email address. Trimmed and lowercased before validation and
+            verification.
+          maxLength: 320
+          examples:
+            - Student@Example.com
+        password:
+          type: string
+          description: >-
+            Plaintext password. Verified against the stored protected hash; never
+            echoed in any response.
+          minLength: 8
+          maxLength: 72
+          format: password
+          examples:
+            - Learn123
+    LoginResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - accessToken
+        - refreshToken
+      properties:
+        accessToken:
+          type: string
+          description: >-
+            Signed access token. Valid for 15m. Carries the user id and the role.
+        refreshToken:
+          type: string
+          description: >-
+            Rotating refresh token. Valid for 7d; persisted with a unique jti.
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+        - timestamp
+        - path
+      properties:
+        code:
+          type: string
+          description: Stable machine-readable error code.
+          examples:
+            - INVALID_CREDENTIALS
+        message:
+          type: string
+          description: >-
+            Human-readable message. Never contains passwords or account details.
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+          description: Request path that produced the error.
+          examples:
+            - /api/identity/auth/login

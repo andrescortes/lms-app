@@ -28,14 +28,16 @@ import (
 
 // config holds runtime configuration loaded from the environment.
 type config struct {
-	env      string
-	httpPort string
-	dbPath   string
+	env       string
+	httpPort  string
+	dbPath    string
+	jwtSecret string
 }
 
 // loadConfig reads configuration from the environment. Values without a
 // deployment override fall back to documented local examples, never hardcoded
-// absolute paths or secrets.
+// absolute paths or secrets. The JWT signing secret is required and never
+// hardcoded.
 func loadConfig() (config, error) {
 	dbPath := os.Getenv("DB_PATH")
 	if dbPath == "" {
@@ -49,7 +51,11 @@ func loadConfig() (config, error) {
 	if env == "" {
 		env = "local"
 	}
-	return config{env: env, httpPort: port, dbPath: dbPath}, nil
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		return config{}, errors.New("JWT_SECRET is required")
+	}
+	return config{env: env, httpPort: port, dbPath: dbPath, jwtSecret: jwtSecret}, nil
 }
 
 func main() {
@@ -97,10 +103,18 @@ func run() error {
 	}
 	go runEventWorker(ctx, publisher, logger)
 
+	loginUc := usecase.NewLoginUserUseCase(
+		adaptersqlite.NewUserRepository(db),
+		hasher,
+		security.NewJwtTokenProvider(cfg.jwtSecret, 15*time.Minute),
+		adaptersqlite.NewRefreshTokenRepository(db),
+		ids,
+		clock,
+	)
 	uc := usecase.NewRegisterUserUseCase(store, hasher, ids, clock, publisher)
 
 	limiter := adapterhttp.NewVisitorLimiter()
-	router := adapterhttp.NewRouter(uc, limiter, logger)
+	router := adapterhttp.NewRouter(uc, loginUc, limiter, logger)
 
 	srv := &http.Server{
 		Addr:              ":" + cfg.httpPort,

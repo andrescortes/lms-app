@@ -38,6 +38,7 @@ func TestLoadConfigDefaults(t *testing.T) {
 	t.Setenv("DB_PATH", "./data/identity.db")
 	t.Setenv("HTTP_PORT", "")
 	t.Setenv("APP_ENV", "")
+	t.Setenv("JWT_SECRET", "test-secret")
 	cfg, err := loadConfig()
 	if err != nil {
 		t.Fatalf("loadConfig() error = %v", err)
@@ -47,5 +48,8 @@ func TestLoadConfigDefaults(t *testing.T) {
 	}
 	if cfg.env != "local" {
 		t.Errorf("env = %q, want local", cfg.env)
+	}
+	if cfg.jwtSecret != "test-secret" {
+		t.Errorf("jwtSecret = %q, want test-secret", cfg.jwtSecret)
 	}
 }

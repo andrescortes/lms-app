@@ -15,10 +15,13 @@ import (
 // RegisterRoute is the single registration endpoint path.
 const RegisterRoute = "/api/identity/auth/register"
 
-// NewRouter builds the identity HTTP handler: the registration route guarded by
-// the per-visitor limiter, with request IDs, panic recovery, structured logging,
-// and CORS.
-func NewRouter(uc *usecase.RegisterUserUseCase, limiter *VisitorLimiter, logger *slog.Logger) http.Handler {
+// LoginRoute is the credential verification and token issuance endpoint path.
+const LoginRoute = "/api/identity/auth/login"
+
+// NewRouter builds the identity HTTP handler: the registration and login
+// routes guarded by the per-visitor limiter, with request IDs, panic recovery,
+// structured logging, and CORS.
+func NewRouter(uc *usecase.RegisterUserUseCase, loginUc *usecase.LoginUserUseCase, limiter *VisitorLimiter, logger *slog.Logger) http.Handler {
 	if logger == nil {
 		logger = slog.Default()
 	}
@@ -34,8 +37,11 @@ func NewRouter(uc *usecase.RegisterUserUseCase, limiter *VisitorLimiter, logger 
 		MaxAge:         300,
 	}))
 
-	h := &registerHandler{uc: uc}
-	r.With(limiter.Middleware).Post(RegisterRoute, h.ServeHTTP)
+	registerHandler := &registerHandler{uc: uc}
+	r.With(limiter.Middleware).Post(RegisterRoute, registerHandler.ServeHTTP)
+
+	loginHandler := &loginHandler{uc: loginUc}
+	r.With(loginRateLimiter()).Post(LoginRoute, loginHandler.ServeHTTP)
 
 	return r
 }

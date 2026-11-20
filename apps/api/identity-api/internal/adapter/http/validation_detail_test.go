@@ -86,7 +86,8 @@ func TestRegisterAccepts72CharacterMultibytePassword(t *testing.T) {
 		stubClock{},
 		stubPublisher{},
 	)
-	h := NewRouter(uc, NewVisitorLimiter(), nil)
+	loginUc := usecase.NewLoginUserUseCase(nil, nil, nil, nil, nil, nil)
+	h := NewRouter(uc, loginUc, NewVisitorLimiter(), nil)
 
 	password := strings.Repeat("Á", 71) + "1"
 	if len([]rune(password)) != 72 || len(password) <= 72 {

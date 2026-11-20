@@ -42,7 +42,8 @@ func (stubPublisher) Publish(context.Context, string, []byte) error { return nil
 func newTestHandler(t *testing.T, store stubStore) http.Handler {
 	t.Helper()
 	uc := usecase.NewRegisterUserUseCase(store, stubHasher{hash: "hashed"}, stubID{}, stubClock{}, stubPublisher{})
-	return NewRouter(uc, NewVisitorLimiter(), nil)
+	loginUc := usecase.NewLoginUserUseCase(nil, nil, nil, nil, nil, nil)
+	return NewRouter(uc, loginUc, NewVisitorLimiter(), nil)
 }
 
 func post(handler http.Handler, remoteAddr, body string) *httptest.ResponseRecorder {
@@ -140,7 +141,8 @@ func TestRegisterDuplicate(t *testing.T) {
 func TestRateLimitSixthAttempt(t *testing.T) {
 	limiter := NewVisitorLimiter()
 	uc := usecase.NewRegisterUserUseCase(stubStore{}, stubHasher{hash: "hashed"}, stubID{}, stubClock{}, stubPublisher{})
-	h := NewRouter(uc, limiter, nil)
+	loginUc := usecase.NewLoginUserUseCase(nil, nil, nil, nil, nil, nil)
+	h := NewRouter(uc, loginUc, limiter, nil)
 
 	for i := 1; i <= 5; i++ {
 		rec := post(h, "10.0.0.9:1234", `{"email":"a@b.com","password":"Learn123"}`)
@@ -163,7 +165,8 @@ func TestRateLimitSixthAttempt(t *testing.T) {
 func TestRateLimitIsolation(t *testing.T) {
 	limiter := NewVisitorLimiter()
 	uc := usecase.NewRegisterUserUseCase(stubStore{}, stubHasher{hash: "hashed"}, stubID{}, stubClock{}, stubPublisher{})
-	h := NewRouter(uc, limiter, nil)
+	loginUc := usecase.NewLoginUserUseCase(nil, nil, nil, nil, nil, nil)
+	h := NewRouter(uc, loginUc, limiter, nil)
 
 	for i := 0; i < 6; i++ {
 		post(h, "10.1.1.1:1234", `{"email":"a@b.com","password":"Learn123"}`)

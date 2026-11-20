@@ -15,7 +15,8 @@ import (
 // bounds handler overhead, not database or network latency.
 func TestRegisterRespondsWithinBudget(t *testing.T) {
 	uc := usecase.NewRegisterUserUseCase(stubStore{}, stubHasher{hash: "hashed"}, stubID{}, stubClock{}, stubPublisher{})
-	h := NewRouter(uc, NewVisitorLimiter(), nil)
+	loginUc := usecase.NewLoginUserUseCase(nil, nil, nil, nil, nil, nil)
+	h := NewRouter(uc, loginUc, NewVisitorLimiter(), nil)
 
 	req := httptest.NewRequest(http.MethodPost, RegisterRoute, nil)
 	req.Header.Set("Content-Type", "application/json")
