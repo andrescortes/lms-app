@@ -175,3 +175,8 @@ type UserPage struct {
 type UserLister interface {
 	ListUsers(ctx context.Context, filter ListFilter) (UserPage, error)
 }
+
+// UserRoleUpdater changes one account's role and returns the updated account.
+type UserRoleUpdater interface {
+	UpdateUserRole(ctx context.Context, userID string, role domain.Role) (domain.User, error)
+}

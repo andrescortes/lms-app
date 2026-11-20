@@ -21,6 +21,8 @@ var (
 	ErrInvalidDisplayName = errors.New("invalid display name")
 	// ErrInvalidFilter reports a list filter or pagination value that is not allowed.
 	ErrInvalidFilter = errors.New("invalid filter")
+	// ErrInvalidRole reports a role value that is not one of the defined roles.
+	ErrInvalidRole = errors.New("invalid role")
 )
 
 // ValidationCode identifies the specific rule a validation error violated so the

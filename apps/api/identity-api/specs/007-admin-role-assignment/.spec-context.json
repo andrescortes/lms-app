@@ -1,0 +1,582 @@
+{
+  "workflow": "companion",
+  "specName": "Admin User Role Assignment (CU-AUTH-07 / HU-17)",
+  "branch": "feature/identity-api",
+  "currentStep": "converge",
+  "status": "completed",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:35:10.923Z"
+    },
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T01:35:42.605Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:35:42.830Z"
+    },
+    {
+      "step": "plan",
+      "substep": "research",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:36:12.057Z"
+    },
+    {
+      "step": "plan",
+      "substep": "design",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:36:12.242Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:36:12.503Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:36:31.548Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:36:32.509Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:36:32.658Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T001",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:27.725Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T002",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:27.726Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T003",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:27.734Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T004",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:27.734Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T005",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:27.734Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T006",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:27.735Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T007",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:27.938Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T008",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:27.939Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T009",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:27.939Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T010",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:28.140Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T011",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:28.140Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T012",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:28.141Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T013",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:28.141Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T014",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:28.141Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T015",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:28.142Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:39:28.209Z"
+    },
+    {
+      "step": "converge",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:39:33.091Z"
+    },
+    {
+      "step": "converge",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T01:39:41.148Z"
+    }
+  ],
+  "unattended": true,
+  "request": "\"Implement Admin User Role Assignment (CU-AUTH-07 / HU-17) at PATCH /api/identity/users/{id}/role. Load and apply `.agents/skills/*/SKILL.md` and use Headroom MCP tools (`headroom_compress`, `headroom_retrieve`) when reading large generated files, OpenAPI contracts, or verbose test outputs to minimize token consumption:\n1. Domain (`internal/domain`, stdlib only): validate target `role` against the allowed enum (`STUDENT`, `TEACHER`, `ADMIN`, `REVIEWER`), returning a domain validation error on invalid roles; prevent an administrator from modifying their own role (`ActorUserID == TargetUserID` -> `domain.ErrForbidden`).\n2. Database (`db/queries/users.sql` + `sqlc generate`): add query `UpdateUserRole` updating `role` on `users` by `id` and returning `id`, `email`, `display_name`, `role`, `cefr_level`, `created_at` (never returning `password_hash`).\n3. SQLite Adapter (`internal/adapter/sqlite/`): implement `UpdateUserRole(ctx, userID, role) (domain.User, error)` mapping `sql.ErrNoRows` to `domain.ErrNotFound`.\n4. Use Case (`internal/usecase/change_user_role.go`): implement `ChangeUserRoleUseCase.Execute(ctx, ChangeUserRoleCommand{ActorUserID, TargetUserID, NewRole}) (domain.User, error)` enforcing role validation, the self-change guard, and repository update via a consumer-defined `UserRoleUpdater` interface.\n5. HTTP, OpenAPI & Wiring (`internal/adapter/http/`, `cmd/api/main.go`):\n   - Register `PATCH /api/identity/users/{id}/role` inside the `Authenticate` + `RequireRole(\\\"ADMIN\\\")` `chi` route group.\n   - Decode JSON `{\\\"role\\\": \\\"...\\\"}` and return `200 OK` with `{\\\"id\\\", \\\"email\\\", \\\"displayName\\\", \\\"role\\\", \\\"cefrLevel\\\", \\\"createdAt\\\"}`.\n   - Map `ErrNotFound` -> `404` (`NOT_FOUND`), `ErrForbidden` -> `403` (`FORBIDDEN`), and invalid role / malformed JSON -> `422` / `400` via `respondError`.\n   - Update `contracts/identity.openapi.yaml` and `shared/contracts/identity.openapi.yaml`; wire `ChangeUserRoleUseCase` in `cmd/api/main.go`.\n6. Tests (stdlib `testing`): add unit tests for `ChangeUserRoleUseCase` (valid change, invalid role, self-change forbidden, user not found), `:memory:` SQLite integration tests for `UpdateUserRole`, and `httptest` handler tests covering `200`, `400`, `401`, `403`, `404`, and `422`.\"",
+  "expectations": [
+    "no audit trail of role changes in this slice",
+    "no super-administrator tier; ADMIN may grant ADMIN to others"
+  ],
+  "context": [
+    "area: internal/adapter/http (middleware.go Authenticate/RequireRole, router.go admin group, respond_error.go)",
+    "area: internal/adapter/sqlite (user_lister.go, user_repository.go)",
+    "constraint: domain.ParseRole is the existing role validator and ErrForbidden and ErrNotFound already exist"
+  ],
+  "coverage": {
+    "FR-001": {
+      "title": "Set the target role and return the updated account without a password",
+      "tasks": [
+        "T007",
+        "T008",
+        "T009",
+        "T014"
+      ],
+      "tests": [
+        "internal/adapter/http/user_role_handler_test.go::TestChangeRoleSuccessReturnsAccount"
+      ]
+    },
+    "FR-002": {
+      "title": "Refuse an unknown role, leaving the account unchanged",
+      "tasks": [
+        "T004",
+        "T011"
+      ],
+      "tests": [
+        "internal/domain/roles_test.go::TestValidateAssignedRole"
+      ]
+    },
+    "FR-003": {
+      "title": "Refuse an administrator changing their own role with 403 FORBIDDEN",
+      "tasks": [
+        "T004",
+        "T010"
+      ],
+      "tests": [
+        "internal/adapter/http/user_role_handler_test.go::TestChangeRoleUsesTokenIdentity"
+      ]
+    },
+    "FR-004": {
+      "title": "Administrator only: 401 unauthenticated, 403 non-admin",
+      "tasks": [
+        "T012"
+      ],
+      "tests": [
+        "internal/adapter/http/user_role_handler_test.go::TestChangeRoleForbidsNonAdmin"
+      ]
+    },
+    "FR-005": {
+      "title": "Report 404 NOT_FOUND for an unknown account",
+      "tasks": [
+        "T006",
+        "T013"
+      ],
+      "tests": [
+        "internal/adapter/http/user_role_handler_test.go::TestChangeRoleUnknownAccountReturns404"
+      ]
+    },
+    "FR-006": {
+      "title": "Actor identity comes only from the verified token",
+      "tasks": [
+        "T009",
+        "T010"
+      ],
+      "tests": [
+        "internal/adapter/http/user_role_handler_test.go::TestChangeRoleUsesTokenIdentity"
+      ]
+    },
+    "FR-007": {
+      "title": "Refuse a malformed body with 400",
+      "tasks": [
+        "T014"
+      ],
+      "tests": [
+        "internal/adapter/http/user_role_handler_test.go::TestChangeRoleRefusesMalformedBody"
+      ]
+    }
+  },
+  "classification": {
+    "projectedFiles": 8,
+    "projectedTasks": 12,
+    "scopeSignal": "none",
+    "verdict": "normal"
+  },
+  "intent": "Add PATCH /api/identity/users/{id}/role for administrators with role validation and a self-change guard.",
+  "size": "normal",
+  "source": "CU-AUTH-07",
+  "decisions": [
+    {
+      "decision": "The self-change guard lives in the use case, comparing the token actor id with the target id.",
+      "why": "The guard must hold for any caller path, not only the HTTP route.",
+      "rejected": "Refuse in the handler",
+      "by": "agent",
+      "at": "2026-11-20T01:36:11.754Z"
+    },
+    {
+      "decision": "Role validation reuses domain.ParseRole.",
+      "why": "The parser and the database CHECK already agree; a second parser would be a third source of truth.",
+      "rejected": "Let SQLite's CHECK reject bad values",
+      "by": "agent",
+      "at": "2026-11-20T01:36:11.754Z"
+    },
+    {
+      "decision": "The update is one UPDATE ... RETURNING so the response is the post-change row.",
+      "why": "A separate read can see another writer's change and report a value that is not the result of this request.",
+      "rejected": "Update then select",
+      "by": "agent",
+      "at": "2026-11-20T01:36:11.754Z"
+    },
+    {
+      "decision": "Roles are compared exactly; a lower-case role is refused.",
+      "why": "The stored values and the CHECK constraint are upper case.",
+      "rejected": "Normalise the case",
+      "by": "agent",
+      "at": "2026-11-20T01:36:11.754Z"
+    }
+  ],
+  "step_summaries": {
+    "plan": {
+      "summary": "Plan: token-derived actor, ParseRole validation, one UPDATE ... RETURNING, use-case-owned self-change guard.",
+      "key_finding": "Authenticate and RequireRole already exist, so the admin gate is a route decoration; the real work is the guard and the returning update."
+    },
+    "tasks": {
+      "summary": "15 tasks: Setup, Foundational storage and guards, US1 role change, US2 self-change, US3 role validity, US4 admin gate, US5 unknown account, Polish."
+    },
+    "implement": {
+      "summary": "PATCH /api/identity/users/{id}/role for administrators with role validation, a token-derived actor, and a self-change guard."
+    },
+    "specify": {
+      "summary": "Converged clean: 15/15 tasks satisfy FR-001 to FR-007 with no findings."
+    }
+  },
+  "approach": "Add a UserRoleUpdater port over a single UPDATE ... RETURNING query, a use case that validates the role and refuses a self-change before writing, and an admin-guarded PATCH handler with a path parameter.",
+  "verified": [
+    {
+      "what": "test",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go test ./...\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.6,
+      "result": "?   \tlms-english/identity-service/internal/adapter/sqlite/sqlc\t[no test files] · ok  \tlms-english/identity-service/internal/domain\t(cached) · ok  \tlms-english/identity-service/internal/usecase\t(cached)",
+      "commit": "95d2674",
+      "tree": "4357962b5a6b14c342d27aa91637944f7c3df264"
+    },
+    {
+      "what": "lint",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work golangci-lint run\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "0 issues.",
+      "commit": "95d2674",
+      "tree": "1e334b4b975e91c8fc71d83b95455361c9623378"
+    },
+    {
+      "what": "build",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && CGO_ENABLED=0 GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go build ./cmd/api\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.6,
+      "result": "no output",
+      "commit": "95d2674",
+      "tree": "64321783bf3b157158ef1bcfa2e163826bd250d0"
+    },
+    {
+      "what": "sqlc-stable",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work sha1sum internal/adapter/sqlite/sqlc/*.go > /tmp/l7.sha && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work sqlc generate && sha1sum -c /tmp/l7.sha --quiet\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.2,
+      "result": "no output",
+      "commit": "95d2674",
+      "tree": "ce44e219ad4c9f3e1e0ad340717829f67f525062"
+    }
+  ],
+  "currentTask": null,
+  "task_summaries": {
+    "T001": {
+      "status": "DONE",
+      "did": "Contract synced; UpdateUserRole returning query; domain role guard; port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/domain/roles.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_role_updater.go"
+      ]
+    },
+    "T002": {
+      "status": "DONE",
+      "did": "Contract synced; UpdateUserRole returning query; domain role guard; port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/domain/roles.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_role_updater.go"
+      ]
+    },
+    "T003": {
+      "status": "DONE",
+      "did": "Contract synced; UpdateUserRole returning query; domain role guard; port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/domain/roles.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_role_updater.go"
+      ]
+    },
+    "T004": {
+      "status": "DONE",
+      "did": "Contract synced; UpdateUserRole returning query; domain role guard; port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/domain/roles.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_role_updater.go"
+      ]
+    },
+    "T005": {
+      "status": "DONE",
+      "did": "Contract synced; UpdateUserRole returning query; domain role guard; port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/domain/roles.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_role_updater.go"
+      ]
+    },
+    "T006": {
+      "status": "DONE",
+      "did": "Contract synced; UpdateUserRole returning query; domain role guard; port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/domain/roles.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_role_updater.go"
+      ]
+    },
+    "T007": {
+      "status": "DONE",
+      "did": "Role change use case, handler, admin-guarded route",
+      "files": [
+        "internal/usecase/change_user_role.go",
+        "internal/usecase/change_user_role_test.go",
+        "internal/adapter/sqlite/user_role_updater_test.go",
+        "internal/adapter/http/user_role_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T008": {
+      "status": "DONE",
+      "did": "Role change use case, handler, admin-guarded route",
+      "files": [
+        "internal/usecase/change_user_role.go",
+        "internal/usecase/change_user_role_test.go",
+        "internal/adapter/sqlite/user_role_updater_test.go",
+        "internal/adapter/http/user_role_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T009": {
+      "status": "DONE",
+      "did": "Role change use case, handler, admin-guarded route",
+      "files": [
+        "internal/usecase/change_user_role.go",
+        "internal/usecase/change_user_role_test.go",
+        "internal/adapter/sqlite/user_role_updater_test.go",
+        "internal/adapter/http/user_role_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T010": {
+      "status": "DONE",
+      "did": "Self-change, role validity, admin gate, 404, body shape, wiring, verification gate",
+      "files": [
+        "internal/domain/roles_test.go",
+        "internal/usecase/change_user_role_test.go",
+        "internal/adapter/http/user_role_handler_test.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T011": {
+      "status": "DONE",
+      "did": "Self-change, role validity, admin gate, 404, body shape, wiring, verification gate",
+      "files": [
+        "internal/domain/roles_test.go",
+        "internal/usecase/change_user_role_test.go",
+        "internal/adapter/http/user_role_handler_test.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T012": {
+      "status": "DONE",
+      "did": "Self-change, role validity, admin gate, 404, body shape, wiring, verification gate",
+      "files": [
+        "internal/domain/roles_test.go",
+        "internal/usecase/change_user_role_test.go",
+        "internal/adapter/http/user_role_handler_test.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T013": {
+      "status": "DONE",
+      "did": "Self-change, role validity, admin gate, 404, body shape, wiring, verification gate",
+      "files": [
+        "internal/domain/roles_test.go",
+        "internal/usecase/change_user_role_test.go",
+        "internal/adapter/http/user_role_handler_test.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T014": {
+      "status": "DONE",
+      "did": "Self-change, role validity, admin gate, 404, body shape, wiring, verification gate",
+      "files": [
+        "internal/domain/roles_test.go",
+        "internal/usecase/change_user_role_test.go",
+        "internal/adapter/http/user_role_handler_test.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T015": {
+      "status": "DONE",
+      "did": "Self-change, role validity, admin gate, 404, body shape, wiring, verification gate",
+      "files": [
+        "internal/domain/roles_test.go",
+        "internal/usecase/change_user_role_test.go",
+        "internal/adapter/http/user_role_handler_test.go",
+        "cmd/api/main.go"
+      ]
+    }
+  },
+  "concerns": [
+    {
+      "note": "go test -race ./... could not run: the race detector requires cgo and no C compiler is installed here.",
+      "step": "implement"
+    },
+    {
+      "note": "No audit trail records who changed a role; the spec lists that as out of scope.",
+      "step": "implement"
+    }
+  ],
+  "last_action": "15/15 tasks checked; tests, lint, build and sqlc stability recorded.",
+  "convergeStartedAt": "2026-11-20T01:44:17.451Z",
+  "convergePasses": [
+    {
+      "startedAt": "2026-11-20T01:39:33.305Z",
+      "by": "extension",
+      "finishedAt": "2026-11-20T01:39:41.340Z",
+      "added": [],
+      "completed": true
+    },
+    {
+      "startedAt": "2026-11-20T01:44:17.564Z",
+      "by": "extension",
+      "finishedAt": "2026-11-20T01:44:41.741Z",
+      "added": []
+    }
+  ]
+}

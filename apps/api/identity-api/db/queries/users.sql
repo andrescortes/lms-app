@@ -128,3 +128,15 @@ WHERE (sqlc.narg('role') IS NULL OR role = sqlc.narg('role'))
      OR lower(email) LIKE '%' || sqlc.narg('search') || '%'
      OR lower(display_name) LIKE '%' || sqlc.narg('search') || '%'
   );
+
+-- name: UpdateUserRole :one
+UPDATE users
+SET role = ?
+WHERE id = ?
+RETURNING
+    id,
+    email,
+    display_name,
+    role,
+    cefr_level,
+    created_at;

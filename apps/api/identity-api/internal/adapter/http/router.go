@@ -31,6 +31,9 @@ const ProfileRoute = "/api/identity/users/me"
 // UsersRoute lists accounts. It requires an ADMIN bearer token.
 const UsersRoute = "/api/identity/users"
 
+// UserRoleRoute changes one account's role. It requires an ADMIN bearer token.
+const UserRoleRoute = "/api/identity/users/{id}/role"
+
 // AuthenticatedRouteGroup is the chi group prefix for routes that require a
 // valid access token.
 const AuthenticatedRouteGroup = "/api/identity/auth"
@@ -45,6 +48,7 @@ func NewRouter(
 	getProfileUc *usecase.GetProfileUseCase,
 	updateProfileUc *usecase.UpdateProfileUseCase,
 	listUsersUc *usecase.ListUsersUseCase,
+	changeUserRoleUc *usecase.ChangeUserRoleUseCase,
 	verifier usecase.TokenVerifier,
 	limiter *VisitorLimiter,
 	logger *slog.Logger,
@@ -84,6 +88,9 @@ func NewRouter(
 
 		userListHandler := &userListHandler{uc: listUsersUc}
 		protected.With(RequireRole(domain.RoleAdmin.String())).Get(UsersRoute, userListHandler.ServeHTTP)
+
+		userRoleHandler := &userRoleHandler{uc: changeUserRoleUc}
+		protected.With(RequireRole(domain.RoleAdmin.String())).Patch(UserRoleRoute, userRoleHandler.ServeHTTP)
 	})
 
 	return r

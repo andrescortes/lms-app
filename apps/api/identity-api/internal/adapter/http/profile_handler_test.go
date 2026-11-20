@@ -68,7 +68,7 @@ func newProfileRouter(repo *profileRepoStub, users *profileUserStub, verifyErr e
 	updateUc := usecase.NewUpdateProfileUseCase(repo, users, &stubVerifier2{err: verifyErr}, &profileHasherStub{})
 	return NewRouter(
 		nil, nil, nil, nil,
-		getUc, updateUc, nil,
+		getUc, updateUc, nil, nil,
 		&stubVerifier{claims: usecase.TokenClaims{UserID: "u1", Role: "STUDENT"}},
 		NewVisitorLimiter(),
 		nil,
@@ -86,7 +86,7 @@ func newProfileRouterUnauthenticated() http.Handler {
 	updateUc := usecase.NewUpdateProfileUseCase(repo, &profileUserStub{}, &stubVerifier2{}, &profileHasherStub{})
 	return NewRouter(
 		nil, nil, nil, nil,
-		getUc, updateUc, nil,
+		getUc, updateUc, nil, nil,
 		&stubVerifier{err: domain.ErrInvalidToken},
 		NewVisitorLimiter(),
 		nil,

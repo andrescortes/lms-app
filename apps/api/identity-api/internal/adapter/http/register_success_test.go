@@ -16,7 +16,7 @@ import (
 func TestRegisterRespondsWithinBudget(t *testing.T) {
 	uc := usecase.NewRegisterUserUseCase(stubStore{}, stubHasher{hash: "hashed"}, stubID{}, stubClock{}, stubPublisher{})
 	loginUc := usecase.NewLoginUserUseCase(nil, nil, nil, nil, nil, nil)
-	h := NewRouter(uc, loginUc, nil, nil, nil, nil, nil, nil, NewVisitorLimiter(), nil)
+	h := NewRouter(uc, loginUc, nil, nil, nil, nil, nil, nil, nil, NewVisitorLimiter(), nil)
 
 	req := httptest.NewRequest(http.MethodPost, RegisterRoute, nil)
 	req.Header.Set("Content-Type", "application/json")

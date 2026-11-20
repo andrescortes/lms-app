@@ -484,6 +484,75 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/identity/users/{id}/role:
+    patch:
+      tags:
+        - Identity
+      operationId: changeUserRole
+      security:
+        - bearerAuth: []
+      summary: Set another account's role
+      description: >-
+        Sets the target account's role to one of the four defined roles and returns
+        the updated account. An administrator cannot change their own role. The
+        response never contains a password.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeRoleRequest'
+      responses:
+        '200':
+          description: The updated account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSummary'
+        '400':
+          description: The body is malformed or carries unknown fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The bearer credential is missing, malformed, or expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: >-
+            The caller is not an administrator, or is targeting their own account.
+            The code is FORBIDDEN.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: forbidden
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/users/9f1c7d3e/role
+        '404':
+          description: No account has that id. The code is NOT_FOUND.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: The role is not one of the four defined values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   securitySchemes:
     bearerAuth:
@@ -721,6 +790,15 @@ components:
         createdAt:
           type: string
           format: date-time
+    ChangeRoleRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - role
+      properties:
+        role:
+          type: string
+          enum: [STUDENT, TEACHER, ADMIN, REVIEWER]
     ErrorResponse:
       type: object
       additionalProperties: false

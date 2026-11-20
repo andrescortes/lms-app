@@ -120,9 +120,10 @@ func run() error {
 	getProfileUc := usecase.NewGetProfileUseCase(profiles)
 	updateProfileUc := usecase.NewUpdateProfileUseCase(profiles, users, hasher, hasher)
 	listUsersUc := usecase.NewListUsersUseCase(adaptersqlite.NewUserLister(db))
+	changeUserRoleUc := usecase.NewChangeUserRoleUseCase(adaptersqlite.NewUserRoleUpdater(db))
 
 	limiter := adapterhttp.NewVisitorLimiter()
-	router := adapterhttp.NewRouter(uc, loginUc, refreshUc, logoutUc, getProfileUc, updateProfileUc, listUsersUc, tokens, limiter, logger)
+	router := adapterhttp.NewRouter(uc, loginUc, refreshUc, logoutUc, getProfileUc, updateProfileUc, listUsersUc, changeUserRoleUc, tokens, limiter, logger)
 
 	srv := &http.Server{
 		Addr:              ":" + cfg.httpPort,

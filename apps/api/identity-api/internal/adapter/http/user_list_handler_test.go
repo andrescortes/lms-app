@@ -27,11 +27,14 @@ func (f *listStub) ListUsers(_ context.Context, filter usecase.ListFilter) (usec
 	return f.page, f.err
 }
 
-// stubVerifierWithRole trusts any token and reports the given role.
-type stubVerifierWithRole struct{ role string }
+// stubVerifierWithRole trusts any token and reports the given caller id and role.
+type stubVerifierWithRole struct {
+	userID string
+	role   string
+}
 
 func (v stubVerifierWithRole) Verify(context.Context, string) (usecase.TokenClaims, error) {
-	return usecase.TokenClaims{UserID: "u-admin", Role: v.role}, nil
+	return usecase.TokenClaims{UserID: v.userID, Role: v.role}, nil
 }
 
 // adminRouter mounts the list route behind the real middlewares with a fixed caller role.
@@ -39,7 +42,8 @@ func adminRouter(repo *listStub, role string) http.Handler {
 	return NewRouter(
 		nil, nil, nil, nil, nil, nil,
 		usecase.NewListUsersUseCase(repo),
-		stubVerifierWithRole{role: role},
+		nil,
+		stubVerifierWithRole{userID: "u-admin", role: role},
 		NewVisitorLimiter(),
 		nil,
 	)
@@ -134,6 +138,7 @@ func TestListUsersRequiresBearer(t *testing.T) {
 	h := NewRouter(
 		nil, nil, nil, nil, nil, nil,
 		usecase.NewListUsersUseCase(repo),
+		nil,
 		&stubVerifier{err: domain.ErrInvalidToken},
 		NewVisitorLimiter(),
 		nil,
