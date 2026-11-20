@@ -55,7 +55,7 @@ func (f *loginStubRefresh) Rotate(context.Context, string, string, string, time.
 
 func newLoginRouter(t *testing.T, uc *usecase.LoginUserUseCase) http.Handler {
 	t.Helper()
-	return NewRouter(nil, uc, nil, nil, nil, nil, nil, NewVisitorLimiter(), nil)
+	return NewRouter(nil, uc, nil, nil, nil, nil, nil, nil, NewVisitorLimiter(), nil)
 }
 
 func postLogin(handler http.Handler, remoteAddr, body string) *httptest.ResponseRecorder {

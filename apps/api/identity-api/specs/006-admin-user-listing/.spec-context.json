@@ -1,0 +1,594 @@
+{
+  "workflow": "companion",
+  "specName": "Admin User Listing (CU-AUTH-06 / HU-17)",
+  "branch": "feature/identity-api",
+  "currentStep": "converge",
+  "status": "implemented",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:21:38.727Z"
+    },
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T01:22:15.809Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:22:16.023Z"
+    },
+    {
+      "step": "plan",
+      "substep": "research",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:22:53.410Z"
+    },
+    {
+      "step": "plan",
+      "substep": "design",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:22:53.640Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:22:53.911Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:23:14.470Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:23:15.491Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:23:15.638Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T001",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.325Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T002",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.326Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T003",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.334Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T004",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.334Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T005",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.334Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T006",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.335Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T007",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.541Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T008",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.542Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T009",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.542Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T010",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.749Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T011",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.749Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T012",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.750Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T013",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.958Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T014",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.958Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T015",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.958Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T016",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:54.959Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:28:55.029Z"
+    },
+    {
+      "step": "converge",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:30:35.131Z"
+    }
+  ],
+  "unattended": true,
+  "request": "\"Implement Admin User Listing (CU-AUTH-06 / HU-17) at GET /api/identity/users. Load and apply `.agents/skills/*/SKILL.md` and follow constitution rules:\n1. Domain (`internal/domain`, stdlib only): validate filter values (`role` against valid `Role` enum, `cefrLevel` if provided) and pagination bounds (`page >= 1` default `1`, `limit` between `1` and `100` default `20`), returning a validation error on invalid filter/pagination parameters.\n2. Database (`db/queries/users.sql` + `sqlc generate`): add paginated user listing and total-count queries against the existing `users` table (`id`, `email`, `display_name`, `role`, `cefr_level`, `created_at` â€” never selecting `password_hash`), supporting optional filters by `role`, `cefr_level`, and case-insensitive substring match (`q`) on `email` or `display_name`, ordered by `created_at DESC, id ASC`.\n3. SQLite Adapter (`internal/adapter/sqlite/`): implement `ListUsers(ctx, ListUsersFilter) (UserPage, error)` wrapping the `sqlc` queries.\n4. Use Case (`internal/usecase/list_users.go`): implement `ListUsersUseCase.Execute(ctx, ListUsersQuery{Role, CEFRLevel, Search, Page, Limit}) (UserPageResult, error)` normalizing defaults and delegating to the consumer-defined `UserLister` repository interface.\n5. HTTP, OpenAPI & Wiring (`internal/adapter/http/`, `cmd/api/main.go`):\n   - Register `GET /api/identity/users` inside a `chi` route group guarded by `Authenticate` and `RequireRole(\\\"ADMIN\\\")`.\n   - Parse query params (`role`, `cefrLevel`, `q`, `page`, `limit`) and return `200 OK` with `{\\\"items\\\": [{\\\"id\\\", \\\"email\\\", \\\"displayName\\\", \\\"role\\\", \\\"cefrLevel\\\", \\\"createdAt\\\"}], \\\"total\\\": N, \\\"page\\\": P, \\\"limit\\\": L}`.\n   - Return `401` when unauthenticated, `403` (`FORBIDDEN`) when caller is not `ADMIN`, and `400`/`422` on invalid query parameters via `respondError`.\n   - Update `contracts/identity.openapi.yaml` and `shared/contracts/identity.openapi.yaml`; wire `ListUsersUseCase` in `cmd/api/main.go`.\n6. Tests (stdlib `testing`): add unit tests for `ListUsersUseCase`, `:memory:` SQLite integration tests (pagination, role/CEFR/search filters, empty results), and `httptest` handler tests covering `200`, `400`/`422`, `401`, and `403`.\"",
+  "expectations": [
+    "the list is read-only; editing or deleting accounts is out of scope",
+    "no separate admin permission system; role ADMIN on the token is the check"
+  ],
+  "context": [
+    "area: internal/adapter/http (middleware.go Authenticate and RequireRole already exist; respond_error.go)",
+    "area: internal/adapter/sqlite (user_repository.go, profile_store.go)",
+    "constraint: ParseRole returns ErrUnknownRole for unknown roles; CEFRLevel is free text"
+  ],
+  "coverage": {
+    "FR-001": {
+      "title": "Return a page of user summaries with no password",
+      "tasks": [
+        "T007",
+        "T008",
+        "T009",
+        "T015"
+      ],
+      "tests": [
+        "internal/adapter/http/user_list_handler_test.go::TestListUsersReturnsPage"
+      ]
+    },
+    "FR-002": {
+      "title": "Newest first with a deterministic tie-break for stable paging",
+      "tasks": [
+        "T002",
+        "T012"
+      ],
+      "tests": [
+        "internal/adapter/sqlite/user_lister_test.go::TestListUsersNewestFirst"
+      ]
+    },
+    "FR-003": {
+      "title": "Report the filtered total independent of the page",
+      "tasks": [
+        "T002",
+        "T006",
+        "T010"
+      ],
+      "tests": [
+        "internal/adapter/sqlite/user_lister_test.go::TestListUsersPagingIsStable"
+      ]
+    },
+    "FR-004": {
+      "title": "Filter by role, learning level, and case-insensitive text",
+      "tasks": [
+        "T010",
+        "T011"
+      ],
+      "tests": [
+        "internal/adapter/sqlite/user_lister_test.go::TestListUsersSearchIsCaseInsensitive"
+      ]
+    },
+    "FR-005": {
+      "title": "Default page 1 limit 20; limit 1 to 100; refuse others",
+      "tasks": [
+        "T004",
+        "T014"
+      ],
+      "tests": [
+        "internal/adapter/http/user_list_handler_test.go::TestListUsersInvalidParametersReturn422"
+      ]
+    },
+    "FR-006": {
+      "title": "Refuse an unknown role or learning level",
+      "tasks": [
+        "T004",
+        "T014"
+      ]
+    },
+    "FR-007": {
+      "title": "Administrator only: 401 unauthenticated, 403 non-admin",
+      "tasks": [
+        "T013"
+      ]
+    }
+  },
+  "classification": {
+    "projectedFiles": 9,
+    "projectedTasks": 14,
+    "scopeSignal": "none",
+    "verdict": "normal"
+  },
+  "intent": "Add GET /api/identity/users for administrators with pagination, role and level filters, and case-insensitive search.",
+  "size": "normal",
+  "source": "CU-AUTH-06",
+  "decisions": [
+    {
+      "decision": "Each filter is a nullable SQL parameter with (? IS NULL OR column = ?) in both the page and count queries.",
+      "why": "The two queries share one predicate, so the page and the total cannot disagree.",
+      "rejected": "Dynamically built WHERE clauses in Go",
+      "by": "agent",
+      "at": "2026-11-20T01:22:53.077Z"
+    },
+    {
+      "decision": "Search lowercases both the term and the columns and uses LIKE.",
+      "why": "SQLite LIKE is case-insensitive only for ASCII by default; lowercasing both sides makes the behaviour explicit.",
+      "rejected": "LIKE COLLATE NOCASE",
+      "by": "agent",
+      "at": "2026-11-20T01:22:53.077Z"
+    },
+    {
+      "decision": "Order by created_at DESC, id ASC.",
+      "why": "Two accounts created in the same instant would otherwise page unstably.",
+      "rejected": "created_at DESC alone",
+      "by": "agent",
+      "at": "2026-11-20T01:22:53.077Z"
+    },
+    {
+      "decision": "Pagination and filter rules live in the domain, not the handler.",
+      "why": "They are business rules and a non-HTTP caller must get the same guarantees.",
+      "rejected": "Validate in the handler",
+      "by": "agent",
+      "at": "2026-11-20T01:22:53.077Z"
+    },
+    {
+      "decision": "Roles are validated against ParseRole; learning levels are matched as stored text.",
+      "why": "Registration never constrained the level, so validating against a scale would refuse legitimate data.",
+      "rejected": "Validate levels against the CEFR scale",
+      "by": "agent",
+      "at": "2026-11-20T01:22:53.077Z"
+    }
+  ],
+  "step_summaries": {
+    "plan": {
+      "summary": "Plan: shared WHERE predicate for page and count, lowercased search, stable ordering, domain-owned validation.",
+      "key_finding": "Authenticate and RequireRole already exist, so the admin gate is a route decoration rather than new middleware."
+    },
+    "tasks": {
+      "summary": "16 tasks: Setup, Foundational storage and validation, US1 list, US2 filters, US3 paging, US4 admin gate, US5 parameter refusal, Polish."
+    }
+  },
+  "approach": "Add a UserLister port over a paginated list and count query pair sharing one predicate, domain validation of filters and bounds, a use case that normalizes defaults, and an admin-guarded handler.",
+  "verified": [
+    {
+      "what": "test",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go test ./...\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "?   \tlms-english/identity-service/internal/adapter/sqlite/sqlc\t[no test files] · ok  \tlms-english/identity-service/internal/domain\t(cached) · ok  \tlms-english/identity-service/internal/usecase\t(cached)",
+      "commit": "711b66c",
+      "tree": "2eb1695880bcc71926e24d9ac50da4c5f5173662"
+    },
+    {
+      "what": "lint",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work golangci-lint run\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "0 issues.",
+      "commit": "711b66c",
+      "tree": "5a6078c4d35c3fceab8623c4adab5f0ac8815b34"
+    },
+    {
+      "what": "build",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && CGO_ENABLED=0 GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go build ./cmd/api\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "no output",
+      "commit": "711b66c",
+      "tree": "082ab17d6fb0904ec2394b35bd2734d704d45cb7"
+    },
+    {
+      "what": "sqlc-stable",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work sha1sum internal/adapter/sqlite/sqlc/*.go > /tmp/l6.sha && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work sqlc generate && sha1sum -c /tmp/l6.sha --quiet\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.2,
+      "result": "no output",
+      "commit": "711b66c",
+      "tree": "d08bb0c5c70cc6b4377ed31f1abb13e5a38a9d54"
+    }
+  ],
+  "currentTask": "T016",
+  "task_summaries": {
+    "T001": {
+      "status": "DONE",
+      "did": "Contract merged; list and count queries with named args; domain validation; UserLister port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/domain/listing.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_lister.go"
+      ]
+    },
+    "T002": {
+      "status": "DONE",
+      "did": "Contract merged; list and count queries with named args; domain validation; UserLister port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/domain/listing.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_lister.go"
+      ]
+    },
+    "T003": {
+      "status": "DONE",
+      "did": "Contract merged; list and count queries with named args; domain validation; UserLister port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/domain/listing.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_lister.go"
+      ]
+    },
+    "T004": {
+      "status": "DONE",
+      "did": "Contract merged; list and count queries with named args; domain validation; UserLister port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/domain/listing.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_lister.go"
+      ]
+    },
+    "T005": {
+      "status": "DONE",
+      "did": "Contract merged; list and count queries with named args; domain validation; UserLister port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/domain/listing.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_lister.go"
+      ]
+    },
+    "T006": {
+      "status": "DONE",
+      "did": "Contract merged; list and count queries with named args; domain validation; UserLister port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/domain/listing.go",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/user_lister.go"
+      ]
+    },
+    "T007": {
+      "status": "DONE",
+      "did": "List use case with defaults, handler, admin-guarded route",
+      "files": [
+        "internal/usecase/list_users.go",
+        "internal/usecase/list_users_test.go",
+        "internal/adapter/sqlite/user_lister_test.go",
+        "internal/adapter/http/user_list_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T008": {
+      "status": "DONE",
+      "did": "List use case with defaults, handler, admin-guarded route",
+      "files": [
+        "internal/usecase/list_users.go",
+        "internal/usecase/list_users_test.go",
+        "internal/adapter/sqlite/user_lister_test.go",
+        "internal/adapter/http/user_list_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T009": {
+      "status": "DONE",
+      "did": "List use case with defaults, handler, admin-guarded route",
+      "files": [
+        "internal/usecase/list_users.go",
+        "internal/usecase/list_users_test.go",
+        "internal/adapter/sqlite/user_lister_test.go",
+        "internal/adapter/http/user_list_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T010": {
+      "status": "DONE",
+      "did": "Role, level and case-insensitive search filters plus stable paging tests",
+      "files": [
+        "internal/adapter/sqlite/user_lister.go",
+        "internal/adapter/sqlite/user_lister_test.go"
+      ]
+    },
+    "T011": {
+      "status": "DONE",
+      "did": "Role, level and case-insensitive search filters plus stable paging tests",
+      "files": [
+        "internal/adapter/sqlite/user_lister.go",
+        "internal/adapter/sqlite/user_lister_test.go"
+      ]
+    },
+    "T012": {
+      "status": "DONE",
+      "did": "Role, level and case-insensitive search filters plus stable paging tests",
+      "files": [
+        "internal/adapter/sqlite/user_lister.go",
+        "internal/adapter/sqlite/user_lister_test.go"
+      ]
+    },
+    "T013": {
+      "status": "DONE",
+      "did": "Admin gate, parameter refusals, response shape, wiring, verification gate",
+      "files": [
+        "internal/adapter/http/user_list_handler_test.go",
+        "internal/domain/listing_test.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T014": {
+      "status": "DONE",
+      "did": "Admin gate, parameter refusals, response shape, wiring, verification gate",
+      "files": [
+        "internal/adapter/http/user_list_handler_test.go",
+        "internal/domain/listing_test.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T015": {
+      "status": "DONE",
+      "did": "Admin gate, parameter refusals, response shape, wiring, verification gate",
+      "files": [
+        "internal/adapter/http/user_list_handler_test.go",
+        "internal/domain/listing_test.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T016": {
+      "status": "DONE",
+      "did": "Admin gate, parameter refusals, response shape, wiring, verification gate",
+      "files": [
+        "internal/adapter/http/user_list_handler_test.go",
+        "internal/domain/listing_test.go",
+        "cmd/api/main.go"
+      ]
+    }
+  },
+  "concerns": [
+    {
+      "note": "go test -race ./... could not run: the race detector requires cgo and no C compiler is installed here.",
+      "step": "implement"
+    },
+    {
+      "note": "sqlc rewrites a repeated sqlc.narg into positional ?1..?3 only when a later named arg forces numbering; LIMIT/OFFSET therefore use sqlc.arg so the filter params stay correctly bound. A change to this query must re-check the generated argument order.",
+      "step": "implement"
+    }
+  ],
+  "convergeStartedAt": "2026-11-20T01:30:35.230Z",
+  "convergePasses": [
+    {
+      "startedAt": "2026-11-20T01:30:35.344Z",
+      "by": "extension",
+      "before": [
+        "T001",
+        "T002",
+        "T003",
+        "T004",
+        "T005",
+        "T006",
+        "T007",
+        "T008",
+        "T009",
+        "T010",
+        "T011",
+        "T012",
+        "T013",
+        "T014",
+        "T015",
+        "T016"
+      ]
+    }
+  ]
+}

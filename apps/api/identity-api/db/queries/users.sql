@@ -98,3 +98,33 @@ SET native_language = ?,
     timezone = ?,
     avatar_url = ?
 WHERE user_id = ?;
+
+-- name: ListUsersPage :many
+SELECT
+    id,
+    email,
+    display_name,
+    role,
+    cefr_level,
+    created_at
+FROM users
+WHERE (sqlc.narg('role') IS NULL OR role = sqlc.narg('role'))
+  AND (sqlc.narg('cefr_level') IS NULL OR cefr_level = sqlc.narg('cefr_level'))
+  AND (
+        sqlc.narg('search') IS NULL
+     OR lower(email) LIKE '%' || sqlc.narg('search') || '%'
+     OR lower(display_name) LIKE '%' || sqlc.narg('search') || '%'
+  )
+ORDER BY created_at DESC, id ASC
+LIMIT sqlc.arg('page_limit') OFFSET sqlc.arg('page_offset');
+
+-- name: CountUsers :one
+SELECT COUNT(*)
+FROM users
+WHERE (sqlc.narg('role') IS NULL OR role = sqlc.narg('role'))
+  AND (sqlc.narg('cefr_level') IS NULL OR cefr_level = sqlc.narg('cefr_level'))
+  AND (
+        sqlc.narg('search') IS NULL
+     OR lower(email) LIKE '%' || sqlc.narg('search') || '%'
+     OR lower(display_name) LIKE '%' || sqlc.narg('search') || '%'
+  );

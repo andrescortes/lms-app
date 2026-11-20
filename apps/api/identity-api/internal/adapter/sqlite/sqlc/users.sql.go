@@ -9,6 +9,31 @@ import (
 	"context"
 )
 
+const countUsers = `-- name: CountUsers :one
+SELECT COUNT(*)
+FROM users
+WHERE (?1 IS NULL OR role = ?1)
+  AND (?2 IS NULL OR cefr_level = ?2)
+  AND (
+        ?3 IS NULL
+     OR lower(email) LIKE '%' || ?3 || '%'
+     OR lower(display_name) LIKE '%' || ?3 || '%'
+  )
+`
+
+type CountUsersParams struct {
+	Role      interface{} `json:"role"`
+	CefrLevel interface{} `json:"cefr_level"`
+	Search    interface{} `json:"search"`
+}
+
+func (q *Queries) CountUsers(ctx context.Context, arg CountUsersParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countUsers, arg.Role, arg.CefrLevel, arg.Search)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createProfile = `-- name: CreateProfile :exec
 INSERT INTO profiles (
     user_id,
@@ -210,6 +235,79 @@ func (q *Queries) GetUserWithProfileByID(ctx context.Context, id string) (GetUse
 		&i.AvatarUrl,
 	)
 	return i, err
+}
+
+const listUsersPage = `-- name: ListUsersPage :many
+SELECT
+    id,
+    email,
+    display_name,
+    role,
+    cefr_level,
+    created_at
+FROM users
+WHERE (?1 IS NULL OR role = ?1)
+  AND (?2 IS NULL OR cefr_level = ?2)
+  AND (
+        ?3 IS NULL
+     OR lower(email) LIKE '%' || ?3 || '%'
+     OR lower(display_name) LIKE '%' || ?3 || '%'
+  )
+ORDER BY created_at DESC, id ASC
+LIMIT ?5 OFFSET ?4
+`
+
+type ListUsersPageParams struct {
+	Role       interface{} `json:"role"`
+	CefrLevel  interface{} `json:"cefr_level"`
+	Search     interface{} `json:"search"`
+	PageOffset int64       `json:"page_offset"`
+	PageLimit  int64       `json:"page_limit"`
+}
+
+type ListUsersPageRow struct {
+	ID          string      `json:"id"`
+	Email       string      `json:"email"`
+	DisplayName string      `json:"display_name"`
+	Role        string      `json:"role"`
+	CefrLevel   interface{} `json:"cefr_level"`
+	CreatedAt   string      `json:"created_at"`
+}
+
+func (q *Queries) ListUsersPage(ctx context.Context, arg ListUsersPageParams) ([]ListUsersPageRow, error) {
+	rows, err := q.db.QueryContext(ctx, listUsersPage,
+		arg.Role,
+		arg.CefrLevel,
+		arg.Search,
+		arg.PageOffset,
+		arg.PageLimit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListUsersPageRow{}
+	for rows.Next() {
+		var i ListUsersPageRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Email,
+			&i.DisplayName,
+			&i.Role,
+			&i.CefrLevel,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateProfileFields = `-- name: UpdateProfileFields :exec

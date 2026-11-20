@@ -19,6 +19,8 @@ var (
 	ErrEmailAlreadyExists = errors.New("email already exists")
 	// ErrInvalidDisplayName reports a display name that is present but blank.
 	ErrInvalidDisplayName = errors.New("invalid display name")
+	// ErrInvalidFilter reports a list filter or pagination value that is not allowed.
+	ErrInvalidFilter = errors.New("invalid filter")
 )
 
 // ValidationCode identifies the specific rule a validation error violated so the
@@ -34,6 +36,10 @@ const (
 	CodePasswordTooLong     ValidationCode = "password_too_long"
 	CodePasswordNoUppercase ValidationCode = "password_no_uppercase"
 	CodePasswordNoDigit     ValidationCode = "password_no_digit"
+	// List filter and pagination codes.
+	CodePageInvalid  ValidationCode = "page_invalid"
+	CodeLimitInvalid ValidationCode = "limit_invalid"
+	CodeRoleInvalid  ValidationCode = "role_invalid"
 )
 
 // ValidationError is a typed error that carries both a sentinel (for errors.Is)

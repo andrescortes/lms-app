@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
+	"lms-english/identity-service/internal/domain"
 	"lms-english/identity-service/internal/usecase"
 )
 
@@ -27,6 +28,9 @@ const LogoutRoute = "/api/identity/auth/logout"
 // ProfileRoute is the caller's own account and profile. It requires a bearer token.
 const ProfileRoute = "/api/identity/users/me"
 
+// UsersRoute lists accounts. It requires an ADMIN bearer token.
+const UsersRoute = "/api/identity/users"
+
 // AuthenticatedRouteGroup is the chi group prefix for routes that require a
 // valid access token.
 const AuthenticatedRouteGroup = "/api/identity/auth"
@@ -40,6 +44,7 @@ func NewRouter(
 	logoutUc *usecase.LogoutUseCase,
 	getProfileUc *usecase.GetProfileUseCase,
 	updateProfileUc *usecase.UpdateProfileUseCase,
+	listUsersUc *usecase.ListUsersUseCase,
 	verifier usecase.TokenVerifier,
 	limiter *VisitorLimiter,
 	logger *slog.Logger,
@@ -76,6 +81,9 @@ func NewRouter(
 		protected.Post(LogoutRoute, logoutHandler.ServeHTTP)
 		protected.With(withProfileErrorCodes).Get(ProfileRoute, getProfileHandler.ServeHTTP)
 		protected.With(withProfileErrorCodes).Patch(ProfileRoute, updateProfileHandler.ServeHTTP)
+
+		userListHandler := &userListHandler{uc: listUsersUc}
+		protected.With(RequireRole(domain.RoleAdmin.String())).Get(UsersRoute, userListHandler.ServeHTTP)
 	})
 
 	return r

@@ -407,6 +407,83 @@ paths:
                 message: password must contain at least one uppercase letter
                 timestamp: '2026-11-20T10:15:30.123Z'
                 path: /api/identity/users/me
+  /api/identity/users:
+    get:
+      tags:
+        - Identity
+      operationId: listUsers
+      security:
+        - bearerAuth: []
+      summary: List accounts, newest first
+      description: >-
+        Returns one page of account summaries and the total count of accounts
+        matching the filters. Requires an ADMIN caller. No password is ever
+        returned.
+      parameters:
+        - name: role
+          in: query
+          description: Restrict to one role.
+          schema:
+            type: string
+        - name: cefrLevel
+          in: query
+          description: Restrict to one stored learning level.
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Case-insensitive fragment matched against email or display name.
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: One page of accounts with the filtered total.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPage'
+        '400':
+          description: A query parameter is not a number.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The bearer credential is missing, malformed, or expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The caller is authenticated but is not an administrator. The code is FORBIDDEN.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: forbidden
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/users
+        '422':
+          description: A page, limit, role, or level value is not allowed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   securitySchemes:
     bearerAuth:
@@ -599,6 +676,51 @@ components:
         newPassword:
           type: string
           description: Must meet the password policy.
+    UserPage:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - total
+        - page
+        - limit
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSummary'
+        total:
+          type: integer
+          description: Number of accounts matching the filters.
+        page:
+          type: integer
+        limit:
+          type: integer
+    UserSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - email
+        - displayName
+        - role
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        displayName:
+          type: string
+        role:
+          type: string
+        cefrLevel:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
     ErrorResponse:
       type: object
       additionalProperties: false

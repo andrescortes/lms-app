@@ -39,7 +39,7 @@ func newRefreshRouter(t *testing.T, repo *refreshStubRepo) http.Handler {
 		stubID{},
 		stubClock{},
 	)
-	return NewRouter(nil, nil, uc, nil, nil, nil, nil, NewVisitorLimiter(), nil)
+	return NewRouter(nil, nil, uc, nil, nil, nil, nil, nil, NewVisitorLimiter(), nil)
 }
 
 func postRefresh(handler http.Handler, remoteAddr, body string) *httptest.ResponseRecorder {

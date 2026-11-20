@@ -143,3 +143,35 @@ type ProfileStore interface {
 	GetUserProfile(ctx context.Context, userID string) (ProfileView, error)
 	UpdateUserProfile(ctx context.Context, userID string, change ProfileChange) error
 }
+
+// UserSummary is one account as it appears in the admin list. It carries no
+// password material.
+type UserSummary struct {
+	ID          string
+	Email       string
+	DisplayName string
+	Role        domain.Role
+	CEFRLevel   *domain.CEFRLevel
+	CreatedAt   time.Time
+}
+
+// ListFilter narrows the admin list. An empty field means no filter on that field.
+type ListFilter struct {
+	Role      string
+	CEFRLevel string
+	Search    string
+	Limit     int
+	Offset    int
+}
+
+// UserPage is one page of the admin list and the total number of accounts matching
+// the filter.
+type UserPage struct {
+	Items []UserSummary
+	Total int
+}
+
+// UserLister reads pages of accounts for the admin list.
+type UserLister interface {
+	ListUsers(ctx context.Context, filter ListFilter) (UserPage, error)
+}

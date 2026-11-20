@@ -84,6 +84,8 @@ func classify(err error) (int, string, string) {
 		return http.StatusUnprocessableEntity, codeValidation, validationDetail(err, "password does not meet the policy")
 	case errors.Is(err, domain.ErrInvalidDisplayName):
 		return http.StatusUnprocessableEntity, codeValidation, "display name must not be blank"
+	case errors.Is(err, domain.ErrInvalidFilter):
+		return http.StatusUnprocessableEntity, codeValidation, validationDetail(err, "a list filter is not valid")
 	case errors.Is(err, domain.ErrEmailAlreadyExists):
 		return http.StatusConflict, codeEmailExists, "an account with this email already exists"
 	case errors.Is(err, domain.ErrInvalidCredentials):

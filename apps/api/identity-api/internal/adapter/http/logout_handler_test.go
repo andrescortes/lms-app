@@ -38,7 +38,7 @@ func newLogoutRouter(t *testing.T, repo *logoutStub) http.Handler {
 	return NewRouter(
 		nil, nil, nil,
 		usecase.NewLogoutUseCase(repo),
-		nil, nil,
+		nil, nil, nil,
 		&stubVerifier{claims: usecase.TokenClaims{UserID: "user-1", Role: "STUDENT"}},
 		NewVisitorLimiter(),
 		nil,
@@ -108,7 +108,7 @@ func TestLogoutInvalidBearerReturns401(t *testing.T) {
 	h := NewRouter(
 		nil, nil, nil,
 		usecase.NewLogoutUseCase(&logoutStub{}),
-		nil, nil,
+		nil, nil, nil,
 		&stubVerifier{err: domain.ErrInvalidToken},
 		NewVisitorLimiter(),
 		nil,
