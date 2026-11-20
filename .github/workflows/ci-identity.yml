@@ -56,7 +56,7 @@ jobs:
         run: CGO_ENABLED=0 go build ./cmd/api
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v7
         with:
           version: v2.1.6
           working-directory: apps/api/identity-api
