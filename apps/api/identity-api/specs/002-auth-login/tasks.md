@@ -130,3 +130,13 @@ Independent test tasks and adapter tasks can be prepared once the foundational a
 - `DB_PATH` is an environment example, not a hardcoded default (constitution IV).
 - The login rate limit reuses the per-visitor limiter machinery rather than a new type (research Decision 3).
 - Write each story's tests first and confirm they fail before implementation; commit after each task or logical group.
+
+## Phase 7: Convergence
+
+- [x] **T017** Return `domain.ErrInvalidCredentials` when `UserRepository.FindByEmail` reports not found, so an unregistered email and a wrong password produce the same 401 outcome per FR-003 / US2/AC2 (partial)
+- [x] **T018** Add an `httptest` login case for an unregistered email asserting 401 with `invalid_credentials` and no account details per FR-003 / SC-002 (partial)
+- [x] **T019** Add an `httptest` login case for a malformed email asserting 422 `validation_error` per FR-001 (partial)
+- [x] **T020** Add a SQLite integration test asserting `RefreshTokenRepository.Store` writes one row with the 7d expiry and `Revoke` marks it revoked per SC-004 / data-model RefreshToken (partial)
+- [x] **T021** Add `jwt_token_provider_test.go` asserting the issued token parses with HS256, carries the user id as `sub` and the role claim, and expires 15 minutes after issue per plan: jwt_token_provider_test.go (partial)
+- [x] **T022** Remove the unused `NewLoginAttemptLimiter` and `NewVisitorLimiterWithPolicy` left behind when login moved to `httprate`, or record why the registration limiter needs them per plan: Project Structure (unrequested)
+- [x] **T023** Add SQLite adapter tests for `UserRepository.FindByEmail` (found and not found) and `RefreshTokenRepository` (`Store`, `Revoke`) per Constitution IV / SC-004 (unrequested)

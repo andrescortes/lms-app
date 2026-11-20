@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -127,4 +128,44 @@ func TestLoginMalformedRequestReturns400(t *testing.T) {
 	if rec.Code != http.StatusBadRequest {
 		t.Fatalf("status = %d, want 400", rec.Code)
 	}
+}
+
+// TestLoginUnknownEmailReturnsGeneric401 verifies an unregistered email is
+// indistinguishable from a wrong password: 401 invalid_credentials, never 404.
+func TestLoginUnknownEmailReturnsGeneric401(t *testing.T) {
+	uc := usecase.NewLoginUserUseCase(
+		&loginStubUserRepo{err: fmt.Errorf("find user by email: %w", domain.ErrNotFound)},
+		&loginStubVerify{},
+		&loginStubToken{},
+		&loginStubRefresh{},
+		stubID{},
+		stubClock{},
+	)
+	h := newLoginRouter(t, uc)
+
+	rec := postLogin(h, "10.2.2.5:1234", `{"email":"nobody@example.com","password":"Learn123"}`)
+	if rec.Code != http.StatusUnauthorized {
+		t.Fatalf("status = %d, want 401; body=%s", rec.Code, rec.Body.String())
+	}
+	assertEnvelope(t, rec.Body.Bytes(), codeUnauthenticated)
+}
+
+// TestLoginMalformedEmailReturns422 verifies a malformed email is rejected as a
+// validation failure naming the email rule.
+func TestLoginMalformedEmailReturns422(t *testing.T) {
+	uc := usecase.NewLoginUserUseCase(
+		&loginStubUserRepo{},
+		&loginStubVerify{},
+		&loginStubToken{},
+		&loginStubRefresh{},
+		stubID{},
+		stubClock{},
+	)
+	h := newLoginRouter(t, uc)
+
+	rec := postLogin(h, "10.2.2.6:1234", `{"email":"no-at-sign","password":"Learn123"}`)
+	if rec.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("status = %d, want 422; body=%s", rec.Code, rec.Body.String())
+	}
+	assertEnvelope(t, rec.Body.Bytes(), codeValidation)
 }

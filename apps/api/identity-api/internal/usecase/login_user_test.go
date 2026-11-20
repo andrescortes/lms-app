@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -115,5 +116,19 @@ func TestLoginMalformedEmailFailsBeforeVerification(t *testing.T) {
 	}
 	if token.token != "access" || refresh.calls != 0 {
 		t.Fatal("token or refresh store touched after malformed email")
+	}
+}
+
+func TestLoginUnknownEmailReportsInvalidCredentials(t *testing.T) {
+	repo := &loginUserRepo{err: fmt.Errorf("find user by email: %w", domain.ErrNotFound)}
+	refresh := &loginRefresh{}
+	uc := newLoginUseCase(repo, &loginVerify{}, &loginToken{token: "access"}, refresh)
+
+	_, err := uc.Execute(context.Background(), LoginUserCommand{Email: "nobody@example.com", Password: "Learn123"})
+	if !errors.Is(err, domain.ErrInvalidCredentials) {
+		t.Fatalf("Execute error = %v, want ErrInvalidCredentials", err)
+	}
+	if refresh.calls != 0 {
+		t.Fatal("refresh token stored for an unknown account")
 	}
 }

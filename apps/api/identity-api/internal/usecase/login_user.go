@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"time"
 
@@ -63,6 +64,12 @@ func (uc *LoginUserUseCase) Execute(ctx context.Context, cmd LoginUserCommand) (
 	}
 	user, err := uc.repo.FindByEmail(ctx, email)
 	if err != nil {
+		// A missing account and a wrong password must be indistinguishable, so
+		// the lookup failure is reported as failed authentication, never as a
+		// not-found that would reveal whether the account exists.
+		if errors.Is(err, domain.ErrNotFound) {
+			return LoginUserResult{}, domain.ErrInvalidCredentials
+		}
 		return LoginUserResult{}, fmt.Errorf("find user: %w", err)
 	}
 	if err := uc.verify.Verify(user.PasswordHash, cmd.Password); err != nil {
