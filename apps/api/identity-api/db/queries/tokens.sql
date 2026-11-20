@@ -35,3 +35,11 @@ WHERE jti = ?;
 UPDATE refresh_tokens
 SET revoked_at = ?
 WHERE user_id = ? AND revoked_at IS NULL;
+
+-- name: RevokeRefreshTokenByOwner :execrows
+UPDATE refresh_tokens
+SET revoked_at = ?
+WHERE jti = ?
+  AND user_id = ?
+  AND revoked_at IS NULL
+  AND expires_at > ?;

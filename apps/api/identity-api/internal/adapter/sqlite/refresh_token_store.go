@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"lms-english/identity-service/internal/adapter/sqlite/sqlc"
+	"lms-english/identity-service/internal/domain"
 	"lms-english/identity-service/internal/usecase"
 )
 
@@ -129,4 +130,25 @@ func (s *RefreshTokenRepository) Rotate(ctx context.Context, presented, newJTI, 
 func hashToken(token string) string {
 	sum := sha256.Sum256([]byte(token))
 	return hex.EncodeToString(sum[:])
+}
+
+// RevokeByJTI ends one session, but only when the token names the given user's
+// active session. The ownership, activity, and expiry checks all live in the
+// single UPDATE, so no other writer can slip between the check and the revoke.
+// A refusal never says which of those failed.
+func (s *RefreshTokenRepository) RevokeByJTI(ctx context.Context, userID, jti string) error {
+	now := time.Now().UTC()
+	affected, err := sqlc.New(s.db).RevokeRefreshTokenByOwner(ctx, sqlc.RevokeRefreshTokenByOwnerParams{
+		RevokedAt: formatUTC(now),
+		Jti:       jti,
+		UserID:    userID,
+		ExpiresAt: formatUTC(now),
+	})
+	if err != nil {
+		return fmt.Errorf("revoke refresh token: %w", err)
+	}
+	if affected == 0 {
+		return domain.ErrInvalidToken
+	}
+	return nil
 }

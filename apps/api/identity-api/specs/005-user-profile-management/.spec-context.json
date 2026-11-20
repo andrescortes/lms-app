@@ -1,0 +1,647 @@
+{
+  "workflow": "companion",
+  "specName": "User Profile Management (CU-AUTH-05 / HU-18)",
+  "branch": "feature/identity-api",
+  "currentStep": "converge",
+  "status": "completed",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:09:52.640Z"
+    },
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T01:10:34.428Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:10:47.632Z"
+    },
+    {
+      "step": "plan",
+      "substep": "research",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:11:34.349Z"
+    },
+    {
+      "step": "plan",
+      "substep": "design",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:11:34.544Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:11:34.800Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:11:57.671Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:11:58.740Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:11:58.871Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T001",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:16.820Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T002",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:16.821Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T003",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:16.821Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T004",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:16.822Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T005",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:16.822Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T006",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.028Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T007",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.028Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T008",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.029Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T009",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.230Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T010",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.230Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T011",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.231Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T012",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.442Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T013",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.442Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T014",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.646Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T015",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.647Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T016",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.647Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T017",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.648Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T01:15:17.734Z"
+    },
+    {
+      "step": "converge",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T01:15:27.755Z"
+    },
+    {
+      "step": "converge",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T01:15:39.235Z"
+    }
+  ],
+  "unattended": true,
+  "request": "\"Implement User Profile Management (CU-AUTH-05 / HU-18) at GET /api/identity/users/me and PATCH /api/identity/users/me. Load and apply `.agents/skills/*/SKILL.md` and follow constitution rules:\n1. Domain (`internal/domain`, stdlib only): ensure `ErrNotFound` is defined; reuse `ValidatePasswordPolicy` for password updates and `ErrInvalidCredentials` when current password verification fails (HU-18 CA2).\n2. Database (`db/queries/users.sql` + `sqlc generate`): add queries to fetch a user joined with their profile by `user_id` (`GetUserWithProfileByID`), update `users` (`display_name`, `password_hash`), and update `profiles` (`native_language`, `goals`, `timezone`, `avatar_url`).\n3. SQLite Adapter (`internal/adapter/sqlite/`): implement `GetUserProfile(ctx, userID)` (mapping `sql.ErrNoRows` to `domain.ErrNotFound`) and atomic `UpdateUserProfile(ctx, ...)` inside `*sql.Tx` updating both `users` and `profiles`.\n4. Use Cases (`internal/usecase/`):\n   - `GetProfileUseCase.Execute(ctx, userID)` returning the user's account and profile fields.\n   - `UpdateProfileUseCase.Execute(ctx, UpdateProfileCommand{UserID, DisplayName, NativeLanguage, Goals, Timezone, AvatarURL, CurrentPassword, NewPassword})`: apply partial updates for provided profile fields; if `NewPassword` is supplied, require `CurrentPassword`, verify it via `PasswordVerifier` (returning `domain.ErrInvalidCredentials` on mismatch), validate `NewPassword` with `domain.ValidatePasswordPolicy`, and hash it with `PasswordHasher`.\n5. HTTP, OpenAPI & Wiring (`internal/adapter/http/`, `cmd/api/main.go`):\n   - Register `GET /api/identity/users/me` and `PATCH /api/identity/users/me` inside the `Authenticate`-protected `chi` route group, extracting `UserID` from `r.Context()`.\n   - Return `200 OK` with `{\"id\", \"email\", \"displayName\", \"role\", \"cefrLevel\", \"createdAt\", \"profile\": {\"nativeLanguage\", \"goals\", \"timezone\", \"avatarUrl\"}}` (never returning `passwordHash`).\n   - Map `ErrNotFound` -> `404` (`NOT_FOUND`), `ErrInvalidCredentials` -> `401` (`INVALID_CREDENTIALS`), and `ErrWeakPassword` -> `422` (`WEAK_PASSWORD`) in `respondError`.\n   - Update `contracts/identity.openapi.yaml` and `shared/contracts/identity.openapi.yaml`; wire both use cases in `cmd/api/main.go`.\n6. Tests (stdlib `testing`): add unit tests for `GetProfileUseCase` and `UpdateProfileUseCase` (partial updates, password change with valid/missing/wrong current password, weak new password), `:memory:` SQLite integration tests, and `httptest` handler tests covering `200`, `400`, `401`, `404`, and `422`.\"",
+  "expectations": [
+    "email, role and learning level are not editable in this slice",
+    "no admin path to another learner's profile"
+  ],
+  "context": [
+    "area: internal/adapter/http (router.go, middleware.go, respond_error.go)",
+    "area: internal/adapter/sqlite (user_repository.go, registration_store.go)",
+    "constraint: Profile already exists in internal/domain/profile.go with pointer fields; ErrNotFound and ErrInvalidCredentials exist"
+  ],
+  "coverage": {
+    "FR-001": {
+      "title": "Return the learner's account and profile, never the password",
+      "tasks": [
+        "T006",
+        "T007",
+        "T008",
+        "T016"
+      ],
+      "tests": [
+        "internal/adapter/http/profile_handler_test.go::TestGetProfileReturnsAccountAndProfile"
+      ]
+    },
+    "FR-002": {
+      "title": "Unset profile fields read as empty, not an error",
+      "tasks": [
+        "T006"
+      ],
+      "tests": [
+        "internal/adapter/sqlite/profile_store_test.go::TestProfileStoreReadsAccountAndProfile"
+      ]
+    },
+    "FR-003": {
+      "title": "Updates are partial: present fields change, absent fields stay",
+      "tasks": [
+        "T009",
+        "T010",
+        "T011"
+      ],
+      "tests": [
+        "internal/adapter/http/profile_handler_test.go::TestPatchProfilePartialUpdate"
+      ]
+    },
+    "FR-004": {
+      "title": "A blank display name is refused, never stored",
+      "tasks": [
+        "T010"
+      ],
+      "tests": [
+        "internal/usecase/update_profile_test.go::TestUpdateProfileTrimsDisplayNameAndRefusesBlank"
+      ]
+    },
+    "FR-005": {
+      "title": "A password change without a matching current password returns 401",
+      "tasks": [
+        "T012",
+        "T013"
+      ],
+      "tests": [
+        "internal/adapter/http/profile_handler_test.go::TestPatchProfilePasswordRefusals"
+      ]
+    },
+    "FR-006": {
+      "title": "A weak new password returns 422",
+      "tasks": [
+        "T012",
+        "T013",
+        "T015"
+      ],
+      "tests": [
+        "internal/adapter/http/profile_handler_test.go::TestPatchProfilePasswordRefusals"
+      ]
+    },
+    "FR-007": {
+      "title": "Only the protected hash is stored, in one atomic write",
+      "tasks": [
+        "T005",
+        "T013"
+      ],
+      "tests": [
+        "internal/adapter/sqlite/profile_store_test.go::TestProfileStoreEndToEndPasswordChange"
+      ]
+    },
+    "FR-008": {
+      "title": "Both profile routes require a valid bearer credential",
+      "tasks": [
+        "T014"
+      ],
+      "tests": [
+        "internal/adapter/http/profile_handler_test.go::TestProfileRoutesRequireBearer"
+      ]
+    }
+  },
+  "classification": {
+    "projectedFiles": 11,
+    "projectedTasks": 15,
+    "scopeSignal": "none",
+    "verdict": "normal"
+  },
+  "intent": "Add GET and PATCH /api/identity/users/me behind Authenticate, with partial profile updates and a current-password-verified password change.",
+  "size": "normal",
+  "source": "CU-AUTH-05",
+  "decisions": [
+    {
+      "decision": "Update DTO fields are pointers so an absent field differs from an explicit null.",
+      "why": "The spec requires clearing a profile field with null while leaving absent fields alone; plain strings cannot express both.",
+      "rejected": "omitempty plain strings",
+      "by": "agent",
+      "at": "2026-11-20T01:11:34.018Z"
+    },
+    {
+      "decision": "The password-change sequence lives in the use case: require current, verify it, validate strength, then hash.",
+      "why": "These are business rules and the domain validator plus ports already exist; the handler never sees a hash.",
+      "rejected": "Verify the password in the handler",
+      "by": "agent",
+      "at": "2026-11-20T01:11:34.018Z"
+    },
+    {
+      "decision": "The current password is checked before the new password's strength.",
+      "why": "A caller who cannot prove identity must not learn whether their chosen new password would have passed, and FR-005's 401 should win over FR-006's 422.",
+      "rejected": "Validate strength first",
+      "by": "agent",
+      "at": "2026-11-20T01:11:34.018Z"
+    },
+    {
+      "decision": "Account and profile writes share one transaction.",
+      "why": "A committed password change beside a failed display-name change leaves a confusing half-applied state.",
+      "rejected": "One transaction per table",
+      "by": "agent",
+      "at": "2026-11-20T01:11:34.018Z"
+    },
+    {
+      "decision": "A present but blank display name is refused rather than defaulted.",
+      "why": "Registration guarantees a non-empty display name; a silent substitution hides the mistake.",
+      "rejected": "Fall back to the email local part",
+      "by": "agent",
+      "at": "2026-11-20T01:11:34.018Z"
+    }
+  ],
+  "step_summaries": {
+    "plan": {
+      "summary": "Plan: pointer-based partial update, current-password-first password change, one transaction for account and profile.",
+      "key_finding": "Authenticate and the claim context already exist, so this feature adds storage and use cases rather than new middleware."
+    },
+    "tasks": {
+      "summary": "17 tasks: Setup, Foundational storage, US1 read, US2 partial update, US3 password change, US4 route protection, Polish."
+    },
+    "implement": {
+      "summary": "GET and PATCH /api/identity/users/me behind Authenticate, with partial updates, null-clears, and a current-password-verified password change."
+    },
+    "specify": {
+      "summary": "Converge appended T018-T019 (SC-004 proof and empty-body case); both tests are on disk and the suite passes. The spec was already completed when the append ran, so the checkboxes were left unticked by the tool."
+    }
+  },
+  "approach": "Add a profile store port over a joined sqlc read and a transactional update, two use cases (read and partial update with password change), and two handlers in the existing protected route group.",
+  "verified": [
+    {
+      "what": "test",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go test ./...\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "?   \tlms-english/identity-service/internal/adapter/sqlite/sqlc\t[no test files] · ok  \tlms-english/identity-service/internal/domain\t(cached) · ok  \tlms-english/identity-service/internal/usecase\t(cached)",
+      "commit": "75b7210",
+      "tree": "d6cdfb9f5d1ccbd3260ea6b88ff7787600c5fc03"
+    },
+    {
+      "what": "lint",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work golangci-lint run\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "0 issues.",
+      "commit": "75b7210",
+      "tree": "1d4b6b1a145c31f6ad60011a3fa8c9b7334287b8"
+    },
+    {
+      "what": "build",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && CGO_ENABLED=0 GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go build ./cmd/api\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.6,
+      "result": "no output",
+      "commit": "75b7210",
+      "tree": "7531e982e4942b22238c8fef3f298c204affe3b7"
+    },
+    {
+      "what": "sqlc-stable",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work sha1sum internal/adapter/sqlite/sqlc/*.go > /tmp/p.sha && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work sqlc generate && sha1sum -c /tmp/p.sha --quiet\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.1,
+      "result": "no output",
+      "commit": "75b7210",
+      "tree": "7d3fe072b27674b17adea483cd61a7757a7f6a58"
+    }
+  ],
+  "currentTask": null,
+  "task_summaries": {
+    "T001": {
+      "status": "DONE",
+      "did": "Contract merged; joined read and update queries; ProfileStore with transactional update",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/profile_store.go"
+      ]
+    },
+    "T002": {
+      "status": "DONE",
+      "did": "Contract merged; joined read and update queries; ProfileStore with transactional update",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/profile_store.go"
+      ]
+    },
+    "T003": {
+      "status": "DONE",
+      "did": "Contract merged; joined read and update queries; ProfileStore with transactional update",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/profile_store.go"
+      ]
+    },
+    "T004": {
+      "status": "DONE",
+      "did": "Contract merged; joined read and update queries; ProfileStore with transactional update",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/profile_store.go"
+      ]
+    },
+    "T005": {
+      "status": "DONE",
+      "did": "Contract merged; joined read and update queries; ProfileStore with transactional update",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/users.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/profile_store.go"
+      ]
+    },
+    "T006": {
+      "status": "DONE",
+      "did": "Get profile use case, handler, protected GET route, tests",
+      "files": [
+        "internal/usecase/get_profile.go",
+        "internal/usecase/get_profile_test.go",
+        "internal/adapter/sqlite/profile_store_test.go",
+        "internal/adapter/http/profile_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T007": {
+      "status": "DONE",
+      "did": "Get profile use case, handler, protected GET route, tests",
+      "files": [
+        "internal/usecase/get_profile.go",
+        "internal/usecase/get_profile_test.go",
+        "internal/adapter/sqlite/profile_store_test.go",
+        "internal/adapter/http/profile_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T008": {
+      "status": "DONE",
+      "did": "Get profile use case, handler, protected GET route, tests",
+      "files": [
+        "internal/usecase/get_profile.go",
+        "internal/usecase/get_profile_test.go",
+        "internal/adapter/sqlite/profile_store_test.go",
+        "internal/adapter/http/profile_handler.go",
+        "internal/adapter/http/router.go"
+      ]
+    },
+    "T009": {
+      "status": "DONE",
+      "did": "Partial update with absent/null distinction and PATCH route",
+      "files": [
+        "internal/usecase/update_profile.go",
+        "internal/usecase/update_profile_test.go",
+        "internal/adapter/http/profile_handler.go"
+      ]
+    },
+    "T010": {
+      "status": "DONE",
+      "did": "Partial update with absent/null distinction and PATCH route",
+      "files": [
+        "internal/usecase/update_profile.go",
+        "internal/usecase/update_profile_test.go",
+        "internal/adapter/http/profile_handler.go"
+      ]
+    },
+    "T011": {
+      "status": "DONE",
+      "did": "Partial update with absent/null distinction and PATCH route",
+      "files": [
+        "internal/usecase/update_profile.go",
+        "internal/usecase/update_profile_test.go",
+        "internal/adapter/http/profile_handler.go"
+      ]
+    },
+    "T012": {
+      "status": "DONE",
+      "did": "Guarded password change: current first, then policy, then hash",
+      "files": [
+        "internal/usecase/update_profile.go",
+        "internal/usecase/update_profile_test.go",
+        "internal/adapter/sqlite/profile_store_test.go"
+      ]
+    },
+    "T013": {
+      "status": "DONE",
+      "did": "Guarded password change: current first, then policy, then hash",
+      "files": [
+        "internal/usecase/update_profile.go",
+        "internal/usecase/update_profile_test.go",
+        "internal/adapter/sqlite/profile_store_test.go"
+      ]
+    },
+    "T014": {
+      "status": "DONE",
+      "did": "Route protection tests, WEAK_PASSWORD code, handler cases, wiring, gate",
+      "files": [
+        "internal/adapter/http/profile_handler_test.go",
+        "internal/adapter/http/respond_error.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T015": {
+      "status": "DONE",
+      "did": "Route protection tests, WEAK_PASSWORD code, handler cases, wiring, gate",
+      "files": [
+        "internal/adapter/http/profile_handler_test.go",
+        "internal/adapter/http/respond_error.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T016": {
+      "status": "DONE",
+      "did": "Route protection tests, WEAK_PASSWORD code, handler cases, wiring, gate",
+      "files": [
+        "internal/adapter/http/profile_handler_test.go",
+        "internal/adapter/http/respond_error.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ]
+    },
+    "T017": {
+      "status": "DONE",
+      "did": "Route protection tests, WEAK_PASSWORD code, handler cases, wiring, gate",
+      "files": [
+        "internal/adapter/http/profile_handler_test.go",
+        "internal/adapter/http/respond_error.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ]
+    }
+  },
+  "concerns": [
+    {
+      "note": "go test -race ./... could not run: the race detector requires cgo and no C compiler is installed here.",
+      "step": "implement"
+    },
+    {
+      "note": "The weak-password code differs by route: registration keeps validation_error per its contract, the profile route returns WEAK_PASSWORD per this one. A context marker selects the profile code.",
+      "step": "implement"
+    }
+  ],
+  "last_action": "T018 and T019 tests written and green; suite and lint green.",
+  "convergeStartedAt": "2026-11-20T01:16:26.762Z",
+  "convergePasses": [
+    {
+      "startedAt": "2026-11-20T01:15:27.972Z",
+      "by": "extension",
+      "finishedAt": "2026-11-20T01:15:39.436Z",
+      "added": [],
+      "completed": true
+    },
+    {
+      "startedAt": "2026-11-20T01:16:26.882Z",
+      "by": "extension",
+      "before": [
+        "T001",
+        "T002",
+        "T003",
+        "T004",
+        "T005",
+        "T006",
+        "T007",
+        "T008",
+        "T009",
+        "T010",
+        "T011",
+        "T012",
+        "T013",
+        "T014",
+        "T015",
+        "T016",
+        "T017"
+      ]
+    }
+  ]
+}

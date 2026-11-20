@@ -21,10 +21,29 @@ const LoginRoute = "/api/identity/auth/login"
 // RefreshRoute is the refresh token rotation endpoint path.
 const RefreshRoute = "/api/identity/auth/refresh"
 
-// NewRouter builds the identity HTTP handler: the registration and login
-// routes guarded by the per-visitor limiter, with request IDs, panic recovery,
-// structured logging, and CORS.
-func NewRouter(uc *usecase.RegisterUserUseCase, loginUc *usecase.LoginUserUseCase, refreshUc *usecase.RefreshTokenUseCase, limiter *VisitorLimiter, logger *slog.Logger) http.Handler {
+// LogoutRoute is the session-ending endpoint path. It requires a bearer token.
+const LogoutRoute = "/api/identity/auth/logout"
+
+// ProfileRoute is the caller's own account and profile. It requires a bearer token.
+const ProfileRoute = "/api/identity/users/me"
+
+// AuthenticatedRouteGroup is the chi group prefix for routes that require a
+// valid access token.
+const AuthenticatedRouteGroup = "/api/identity/auth"
+
+// NewRouter builds the identity HTTP handler: the public registration, login,
+// and refresh routes, plus the bearer-protected sign-out route.
+func NewRouter(
+	uc *usecase.RegisterUserUseCase,
+	loginUc *usecase.LoginUserUseCase,
+	refreshUc *usecase.RefreshTokenUseCase,
+	logoutUc *usecase.LogoutUseCase,
+	getProfileUc *usecase.GetProfileUseCase,
+	updateProfileUc *usecase.UpdateProfileUseCase,
+	verifier usecase.TokenVerifier,
+	limiter *VisitorLimiter,
+	logger *slog.Logger,
+) http.Handler {
 	if logger == nil {
 		logger = slog.Default()
 	}
@@ -35,8 +54,8 @@ func NewRouter(uc *usecase.RegisterUserUseCase, loginUc *usecase.LoginUserUseCas
 	r.Use(slogMiddleware(logger))
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{http.MethodPost, http.MethodOptions},
-		AllowedHeaders: []string{"Content-Type"},
+		AllowedMethods: []string{http.MethodPost, http.MethodGet, http.MethodPatch, http.MethodOptions},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
 		MaxAge:         300,
 	}))
 
@@ -48,6 +67,16 @@ func NewRouter(uc *usecase.RegisterUserUseCase, loginUc *usecase.LoginUserUseCas
 
 	refreshHandler := &refreshHandler{uc: refreshUc}
 	r.With(loginRateLimiter()).Post(RefreshRoute, refreshHandler.ServeHTTP)
+
+	logoutHandler := &logoutHandler{uc: logoutUc}
+	getProfileHandler := &getProfileHandler{uc: getProfileUc}
+	updateProfileHandler := &updateProfileHandler{uc: updateProfileUc}
+	r.Group(func(protected chi.Router) {
+		protected.Use(Authenticate(verifier))
+		protected.Post(LogoutRoute, logoutHandler.ServeHTTP)
+		protected.With(withProfileErrorCodes).Get(ProfileRoute, getProfileHandler.ServeHTTP)
+		protected.With(withProfileErrorCodes).Patch(ProfileRoute, updateProfileHandler.ServeHTTP)
+	})
 
 	return r
 }

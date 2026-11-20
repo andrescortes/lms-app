@@ -266,7 +266,153 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/identity/auth/logout:
+    post:
+      tags:
+        - Identity
+      operationId: logoutUser
+      security:
+        - bearerAuth: []
+      summary: End the session named by a refresh token
+      description: >-
+        Revokes the refresh token named in the body when it belongs to the caller
+        identified by the bearer access token. A token that is missing, revoked,
+        expired, or owned by another account is refused with 401 INVALID_TOKEN.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+      responses:
+        '204':
+          description: The caller's session ended. No body.
+        '400':
+          description: The body is malformed, carries unknown fields, or omits refreshToken.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: >-
+            The bearer credential is missing, malformed, expired, or signed with an
+            unexpected method, or the refresh token is not the caller's or is no
+            longer active. The code is INVALID_TOKEN for the refresh case.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_TOKEN
+                message: invalid token
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/auth/logout
+        '403':
+          description: >-
+            The caller is authenticated but their role is not allowed on this
+            route. The code is FORBIDDEN.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/identity/users/me:
+    get:
+      tags:
+        - Identity
+      operationId: getMyProfile
+      security:
+        - bearerAuth: []
+      summary: Read the caller's account and profile
+      description: >-
+        Returns the signed-in learner's account details and profile fields. Never
+        returns the password. An unset profile field is reported as null.
+      responses:
+        '200':
+          description: The caller's account and profile.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '401':
+          description: The bearer credential is missing, malformed, or expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The authenticated account no longer exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: NOT_FOUND
+                message: not found
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/users/me
+    patch:
+      tags:
+        - Identity
+      operationId: updateMyProfile
+      security:
+        - bearerAuth: []
+      summary: Partially update the caller's account and profile
+      description: >-
+        Applies a partial update. A field absent from the body keeps its value; a
+        profile field sent as null is cleared. A password change requires the
+        current password and a new password meeting the policy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: The updated account and profile.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          description: The body is malformed or carries unknown fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: >-
+            The bearer credential is invalid, or the password change proof is
+            missing or wrong. The latter uses the code INVALID_CREDENTIALS.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The authenticated account no longer exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: >-
+            A present display name is blank, or a new password does not meet the
+            policy. The weak-password case uses the code WEAK_PASSWORD.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: WEAK_PASSWORD
+                message: password must contain at least one uppercase letter
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/users/me
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     RegisterUserRequest:
       type: object
@@ -376,6 +522,83 @@ components:
         refreshToken:
           type: string
           description: Replacement refresh token, valid for 7d and persisted.
+    LogoutRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+          description: The refresh token naming the session to end.
+          minLength: 1
+    Profile:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - email
+        - displayName
+        - role
+        - createdAt
+        - profile
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        displayName:
+          type: string
+        role:
+          type: string
+          examples:
+            - STUDENT
+        cefrLevel:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
+        profile:
+          $ref: '#/components/schemas/ProfileFields'
+    ProfileFields:
+      type: object
+      additionalProperties: false
+      properties:
+        nativeLanguage:
+          type: [string, 'null']
+        goals:
+          type: [string, 'null']
+        timezone:
+          type: [string, 'null']
+        avatarUrl:
+          type: [string, 'null']
+    UpdateProfileRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        displayName:
+          type: string
+          description: Present to change; blank is refused.
+        nativeLanguage:
+          type: [string, 'null']
+          description: Absent keeps the value; null clears it.
+        goals:
+          type: [string, 'null']
+          description: Absent keeps the value; null clears it.
+        timezone:
+          type: [string, 'null']
+          description: Absent keeps the value; null clears it.
+        avatarUrl:
+          type: [string, 'null']
+          description: Absent keeps the value; null clears it.
+        currentPassword:
+          type: string
+          description: Required when newPassword is present.
+        newPassword:
+          type: string
+          description: Must meet the password policy.
     ErrorResponse:
       type: object
       additionalProperties: false

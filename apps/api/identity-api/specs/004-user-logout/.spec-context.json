@@ -1,0 +1,631 @@
+{
+  "workflow": "companion",
+  "specName": "User Logout (CU-AUTH-04 / HU-19)",
+  "branch": "feature/identity-api",
+  "currentStep": "converge",
+  "status": "completed",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:54:09.896Z"
+    },
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T00:54:45.879Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:54:48.725Z"
+    },
+    {
+      "step": "plan",
+      "substep": "research",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:55:20.333Z"
+    },
+    {
+      "step": "plan",
+      "substep": "design",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:55:20.606Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:55:20.906Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:55:38.036Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:55:38.998Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:55:42.108Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T001",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:40.415Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T002",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:40.415Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T003",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:40.416Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T004",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:40.417Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T005",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:40.417Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T006",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:40.623Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T007",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:40.623Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T008",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:40.624Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T009",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:40.836Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T010",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:41.045Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T011",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:41.045Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T012",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:41.046Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T013",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:41.273Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T014",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:41.273Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T015",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:41.483Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T016",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:41.483Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:58:41.556Z"
+    },
+    {
+      "step": "converge",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-11-20T00:58:50.521Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T017",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:59:51.742Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T018",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-11-20T00:59:51.743Z"
+    },
+    {
+      "step": "converge",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-11-20T00:59:56.963Z"
+    }
+  ],
+  "unattended": true,
+  "request": "\"Implement User Logout (CU-AUTH-04 / HU-19) at POST /api/identity/auth/logout along with the composable JWT and RBAC middlewares (Â§11.4). Load and apply `.agents/skills/*/SKILL.md` and follow constitution rules:\n1. Domain (`internal/domain`, stdlib only): ensure `ErrForbidden` is defined alongside `ErrInvalidToken` and `ErrInvalidCredentials`.\n2. HTTP Middlewares (`internal/adapter/http/middleware.go`): implement composable `chi` middlewares `Authenticate(jwtVerifier)` (extracts `Authorization: Bearer <token>`, validates signature and `exp` via `JWTProvider.Verify` with `HS256`, injects authenticated `Claims{UserID, Role}` into `r.Context()`, and rejects missing/malformed/expired tokens with `401` via `respondError`) and `RequireRole(roles...)` (returns `403` `FORBIDDEN` if the authenticated role is not allowed).\n3. Database (`db/queries/refresh_tokens.sql` + `sqlc generate`): add/verify query to revoke a refresh token by `jti` scoped to `user_id` using the existing `refresh_tokens` schema.\n4. SQLite Adapter (`internal/adapter/sqlite/refresh_token_store.go`): implement `RevokeByJTI(ctx, userID, jti)` ensuring a user can only revoke their own refresh token (returning `domain.ErrInvalidToken` if not found or owned by another user).\n5. Use Case (`internal/usecase/logout.go`): implement `LogoutUseCase.Execute(ctx, LogoutCommand{UserID, RefreshToken}) error` verifying the incoming refresh token, checking subject ownership against `UserID`, and revoking it via `RefreshTokenRepository`.\n6. HTTP, OpenAPI & Wiring: register `POST /api/identity/auth/logout` inside an `Authenticate`-protected `chi` route group, accepting `{\"refreshToken\": \"...\"}` and returning `204 No Content`; map `ErrForbidden` -> `403` (`FORBIDDEN`) and `ErrInvalidToken` -> `401` (`INVALID_TOKEN`) in `respondError`; update `contracts/identity.openapi.yaml` and `shared/contracts/identity.openapi.yaml`; wire `LogoutUseCase` and `Authenticate` in `cmd/api/main.go`.\n7. Tests (stdlib `testing`): add unit tests for `LogoutUseCase` (valid revocation, invalid token, cross-user token rejection), `:memory:` SQLite integration tests for `RevokeByJTI`, and `httptest` tests covering `204`, `400`, `401` (missing/invalid bearer token and invalid refresh token), and `403` (`RequireRole`).\"",
+  "expectations": [
+    "revoking access tokens before expiry is out of scope",
+    "no current route needs role restriction; RequireRole is supplied and tested only"
+  ],
+  "context": [
+    "area: internal/adapter/http (router.go, respond_error.go, login_ratelimit.go)",
+    "area: internal/adapter/sqlite (refresh_token_store.go)",
+    "constraint: ErrForbidden and ErrInvalidToken already exist in internal/domain/errors.go; respondError already maps them to 403/401"
+  ],
+  "coverage": {
+    "FR-001": {
+      "title": "Sign-out ends the named session and returns 204",
+      "tasks": [
+        "T006",
+        "T007",
+        "T008"
+      ],
+      "tests": [
+        "internal/adapter/http/logout_handler_test.go::TestLogoutSuccessReturns204"
+      ]
+    },
+    "FR-002": {
+      "title": "A revoked or expired refresh token is refused with 401 INVALID_TOKEN",
+      "tasks": [
+        "T005",
+        "T012"
+      ],
+      "tests": [
+        "internal/adapter/sqlite/logout_store_test.go::TestRevokeByJTIRejectsExpiredAndRevoked"
+      ]
+    },
+    "FR-003": {
+      "title": "A refresh token owned by another account is refused without touching it",
+      "tasks": [
+        "T005",
+        "T009"
+      ],
+      "tests": [
+        "internal/adapter/sqlite/logout_store_test.go::TestRevokeByJTIRejectsForeignToken"
+      ]
+    },
+    "FR-004": {
+      "title": "Protected routes require a valid access token",
+      "tasks": [
+        "T010",
+        "T011"
+      ],
+      "tests": [
+        "internal/adapter/http/middleware_test.go::TestAuthenticateRefusesBadCredentials"
+      ]
+    },
+    "FR-005": {
+      "title": "The caller identity comes only from the validated access token",
+      "tasks": [
+        "T011",
+        "T014"
+      ],
+      "tests": [
+        "internal/adapter/http/logout_handler_test.go::TestLogoutBodyIsNotIdentity"
+      ]
+    },
+    "FR-006": {
+      "title": "Role-restricted routes refuse a wrong role with 403 FORBIDDEN",
+      "tasks": [
+        "T013",
+        "T014"
+      ],
+      "tests": [
+        "internal/adapter/http/middleware_test.go::TestRequireRole"
+      ]
+    },
+    "FR-007": {
+      "title": "Sign-out ends one session only",
+      "tasks": [
+        "T009",
+        "T015"
+      ],
+      "tests": [
+        "internal/adapter/http/logout_handler_test.go::TestLogoutSuccessReturns204"
+      ]
+    }
+  },
+  "classification": {
+    "projectedFiles": 9,
+    "projectedTasks": 13,
+    "scopeSignal": "none",
+    "verdict": "normal"
+  },
+  "intent": "Add POST /api/identity/auth/logout behind composable JWT and RBAC middlewares, ending the caller-owned session only.",
+  "size": "normal",
+  "source": "CU-AUTH-04",
+  "decisions": [
+    {
+      "decision": "The caller is identified only by verified access-token claims.",
+      "why": "Any caller-supplied identity would let one learner act as another.",
+      "rejected": "User id from the request body",
+      "by": "agent",
+      "at": "2026-11-20T00:55:19.995Z"
+    },
+    {
+      "decision": "Ownership is enforced in one scoped SQL revoke; foreign and missing tokens both return ErrInvalidToken.",
+      "why": "One statement removes the race between reading the owner and revoking, and the identical refusal avoids an existence oracle.",
+      "rejected": "FindByToken then Revoke in the use case; 403 for the foreign case",
+      "by": "agent",
+      "at": "2026-11-20T00:55:19.995Z"
+    },
+    {
+      "decision": "An expired or already-revoked token is refused rather than treated as a successful repeat sign-out.",
+      "why": "Reporting success for a token the service cannot authorise would hide a real failure.",
+      "rejected": "Idempotent 204 on repeat sign-out",
+      "by": "agent",
+      "at": "2026-11-20T00:55:19.995Z"
+    },
+    {
+      "decision": "RequireRole panics at construction on an empty allow list.",
+      "why": "A misconfigured route should fail at startup, not silently allow everyone.",
+      "rejected": "Silently allow, or fail per request",
+      "by": "agent",
+      "at": "2026-11-20T00:55:19.995Z"
+    }
+  ],
+  "step_summaries": {
+    "plan": {
+      "summary": "Plan: bearer-only identity, owner-scoped single-statement revoke, two composable middlewares.",
+      "key_finding": "ErrForbidden and the 403 mapping already exist, so this feature adds middleware and a scoped revoke rather than new error plumbing."
+    },
+    "tasks": {
+      "summary": "16 tasks: Setup, Foundational revoke, US1 sign-out, US2 ownership, US3 Authenticate, US4 RequireRole, Polish."
+    },
+    "implement": {
+      "summary": "POST /api/identity/auth/logout behind Authenticate, RequireRole middleware, owner-scoped single-statement revoke."
+    },
+    "specify": {
+      "summary": "Converge found a constitution violation (sibling adapter import) and the fix landed: verifier is now a usecase port."
+    }
+  },
+  "approach": "Add Authenticate and RequireRole middlewares in the HTTP adapter, a LogoutUseCase over an owner-scoped RevokeByJTI port, and the logout route inside the protected group.",
+  "verified": [
+    {
+      "what": "test",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go test ./...\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.8,
+      "result": "?   \tlms-english/identity-service/internal/adapter/sqlite/sqlc\t[no test files] · ok  \tlms-english/identity-service/internal/domain\t(cached) · ok  \tlms-english/identity-service/internal/usecase\t(cached)",
+      "commit": "75b7210",
+      "tree": "67c4ee15cbf3d206dc1e552813820f750b619804"
+    },
+    {
+      "what": "lint",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work golangci-lint run\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "0 issues.",
+      "commit": "75b7210",
+      "tree": "aa4a9deae5b23b4a0838afc9bcb3df67aeb49800"
+    },
+    {
+      "what": "build",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && CGO_ENABLED=0 GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work go build ./cmd/api\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.7,
+      "result": "no output",
+      "commit": "75b7210",
+      "tree": "b9cd1ba9a5d36b1c6c0aad305c7a6f0ef71c8f12"
+    },
+    {
+      "what": "sqlc-stable",
+      "command": "bash -c \"cd /c/Users/dev/Documents/projects/lms-app/apps/api/identity-api && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work sha1sum internal/adapter/sqlite/sqlc/*.go > /tmp/l.sha && GOWORK=/c/Users/dev/Documents/projects/lms-app/apps/api/identity-api/services/go.work sqlc generate && sha1sum -c /tmp/l.sha --quiet\"",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 0.1,
+      "result": "no output",
+      "commit": "75b7210",
+      "tree": "2c42be1b94689809a32372114a073f03ae1d3c66"
+    }
+  ],
+  "currentTask": null,
+  "task_summaries": {
+    "T001": {
+      "status": "DONE",
+      "did": "Contract merged, scoped revoke query + sqlc, RevokeByJTI on port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/refresh_token_store.go"
+      ]
+    },
+    "T002": {
+      "status": "DONE",
+      "did": "Contract merged, scoped revoke query + sqlc, RevokeByJTI on port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/refresh_token_store.go"
+      ]
+    },
+    "T003": {
+      "status": "DONE",
+      "did": "Contract merged, scoped revoke query + sqlc, RevokeByJTI on port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/refresh_token_store.go"
+      ]
+    },
+    "T004": {
+      "status": "DONE",
+      "did": "Contract merged, scoped revoke query + sqlc, RevokeByJTI on port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/refresh_token_store.go"
+      ]
+    },
+    "T005": {
+      "status": "DONE",
+      "did": "Contract merged, scoped revoke query + sqlc, RevokeByJTI on port and adapter",
+      "files": [
+        "contracts/identity.openapi.yaml",
+        "db/queries/tokens.sql",
+        "internal/adapter/sqlite/sqlc/",
+        "internal/usecase/ports.go",
+        "internal/adapter/sqlite/refresh_token_store.go"
+      ]
+    },
+    "T006": {
+      "status": "DONE",
+      "did": "Logout use case and handler",
+      "files": [
+        "internal/usecase/logout_test.go",
+        "internal/usecase/logout.go",
+        "internal/adapter/http/logout_handler.go"
+      ]
+    },
+    "T007": {
+      "status": "DONE",
+      "did": "Logout use case and handler",
+      "files": [
+        "internal/usecase/logout_test.go",
+        "internal/usecase/logout.go",
+        "internal/adapter/http/logout_handler.go"
+      ]
+    },
+    "T008": {
+      "status": "DONE",
+      "did": "Logout use case and handler",
+      "files": [
+        "internal/usecase/logout_test.go",
+        "internal/usecase/logout.go",
+        "internal/adapter/http/logout_handler.go"
+      ]
+    },
+    "T009": {
+      "status": "DONE",
+      "did": "Cross-user refusal tests at use case, handler, and store",
+      "files": [
+        "internal/usecase/logout_test.go",
+        "internal/adapter/http/logout_handler_test.go",
+        "internal/adapter/sqlite/logout_store_test.go"
+      ]
+    },
+    "T010": {
+      "status": "DONE",
+      "did": "Authenticate middleware, protected route group, wiring",
+      "files": [
+        "internal/adapter/http/middleware_test.go",
+        "internal/adapter/http/middleware.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ],
+      "wave": "T010-T012"
+    },
+    "T011": {
+      "status": "DONE",
+      "did": "Authenticate middleware, protected route group, wiring",
+      "files": [
+        "internal/adapter/http/middleware_test.go",
+        "internal/adapter/http/middleware.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ],
+      "wave": "T010-T012"
+    },
+    "T012": {
+      "status": "DONE",
+      "did": "Authenticate middleware, protected route group, wiring",
+      "files": [
+        "internal/adapter/http/middleware_test.go",
+        "internal/adapter/http/middleware.go",
+        "internal/adapter/http/router.go",
+        "cmd/api/main.go"
+      ],
+      "wave": "T010-T012"
+    },
+    "T013": {
+      "status": "DONE",
+      "did": "RequireRole and ClaimsFromContext with tests",
+      "files": [
+        "internal/adapter/http/middleware_test.go",
+        "internal/adapter/http/middleware.go"
+      ],
+      "wave": "T013-T014"
+    },
+    "T014": {
+      "status": "DONE",
+      "did": "RequireRole and ClaimsFromContext with tests",
+      "files": [
+        "internal/adapter/http/middleware_test.go",
+        "internal/adapter/http/middleware.go"
+      ],
+      "wave": "T013-T014"
+    },
+    "T015": {
+      "status": "DONE",
+      "did": "End-to-end handler cases and verification gate",
+      "files": [
+        "internal/adapter/http/logout_handler_test.go"
+      ],
+      "wave": "T015-T016"
+    },
+    "T016": {
+      "status": "DONE",
+      "did": "End-to-end handler cases and verification gate",
+      "files": [
+        "internal/adapter/http/logout_handler_test.go"
+      ],
+      "wave": "T015-T016"
+    },
+    "T017": {
+      "status": "DONE",
+      "did": "Verifier is a usecase port; HTTP adapter no longer imports the security adapter and the JWTVerifier bridge is gone",
+      "files": [
+        "internal/usecase/ports.go",
+        "internal/adapter/security/jwt_token_provider.go",
+        "internal/adapter/http/middleware.go",
+        "cmd/api/main.go"
+      ],
+      "wave": "T017-T018"
+    },
+    "T018": {
+      "status": "DONE",
+      "did": "Verifier is a usecase port; HTTP adapter no longer imports the security adapter and the JWTVerifier bridge is gone",
+      "files": [
+        "internal/usecase/ports.go",
+        "internal/adapter/security/jwt_token_provider.go",
+        "internal/adapter/http/middleware.go",
+        "cmd/api/main.go"
+      ],
+      "wave": "T017-T018"
+    }
+  },
+  "concerns": [
+    {
+      "note": "go test -race ./... could not run: the race detector requires cgo and no C compiler is installed here.",
+      "step": "implement"
+    },
+    {
+      "note": "internal/usecase imports nothing from internal/adapter, but internal/adapter/http now imports internal/adapter/security for the verifier adapter. Both are adapters, so the constitution rule holds.",
+      "step": "implement"
+    }
+  ],
+  "last_action": "18/18 tasks checked; tests and lint green after the port refactor.",
+  "convergeStartedAt": "2026-11-20T01:02:16.089Z",
+  "convergePasses": [
+    {
+      "startedAt": "2026-11-20T00:58:50.747Z",
+      "by": "extension",
+      "finishedAt": "2026-11-20T00:59:57.174Z",
+      "added": [
+        "T017",
+        "T018"
+      ],
+      "completed": true
+    },
+    {
+      "startedAt": "2026-11-20T01:02:16.211Z",
+      "by": "extension",
+      "finishedAt": "2026-11-20T01:02:39.619Z",
+      "added": []
+    }
+  ]
+}

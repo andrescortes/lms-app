@@ -160,3 +160,114 @@ func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
 	)
 	return i, err
 }
+
+const getUserWithProfileByID = `-- name: GetUserWithProfileByID :one
+SELECT
+    u.id,
+    u.email,
+    u.password_hash,
+    u.display_name,
+    u.role,
+    u.cefr_level,
+    u.created_at,
+    p.native_language,
+    p.goals,
+    p.timezone,
+    p.avatar_url
+FROM users AS u
+JOIN profiles AS p ON p.user_id = u.id
+WHERE u.id = ?
+`
+
+type GetUserWithProfileByIDRow struct {
+	ID             string      `json:"id"`
+	Email          string      `json:"email"`
+	PasswordHash   string      `json:"password_hash"`
+	DisplayName    string      `json:"display_name"`
+	Role           string      `json:"role"`
+	CefrLevel      interface{} `json:"cefr_level"`
+	CreatedAt      string      `json:"created_at"`
+	NativeLanguage interface{} `json:"native_language"`
+	Goals          interface{} `json:"goals"`
+	Timezone       interface{} `json:"timezone"`
+	AvatarUrl      interface{} `json:"avatar_url"`
+}
+
+func (q *Queries) GetUserWithProfileByID(ctx context.Context, id string) (GetUserWithProfileByIDRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserWithProfileByID, id)
+	var i GetUserWithProfileByIDRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.PasswordHash,
+		&i.DisplayName,
+		&i.Role,
+		&i.CefrLevel,
+		&i.CreatedAt,
+		&i.NativeLanguage,
+		&i.Goals,
+		&i.Timezone,
+		&i.AvatarUrl,
+	)
+	return i, err
+}
+
+const updateProfileFields = `-- name: UpdateProfileFields :exec
+UPDATE profiles
+SET native_language = ?,
+    goals = ?,
+    timezone = ?,
+    avatar_url = ?
+WHERE user_id = ?
+`
+
+type UpdateProfileFieldsParams struct {
+	NativeLanguage interface{} `json:"native_language"`
+	Goals          interface{} `json:"goals"`
+	Timezone       interface{} `json:"timezone"`
+	AvatarUrl      interface{} `json:"avatar_url"`
+	UserID         string      `json:"user_id"`
+}
+
+func (q *Queries) UpdateProfileFields(ctx context.Context, arg UpdateProfileFieldsParams) error {
+	_, err := q.db.ExecContext(ctx, updateProfileFields,
+		arg.NativeLanguage,
+		arg.Goals,
+		arg.Timezone,
+		arg.AvatarUrl,
+		arg.UserID,
+	)
+	return err
+}
+
+const updateUserDisplayName = `-- name: UpdateUserDisplayName :exec
+UPDATE users
+SET display_name = ?
+WHERE id = ?
+`
+
+type UpdateUserDisplayNameParams struct {
+	DisplayName string `json:"display_name"`
+	ID          string `json:"id"`
+}
+
+func (q *Queries) UpdateUserDisplayName(ctx context.Context, arg UpdateUserDisplayNameParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserDisplayName, arg.DisplayName, arg.ID)
+	return err
+}
+
+const updateUserPasswordHash = `-- name: UpdateUserPasswordHash :exec
+UPDATE users
+SET password_hash = ?
+WHERE id = ?
+`
+
+type UpdateUserPasswordHashParams struct {
+	PasswordHash string `json:"password_hash"`
+	ID           string `json:"id"`
+}
+
+func (q *Queries) UpdateUserPasswordHash(ctx context.Context, arg UpdateUserPasswordHashParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserPasswordHash, arg.PasswordHash, arg.ID)
+	return err
+}

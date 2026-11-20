@@ -1,0 +1,111 @@
+openapi: 3.1.0
+info:
+  title: Identity Service API - Logout
+  version: 1.0.0
+  description: >-
+    Contract for user logout (CU-AUTH-04 / HU-19). Covers
+    POST /api/identity/auth/logout behind a bearer access token, plus the
+    composable authentication and role middlewares the route uses.
+servers:
+  - url: /
+tags:
+  - name: Identity
+    description: Registration and identity lifecycle operations
+security:
+  - bearerAuth: []
+paths:
+  /api/identity/auth/logout:
+    post:
+      tags:
+        - Identity
+      operationId: logoutUser
+      security:
+        - bearerAuth: []
+      summary: End the session named by a refresh token
+      description: >-
+        Revokes the refresh token named in the body when it belongs to the caller
+        identified by the bearer access token. A token that is missing, revoked,
+        expired, or owned by another account is refused with 401 INVALID_TOKEN.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+      responses:
+        '204':
+          description: The caller's session ended. No body.
+        '400':
+          description: The body is malformed, carries unknown fields, or omits refreshToken.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: >-
+            The bearer credential is missing, malformed, expired, or signed with an
+            unexpected method, or the refresh token is not the caller's or is no
+            longer active. The code is INVALID_TOKEN for the refresh case.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: INVALID_TOKEN
+                message: invalid token
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/auth/logout
+        '403':
+          description: >-
+            The caller is authenticated but their role is not allowed on this
+            route. The code is FORBIDDEN.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: FORBIDDEN
+                message: forbidden
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/auth/logout
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LogoutRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+          description: The refresh token naming the session to end.
+          minLength: 1
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+        - timestamp
+        - path
+      properties:
+        code:
+          type: string
+          description: Stable machine-readable error code.
+          examples:
+            - INVALID_TOKEN
+        message:
+          type: string
+          description: Human-readable message. Never contains token values.
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+          examples:
+            - /api/identity/auth/logout

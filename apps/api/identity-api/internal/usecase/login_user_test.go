@@ -48,6 +48,8 @@ func (f *loginRefresh) Store(context.Context, string, string, string, time.Time)
 
 func (f *loginRefresh) Revoke(context.Context, string) error { return nil }
 
+func (f *loginRefresh) RevokeByJTI(context.Context, string, string) error { return nil }
+
 func (f *loginRefresh) Rotate(context.Context, string, string, string, time.Time) (Rotation, error) {
 	return Rotation{}, nil
 }

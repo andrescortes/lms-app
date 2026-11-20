@@ -17,6 +17,8 @@ var (
 	ErrWeakPassword = errors.New("weak password")
 	// ErrEmailAlreadyExists reports a normalized email that is already registered.
 	ErrEmailAlreadyExists = errors.New("email already exists")
+	// ErrInvalidDisplayName reports a display name that is present but blank.
+	ErrInvalidDisplayName = errors.New("invalid display name")
 )
 
 // ValidationCode identifies the specific rule a validation error violated so the

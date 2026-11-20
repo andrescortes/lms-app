@@ -56,6 +56,13 @@ type (
 	TokenProvider interface {
 		Issue(ctx context.Context, user domain.User) (string, error)
 	}
+	// TokenVerifier validates an access token and reports the identity it
+	// carries. The HTTP adapter depends on this port rather than on the security
+	// adapter, so the two adapters stay independent. A refusal is reported as
+	// domain.ErrInvalidToken.
+	TokenVerifier interface {
+		Verify(ctx context.Context, token string) (TokenClaims, error)
+	}
 	// RefreshTokenRepository persists and revokes refresh tokens by jti.
 	RefreshTokenRepository interface {
 		Store(ctx context.Context, userID, jti, token string, expiresAt time.Time) error
@@ -65,6 +72,11 @@ type (
 		// was already spent revokes the caller's whole chain. The caller decides
 		// the replacement's jti so identifier policy stays in the application layer.
 		Rotate(ctx context.Context, presented, newJTI, replacement string, expiresAt time.Time) (Rotation, error)
+		// RevokeByJTI ends the session named by one refresh token, but only when
+		// it belongs to the given user and is still active. A missing token, one
+		// owned by another user, an expired one, and an already-revoked one are
+		// all reported as domain.ErrInvalidToken.
+		RevokeByJTI(ctx context.Context, userID, jti string) error
 	}
 )
 
@@ -88,4 +100,46 @@ const (
 type Rotation struct {
 	Outcome RotationOutcome
 	UserID  string
+}
+
+// TokenClaims is the identity a verified access token carries.
+type TokenClaims struct {
+	UserID string
+	Role   string
+}
+
+// ProfileView is the account and profile a caller reads about themselves. It
+// carries no password material.
+type ProfileView struct {
+	ID             string
+	Email          string
+	DisplayName    string
+	Role           domain.Role
+	CEFRLevel      *domain.CEFRLevel
+	CreatedAt      time.Time
+	NativeLanguage *string
+	Goals          *string
+	Timezone       *string
+	AvatarURL      *string
+}
+
+// ProfileChange describes a partial update. A nil pointer leaves the stored value
+// untouched; a non-nil pointer sets it, and a nil pointer inside an account field
+// that is present means the value was supplied but empty.
+type ProfileChange struct {
+	// DisplayName is nil when the request did not name it.
+	DisplayName *string
+	// PasswordHash is nil when no password change was requested.
+	PasswordHash *string
+	// Profile fields: nil leaves the value, non-nil sets it (an empty string clears).
+	NativeLanguage *string
+	Goals          *string
+	Timezone       *string
+	AvatarURL      *string
+}
+
+// ProfileStore reads and writes one learner's account and profile.
+type ProfileStore interface {
+	GetUserProfile(ctx context.Context, userID string) (ProfileView, error)
+	UpdateUserProfile(ctx context.Context, userID string, change ProfileChange) error
 }

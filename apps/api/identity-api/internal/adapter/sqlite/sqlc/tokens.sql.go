@@ -103,3 +103,32 @@ func (q *Queries) RevokeRefreshToken(ctx context.Context, arg RevokeRefreshToken
 	_, err := q.db.ExecContext(ctx, revokeRefreshToken, arg.RevokedAt, arg.Jti)
 	return err
 }
+
+const revokeRefreshTokenByOwner = `-- name: RevokeRefreshTokenByOwner :execrows
+UPDATE refresh_tokens
+SET revoked_at = ?
+WHERE jti = ?
+  AND user_id = ?
+  AND revoked_at IS NULL
+  AND expires_at > ?
+`
+
+type RevokeRefreshTokenByOwnerParams struct {
+	RevokedAt interface{} `json:"revoked_at"`
+	Jti       string      `json:"jti"`
+	UserID    string      `json:"user_id"`
+	ExpiresAt string      `json:"expires_at"`
+}
+
+func (q *Queries) RevokeRefreshTokenByOwner(ctx context.Context, arg RevokeRefreshTokenByOwnerParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, revokeRefreshTokenByOwner,
+		arg.RevokedAt,
+		arg.Jti,
+		arg.UserID,
+		arg.ExpiresAt,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}

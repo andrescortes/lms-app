@@ -23,11 +23,9 @@ type JwtTokenProvider struct {
 	ttl    time.Duration
 }
 
-// Claims are the fields this service puts in an access token and reads back.
-type Claims struct {
-	UserID string
-	Role   string
-}
+// Compile-time proof the provider fulfils the verification port the HTTP
+// adapter consumes.
+var _ usecase.TokenVerifier = (*JwtTokenProvider)(nil)
 
 // NewJwtTokenProvider returns a token provider signing with HMAC-SHA256 using
 // the given secret and access-token TTL.
@@ -60,25 +58,25 @@ func (p *JwtTokenProvider) Issue(ctx context.Context, user domain.User) (string,
 // carries. The signing method is pinned to HS256, so a token that claims another
 // algorithm is refused rather than trusted. Any failure is reported as
 // domain.ErrInvalidToken, never as a parsing detail.
-func (p *JwtTokenProvider) Verify(ctx context.Context, token string) (Claims, error) {
+func (p *JwtTokenProvider) Verify(ctx context.Context, token string) (usecase.TokenClaims, error) {
 	if err := ctx.Err(); err != nil {
-		return Claims{}, err
+		return usecase.TokenClaims{}, err
 	}
 	parsed, err := jwt.Parse(token, func(*jwt.Token) (any, error) {
 		return []byte(p.secret), nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
 	if err != nil || !parsed.Valid {
-		return Claims{}, domain.ErrInvalidToken
+		return usecase.TokenClaims{}, domain.ErrInvalidToken
 	}
 
 	claims, ok := parsed.Claims.(jwt.MapClaims)
 	if !ok {
-		return Claims{}, domain.ErrInvalidToken
+		return usecase.TokenClaims{}, domain.ErrInvalidToken
 	}
 	subject, _ := claims["sub"].(string)
 	role, _ := claims["role"].(string)
 	if subject == "" || role == "" {
-		return Claims{}, domain.ErrInvalidToken
+		return usecase.TokenClaims{}, domain.ErrInvalidToken
 	}
-	return Claims{UserID: subject, Role: role}, nil
+	return usecase.TokenClaims{UserID: subject, Role: role}, nil
 }

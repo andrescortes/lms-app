@@ -47,13 +47,15 @@ func (f *loginStubRefresh) Store(context.Context, string, string, string, time.T
 
 func (f *loginStubRefresh) Revoke(context.Context, string) error { return nil }
 
+func (f *loginStubRefresh) RevokeByJTI(context.Context, string, string) error { return nil }
+
 func (f *loginStubRefresh) Rotate(context.Context, string, string, string, time.Time) (usecase.Rotation, error) {
 	return usecase.Rotation{}, nil
 }
 
 func newLoginRouter(t *testing.T, uc *usecase.LoginUserUseCase) http.Handler {
 	t.Helper()
-	return NewRouter(nil, uc, nil, NewVisitorLimiter(), nil)
+	return NewRouter(nil, uc, nil, nil, nil, nil, nil, NewVisitorLimiter(), nil)
 }
 
 func postLogin(handler http.Handler, remoteAddr, body string) *httptest.ResponseRecorder {

@@ -1,0 +1,208 @@
+openapi: 3.1.0
+info:
+  title: Identity Service API - Profile
+  version: 1.0.0
+  description: >-
+    Contract for user profile management (CU-AUTH-05 / HU-18). Covers
+    GET /api/identity/users/me and PATCH /api/identity/users/me behind a bearer
+    access token.
+servers:
+  - url: /
+tags:
+  - name: Identity
+    description: Registration and identity lifecycle operations
+paths:
+  /api/identity/users/me:
+    get:
+      tags:
+        - Identity
+      operationId: getMyProfile
+      security:
+        - bearerAuth: []
+      summary: Read the caller's account and profile
+      description: >-
+        Returns the signed-in learner's account details and profile fields. Never
+        returns the password. An unset profile field is reported as null.
+      responses:
+        '200':
+          description: The caller's account and profile.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '401':
+          description: The bearer credential is missing, malformed, or expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The authenticated account no longer exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: NOT_FOUND
+                message: not found
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/users/me
+    patch:
+      tags:
+        - Identity
+      operationId: updateMyProfile
+      security:
+        - bearerAuth: []
+      summary: Partially update the caller's account and profile
+      description: >-
+        Applies a partial update. A field absent from the body keeps its value; a
+        profile field sent as null is cleared. A password change requires the
+        current password and a new password meeting the policy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+            examples:
+              goalsOnly:
+                summary: Change only the learning goals
+                value:
+                  goals: Pass B2
+              passwordChange:
+                summary: Change the password with proof of the current one
+                value:
+                  currentPassword: Learn123
+                  newPassword: Learn456
+      responses:
+        '200':
+          description: The updated account and profile.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          description: The body is malformed or carries unknown fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: >-
+            The bearer credential is invalid, or the password change proof is
+            missing or wrong. The latter uses the code INVALID_CREDENTIALS.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The authenticated account no longer exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: >-
+            A present display name is blank, or a new password does not meet the
+            policy. The weak-password case uses the code WEAK_PASSWORD.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: WEAK_PASSWORD
+                message: password must contain at least one uppercase letter
+                timestamp: '2026-11-20T10:15:30.123Z'
+                path: /api/identity/users/me
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Profile:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - email
+        - displayName
+        - role
+        - createdAt
+        - profile
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        displayName:
+          type: string
+        role:
+          type: string
+          examples:
+            - STUDENT
+        cefrLevel:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
+        profile:
+          $ref: '#/components/schemas/ProfileFields'
+    ProfileFields:
+      type: object
+      additionalProperties: false
+      properties:
+        nativeLanguage:
+          type: [string, 'null']
+        goals:
+          type: [string, 'null']
+        timezone:
+          type: [string, 'null']
+        avatarUrl:
+          type: [string, 'null']
+    UpdateProfileRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        displayName:
+          type: string
+          description: Present to change; blank is refused.
+        nativeLanguage:
+          type: [string, 'null']
+          description: Absent keeps the value; null clears it.
+        goals:
+          type: [string, 'null']
+          description: Absent keeps the value; null clears it.
+        timezone:
+          type: [string, 'null']
+          description: Absent keeps the value; null clears it.
+        avatarUrl:
+          type: [string, 'null']
+          description: Absent keeps the value; null clears it.
+        currentPassword:
+          type: string
+          description: Required when newPassword is present.
+        newPassword:
+          type: string
+          description: Must meet the password policy.
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+        - timestamp
+        - path
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string

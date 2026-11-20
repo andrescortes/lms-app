@@ -41,6 +41,8 @@ func (f *rotatingRepo) Store(_ context.Context, _ string, _ string, token string
 }
 func (f *rotatingRepo) Revoke(context.Context, string) error { return nil }
 
+func (f *rotatingRepo) RevokeByJTI(context.Context, string, string) error { return nil }
+
 func (f *rotatingRepo) Rotate(_ context.Context, presented, newJTI, replacement string, expiresAt time.Time) (Rotation, error) {
 	f.newJTI = newJTI
 	f.presented = presented

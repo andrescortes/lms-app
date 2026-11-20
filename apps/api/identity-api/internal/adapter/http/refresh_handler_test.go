@@ -24,6 +24,8 @@ func (f *refreshStubRepo) Store(context.Context, string, string, string, time.Ti
 
 func (f *refreshStubRepo) Revoke(context.Context, string) error { return nil }
 
+func (f *refreshStubRepo) RevokeByJTI(context.Context, string, string) error { return nil }
+
 func (f *refreshStubRepo) Rotate(context.Context, string, string, string, time.Time) (usecase.Rotation, error) {
 	return f.outcome, f.err
 }
@@ -37,7 +39,7 @@ func newRefreshRouter(t *testing.T, repo *refreshStubRepo) http.Handler {
 		stubID{},
 		stubClock{},
 	)
-	return NewRouter(nil, nil, uc, NewVisitorLimiter(), nil)
+	return NewRouter(nil, nil, uc, nil, nil, nil, nil, NewVisitorLimiter(), nil)
 }
 
 func postRefresh(handler http.Handler, remoteAddr, body string) *httptest.ResponseRecorder {
