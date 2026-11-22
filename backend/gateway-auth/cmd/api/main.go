@@ -49,12 +49,12 @@ func main() {
 	userStore := store.NewUserStore(db)
 
 	// services
-	authService := service.NewAuthService(userStore)
 
+	jwtService := service.NewJWTService(cfg.JWTSecret, cfg.AccessTokenTTL)
+	authService := service.NewAuthService(userStore, jwtService, cfg.AccessTokenTTL, cfg.RefreshTokenTTL)
 	// handlers
 	healthHandler := transport.NewHealthHandler(db)
-	authHandler := transport.NewAuthHandler(authService)
-
+	authHandler := transport.NewAuthHandler(authService, cfg.RefreshTokenTTL, cfg.CookieSecure)
 	// router
 	router := transport.NewRouter(healthHandler, authHandler)
 

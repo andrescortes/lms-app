@@ -10,8 +10,10 @@ func NewRouter(healthHandler *HealthHandler, authHandler *AuthHandler) http.Hand
 
 	mux.HandleFunc("GET /health", healthHandler.Check)
 
-	// public routes
+	// public routes auth
 	mux.HandleFunc("POST /api/auth/register", authHandler.RegisterUser)
+	mux.HandleFunc("POST /api/auth/login", authHandler.Login)
+	mux.HandleFunc("POST /api/auth/refresh", authHandler.Refresh)
 
 	return recoveryMiddleware(mux)
 }
