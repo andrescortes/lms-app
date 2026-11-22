@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"lms-app/backend/gateway-auth/internal/config"
+	"lms-app/backend/gateway-auth/internal/service"
 	"lms-app/backend/gateway-auth/internal/store"
 	"lms-app/backend/gateway-auth/internal/transport"
 	"log/slog"
@@ -43,8 +44,19 @@ func main() {
 
 	migCancel()
 
+	//injection dependencies
+	// stores
+	userStore := store.NewUserStore(db)
+
+	// services
+	authService := service.NewAuthService(userStore)
+
+	// handlers
 	healthHandler := transport.NewHealthHandler(db)
-	router := transport.NewRouter(healthHandler)
+	authHandler := transport.NewAuthHandler(authService)
+
+	// router
+	router := transport.NewRouter(healthHandler, authHandler)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
@@ -75,5 +87,5 @@ func main() {
 		slog.Error("error during graceful shutdown", "error", err)
 	}
 
-	slog.Info("gateway-auth stopped correctly")
+	slog.Info("gateway-auth stopped cleanly")
 }

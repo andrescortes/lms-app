@@ -5,10 +5,14 @@ import (
 	"net/http"
 )
 
-func NewRouter(healthHandler *HealthHandler) http.Handler {
+func NewRouter(healthHandler *HealthHandler, authHandler *AuthHandler) http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /health", healthHandler.Check)
+
+	// public routes
+	mux.HandleFunc("POST /api/auth/register", authHandler.RegisterUser)
+
 	return recoveryMiddleware(mux)
 }
 
@@ -21,7 +25,7 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 					"method", r.Method,
 					"path", r.URL.Path,
 				)
-				http.Error(w, `{"error":"internal server error"}`, http.StatusInternalServerError)
+				writeError(w, http.StatusInternalServerError, "internal server error")
 			}
 		}()
 		next.ServeHTTP(w, r)
