@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"lms-app/backend/gateway-auth/internal/config"
+	"lms-app/backend/gateway-auth/internal/store"
 	"lms-app/backend/gateway-auth/internal/transport"
 	"log/slog"
 	"net/http"
@@ -21,7 +22,28 @@ func main() {
 
 	cfg := config.Load()
 
-	healthHandler := transport.NewHealthHandler()
+	db, err := store.NewSQLiteDB(cfg.DBPath)
+	if err != nil {
+		slog.Error("error creating SQLite DB", "error", err)
+		os.Exit(1)
+	}
+
+	defer func() {
+		if err := db.Close(); err != nil {
+			slog.Error("error closing SQLite DB", "error", err)
+		}
+	}()
+
+	migCtx, migCancel := context.WithTimeout(context.Background(), 10*time.Second)
+	if err := store.RunMigrations(migCtx, db); err != nil {
+		migCancel()
+		slog.Error("error running migrations", "error", err)
+		os.Exit(1)
+	}
+
+	migCancel()
+
+	healthHandler := transport.NewHealthHandler(db)
 	router := transport.NewRouter(healthHandler)
 
 	srv := &http.Server{
