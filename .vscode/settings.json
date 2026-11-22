@@ -1,7 +1,4 @@
 {
-  "gopls": {
-    "build.experimentalWorkspaceModule": true
-  },
   "go.toolsManagement.autoUpdate": true,
   "files.exclude": {
     "**/.git": true,
