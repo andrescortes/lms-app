@@ -1,0 +1,10 @@
+{
+  "gopls": {
+    "build.experimentalWorkspaceModule": true
+  },
+  "go.toolsManagement.autoUpdate": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": true
+  }
+}
