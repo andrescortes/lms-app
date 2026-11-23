@@ -52,11 +52,17 @@ func main() {
 
 	jwtService := service.NewJWTService(cfg.JWTSecret, cfg.AccessTokenTTL)
 	authService := service.NewAuthService(userStore, jwtService, cfg.AccessTokenTTL, cfg.RefreshTokenTTL)
+
 	// handlers
 	healthHandler := transport.NewHealthHandler(db)
 	authHandler := transport.NewAuthHandler(authService, cfg.RefreshTokenTTL, cfg.CookieSecure)
+	lmsProxy, err := transport.NewMSReverseProxy(cfg.LMSCoreURL)
+	if err != nil {
+		slog.Error("error initializing lms-core reverse proxy", "error", err)
+		os.Exit(1)
+	}
 	// router
-	router := transport.NewRouter(healthHandler, authHandler, jwtService)
+	router := transport.NewRouter(healthHandler, authHandler, jwtService, lmsProxy)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,

@@ -13,6 +13,7 @@ type Config struct {
 	AccessTokenTTL  time.Duration
 	RefreshTokenTTL time.Duration
 	CookieSecure    bool
+	LMSCoreURL      string
 }
 
 func Load() *Config {
@@ -25,6 +26,7 @@ func Load() *Config {
 		AccessTokenTTL:  15 * time.Minute,
 		RefreshTokenTTL: 7 * 24 * time.Hour,
 		CookieSecure:    env == "production",
+		LMSCoreURL:      getEnv("LMS_CORE_URL", "http://127.0.0.1:8082"),
 	}
 }
 

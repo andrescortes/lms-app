@@ -10,6 +10,7 @@ func NewRouter(
 	healthHandler *HealthHandler,
 	authHandler *AuthHandler,
 	jwtService *service.JWTService,
+	lmsProxy http.Handler,
 ) http.Handler {
 	mux := http.NewServeMux()
 	requireAuth := AuthMiddleware(jwtService)
@@ -25,6 +26,9 @@ func NewRouter(
 	mux.Handle("GET /api/auth/me", requireAuth(http.HandlerFunc(authHandler.Me)))
 	mux.Handle("POST /api/auth/logout", requireAuth(http.HandlerFunc(authHandler.Logout)))
 	mux.Handle("PATCH /api/auth/password", requireAuth(http.HandlerFunc(authHandler.ChangePassword)))
+
+	// Reverse proxy auth to lsm-core
+	mux.Handle("/api/lms/", requireAuth(lmsProxy))
 
 	return recoveryMiddleware(mux)
 }
