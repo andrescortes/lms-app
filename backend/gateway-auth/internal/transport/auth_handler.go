@@ -118,3 +118,78 @@ func (h *AuthHandler) setRefreshCookie(w http.ResponseWriter, value string, maxA
 		SameSite: http.SameSiteLaxMode,
 	})
 }
+
+func (h *AuthHandler) Me(w http.ResponseWriter, r *http.Request) {
+	claims, ok := GetUserClaims(r.Context())
+	if !ok {
+		writeError(w, http.StatusUnauthorized, "unauthorized")
+		return
+	}
+
+	user, err := h.authService.GetProfile(r.Context(), claims.Subject)
+	if err != nil {
+		if errors.Is(err, model.ErrUserNotFound) {
+			writeError(w, http.StatusNotFound, "user not found")
+			return
+		}
+		slog.Error("unexpected error fetching user profile", "error", err, "user_id", claims.Subject)
+		writeError(w, http.StatusInternalServerError, "internal server error")
+		return
+	}
+	writeJSON(w, http.StatusOK, user)
+}
+
+func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	claims, ok := GetUserClaims(r.Context())
+	if !ok {
+		writeError(w, http.StatusUnauthorized, "unauthorized")
+		return
+	}
+
+	var rawRefreshToken string
+	if cookie, err := r.Cookie(refreshCookieName); err == nil {
+		rawRefreshToken = cookie.Value
+	}
+
+	if err := h.authService.Logout(r.Context(), rawRefreshToken); err != nil {
+		slog.Error("unexpected error during logout", "error", err, "user_id", claims.Subject)
+		writeError(w, http.StatusInternalServerError, "internal server error")
+		return
+	}
+
+	h.setRefreshCookie(w, "", -1)
+	slog.Info("user logged out", "user_id", claims.Subject)
+	writeJSON(w, http.StatusOK, map[string]string{"message": "logged out successfully"})
+}
+
+func (h *AuthHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	claims, ok := GetUserClaims(r.Context())
+	if !ok {
+		writeError(w, http.StatusUnauthorized, "unauthorized")
+		return
+	}
+
+	var req model.ChangePasswordRequest
+	if err := decodeJSON(w, r, &req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid JSON payload: "+err.Error())
+		return
+	}
+
+	if err := h.authService.ChangePassword(r.Context(), claims.Subject, req); err != nil {
+		switch {
+		case errors.Is(err, model.ErrInvalidInput):
+			writeError(w, http.StatusBadRequest, err.Error())
+		case errors.Is(err, model.ErrInvalidCredentials):
+			writeError(w, http.StatusUnauthorized, "current password is incorrect")
+		case errors.Is(err, model.ErrUserNotFound):
+			writeError(w, http.StatusNotFound, "user not found")
+		default:
+			slog.Error("unexpected error changing password", "error", err, "user_id", claims.Subject)
+		}
+		return
+	}
+
+	h.setRefreshCookie(w, "", -1)
+	slog.Info("user changed password", "user_id", claims.Subject)
+	writeJSON(w, http.StatusOK, map[string]string{"message": "password updated successfully"})
+}

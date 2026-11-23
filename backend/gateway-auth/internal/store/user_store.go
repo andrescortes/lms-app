@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"lms-app/backend/gateway-auth/internal/model"
 	"strings"
+	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -198,9 +199,62 @@ func (s *UserStore) RotateRefreshToken(ctx context.Context, oldTokenID string, n
 }
 
 func (s *UserStore) RevokeAllUserRefreshTokens(ctx context.Context, userID string) error {
-	_, err := s.db.ExecContext(ctx, "UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ? AND revoked = 0", userID)
+	const query = "UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ? AND revoked = 0"
+	_, err := s.db.ExecContext(ctx, query, userID)
 	if err != nil {
 		return fmt.Errorf("revoking all user refresh tokens: %w", err)
+	}
+	return nil
+}
+
+func (s *UserStore) RevokeRefreshTokenByHash(ctx context.Context, tokenHash string) error {
+	const query = `UPDATE refresh_tokens SET revoked = 1 WHERE token_hash = ? AND revoked = 0`
+	if _, err := s.db.ExecContext(ctx, query, tokenHash); err != nil {
+		return fmt.Errorf("revoking refresh token by hash: %w", err)
+	}
+	return nil
+}
+
+func (s *UserStore) UpdatePasswordAndRevokeSessions(
+	ctx context.Context,
+	userID string,
+	newPasswordHash string,
+	updateAt time.Time,
+) error {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("beginning password update tx: %w", err)
+	}
+	const query = "UPDATE users SET password_hash = ?, update_at = ? WHERE id = ?"
+	res, err := tx.ExecContext(
+		ctx,
+		query,
+		updateAt,
+		userID,
+	)
+	if err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("updating user password: %w", err)
+	}
+	affected, err := res.RowsAffected()
+	if err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("checking affected rows on password update: %w", err)
+	}
+	if affected == 0 {
+		_ = tx.Rollback()
+		return model.ErrUserNotFound
+	}
+	if _, err := tx.ExecContext(
+		ctx,
+		"UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ? AND revoked 0",
+		userID,
+	); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("revoking user sessions after password change: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("commit password update tx: %w", err)
 	}
 	return nil
 }

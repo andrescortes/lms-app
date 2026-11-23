@@ -21,6 +21,8 @@ type AuthRepository interface {
 	GetRefreshTokenByHash(ctx context.Context, tokenHash string) (*model.RefreshToken, error)
 	RotateRefreshToken(ctx context.Context, oldTokenID string, newToken *model.RefreshToken) error
 	RevokeAllUserRefreshTokens(ctx context.Context, userID string) error
+	RevokeRefreshTokenByHash(ctx context.Context, tokenHash string) error
+	UpdatePasswordAndRevokeSessions(ctx context.Context, userID string, newPasswordHash string, updatedAt time.Time) error
 }
 
 type AuthService struct {
@@ -201,4 +203,50 @@ func (s *AuthService) Refresh(ctx context.Context, rawRefreshToken string) (*mod
 		ExpiresIn:   int(s.accessTTL.Seconds()),
 		User:        user,
 	}, newRawRefresh, nil
+}
+
+func (s *AuthService) GetProfile(ctx context.Context, userID string) (*model.User, error) {
+	if strings.TrimSpace(userID) == "" {
+		return nil, model.ErrUserNotFound
+	}
+	return s.authRepo.GetUserById(ctx, userID)
+}
+
+func (s *AuthService) Logout(ctx context.Context, rawRefreshToken string) error {
+	if strings.TrimSpace(rawRefreshToken) == "" {
+		return nil
+	}
+	tokenHash := HashRefreshToken(rawRefreshToken)
+	return s.authRepo.RevokeRefreshTokenByHash(ctx, tokenHash)
+}
+
+func (s *AuthService) ChangePassword(ctx context.Context, userID string, req model.ChangePasswordRequest) error {
+	if req.CurrentPassword == "" || req.NewPassword == "" {
+		return fmt.Errorf("%w: current_password and new_password are required", model.ErrInvalidInput)
+	}
+	if len(req.NewPassword) < 8 {
+		return fmt.Errorf("%w: new_password must have at least 8 characters", model.ErrInvalidInput)
+	}
+	if len(req.NewPassword) > 72 {
+		return fmt.Errorf("%w: new_password cannot exceed 72 characters", model.ErrInvalidInput)
+	}
+	if req.CurrentPassword == req.NewPassword {
+		return fmt.Errorf("%w: new_password must be different from current_password", model.ErrInvalidInput)
+	}
+
+	user, err := s.authRepo.GetUserById(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.CurrentPassword)); err != nil {
+		return model.ErrInvalidCredentials
+	}
+
+	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return fmt.Errorf("hashing new password: %w", err)
+	}
+
+	return s.authRepo.UpdatePasswordAndRevokeSessions(ctx, user.ID, string(hashedBytes), time.Now().UTC())
 }

@@ -56,7 +56,7 @@ func main() {
 	healthHandler := transport.NewHealthHandler(db)
 	authHandler := transport.NewAuthHandler(authService, cfg.RefreshTokenTTL, cfg.CookieSecure)
 	// router
-	router := transport.NewRouter(healthHandler, authHandler)
+	router := transport.NewRouter(healthHandler, authHandler, jwtService)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
