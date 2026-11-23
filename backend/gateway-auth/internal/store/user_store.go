@@ -219,17 +219,18 @@ func (s *UserStore) UpdatePasswordAndRevokeSessions(
 	ctx context.Context,
 	userID string,
 	newPasswordHash string,
-	updateAt time.Time,
+	updatedAt time.Time,
 ) error {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return fmt.Errorf("beginning password update tx: %w", err)
 	}
-	const query = "UPDATE users SET password_hash = ?, update_at = ? WHERE id = ?"
+	const query = "UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?"
 	res, err := tx.ExecContext(
 		ctx,
 		query,
-		updateAt,
+		newPasswordHash,
+		updatedAt,
 		userID,
 	)
 	if err != nil {
@@ -247,7 +248,7 @@ func (s *UserStore) UpdatePasswordAndRevokeSessions(
 	}
 	if _, err := tx.ExecContext(
 		ctx,
-		"UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ? AND revoked 0",
+		"UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ? AND revoked = 0",
 		userID,
 	); err != nil {
 		_ = tx.Rollback()
