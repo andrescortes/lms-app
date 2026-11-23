@@ -16,17 +16,20 @@ type AuthHandler struct {
 	authService  *service.AuthService
 	refreshTTL   time.Duration
 	cookieSecure bool
+	cookieDomain string
 }
 
 func NewAuthHandler(
 	authService *service.AuthService,
 	refreshTTL time.Duration,
 	cookieSecure bool,
+	cookieDomain string,
 ) *AuthHandler {
 	return &AuthHandler{
 		authService:  authService,
 		refreshTTL:   refreshTTL,
 		cookieSecure: cookieSecure,
+		cookieDomain: cookieDomain,
 	}
 }
 
@@ -108,7 +111,7 @@ func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 
 // setRefreshCookie adds HttpOnly cookie restricted to /api/auth
 func (h *AuthHandler) setRefreshCookie(w http.ResponseWriter, value string, maxAge int) {
-	http.SetCookie(w, &http.Cookie{
+	cookie := &http.Cookie{
 		Name:     refreshCookieName,
 		Value:    value,
 		Path:     "/api/auth",
@@ -116,7 +119,11 @@ func (h *AuthHandler) setRefreshCookie(w http.ResponseWriter, value string, maxA
 		HttpOnly: true,
 		Secure:   h.cookieSecure,
 		SameSite: http.SameSiteLaxMode,
-	})
+	}
+	if h.cookieDomain != "" {
+		cookie.Domain = h.cookieDomain
+	}
+	http.SetCookie(w, cookie)
 }
 
 func (h *AuthHandler) Me(w http.ResponseWriter, r *http.Request) {

@@ -39,7 +39,9 @@ func (s *UserStore) CreateUser(ctx context.Context, user *model.User) error {
 	)
 
 	if err != nil {
-		if strings.Contains(err.Error(), "UNIQUE constraint failed: users.email") {
+		// Check for unique constraint violation on email (SQLite error code 2067 / 1555)
+		// Using error message as fallback since modernc.org/sqlite doesn't expose error codes easily
+		if isUniqueConstraintError(err, "users.email") {
 			return model.ErrEmailAlreadyExists
 		}
 		return fmt.Errorf("inserting user: %w", err)
@@ -47,11 +49,21 @@ func (s *UserStore) CreateUser(ctx context.Context, user *model.User) error {
 	return nil
 }
 
+// isUniqueConstraintError checks if the error is a unique constraint violation on the given column
+func isUniqueConstraintError(err error, column string) bool {
+	if err == nil {
+		return false
+	}
+	errStr := err.Error()
+	// SQLite unique constraint error patterns
+	return strings.Contains(errStr, "UNIQUE constraint failed") && strings.Contains(errStr, column)
+}
+
 func (s *UserStore) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	const query = `
 	SELECT id, email, password_hash, full_name, role, cefr_level, created_at, updated_at
 	FROM users
-	WHERE email = ?;
+	WHERE LOWER(email) = LOWER(?);
 	`
 	var u model.User
 	err := s.db.QueryRowContext(ctx, query, email).Scan(
@@ -258,4 +270,20 @@ func (s *UserStore) UpdatePasswordAndRevokeSessions(
 		return fmt.Errorf("commit password update tx: %w", err)
 	}
 	return nil
+}
+
+// CleanupExpiredRefreshTokens deletes expired and revoked refresh tokens older than the given duration
+// Returns the number of deleted tokens
+func (s *UserStore) CleanupExpiredRefreshTokens(ctx context.Context, olderThan time.Duration) (int64, error) {
+	cutoff := time.Now().UTC().Add(-olderThan)
+	query := `DELETE FROM refresh_tokens WHERE expires_at < ? OR (revoked = 1 AND created_at < ?)`
+	res, err := s.db.ExecContext(ctx, query, cutoff, cutoff)
+	if err != nil {
+		return 0, fmt.Errorf("cleaning up expired refresh tokens: %w", err)
+	}
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("getting affected rows from cleanup: %w", err)
+	}
+	return affected, nil
 }

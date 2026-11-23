@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"lms-app/backend/gateway-auth/internal/model"
+	"log/slog"
 	"net/mail"
 	"strings"
 	"time"
@@ -23,6 +24,7 @@ type AuthRepository interface {
 	RevokeAllUserRefreshTokens(ctx context.Context, userID string) error
 	RevokeRefreshTokenByHash(ctx context.Context, tokenHash string) error
 	UpdatePasswordAndRevokeSessions(ctx context.Context, userID string, newPasswordHash string, updatedAt time.Time) error
+	CleanupExpiredRefreshTokens(ctx context.Context, olderThan time.Duration) (int64, error)
 }
 
 type AuthService struct {
@@ -42,7 +44,7 @@ func NewAuthService(
 		authRepo:   authRepo,
 		jwtService: jwtService,
 		accessTTL:  accessTTL,
-		refreshTTL: accessTTL,
+		refreshTTL: refreshTTL,
 	}
 }
 
@@ -160,7 +162,11 @@ func (s *AuthService) Refresh(ctx context.Context, rawRefreshToken string) (*mod
 	}
 
 	if storedToken.Revoked {
-		_ = s.authRepo.RevokeAllUserRefreshTokens(ctx, storedToken.UserID)
+		// Token was revoked - possible reuse attack, revoke all user's tokens
+		if revokeErr := s.authRepo.RevokeAllUserRefreshTokens(ctx, storedToken.UserID); revokeErr != nil {
+			// Log but don't fail the request - the token is invalid anyway
+			slog.Error("failed to revoke all user tokens after reuse detection", "error", revokeErr, "user_id", storedToken.UserID)
+		}
 		return nil, "", model.ErrInvalidRefreshToken
 	}
 

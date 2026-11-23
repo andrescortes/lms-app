@@ -23,6 +23,12 @@ func main() {
 
 	cfg := config.Load()
 
+	// Validate production configuration
+	if err := cfg.ValidateLMSCoreURL(); err != nil {
+		slog.Error("invalid LMS_CORE_URL", "error", err)
+		os.Exit(1)
+	}
+
 	db, err := store.NewSQLiteDB(cfg.DBPath)
 	if err != nil {
 		slog.Error("error creating SQLite DB", "error", err)
@@ -55,7 +61,7 @@ func main() {
 
 	// handlers
 	healthHandler := transport.NewHealthHandler(db)
-	authHandler := transport.NewAuthHandler(authService, cfg.RefreshTokenTTL, cfg.CookieSecure)
+	authHandler := transport.NewAuthHandler(authService, cfg.RefreshTokenTTL, cfg.CookieSecure, cfg.CookieDomain)
 	lmsProxy, err := transport.NewMSReverseProxy(cfg.LMSCoreURL)
 	if err != nil {
 		slog.Error("error initializing lms-core reverse proxy", "error", err)
@@ -74,6 +80,27 @@ func main() {
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+
+	// Background job: cleanup expired refresh tokens daily
+	go func() {
+		ticker := time.NewTicker(24 * time.Hour)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				cleanupCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+				deleted, err := userStore.CleanupExpiredRefreshTokens(cleanupCtx, 30*24*time.Hour) // older than 30 days
+				cancel()
+				if err != nil {
+					slog.Error("failed to cleanup expired refresh tokens", "error", err)
+				} else if deleted > 0 {
+					slog.Info("cleaned up expired refresh tokens", "count", deleted)
+				}
+			}
+		}
+	}()
 
 	go func() {
 		slog.Info("Starting gateway-auth", "port", cfg.Port, "env", cfg.Env)

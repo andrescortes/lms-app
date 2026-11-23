@@ -72,6 +72,14 @@ func (m *MockAuthRepository) UpdatePasswordAndRevokeSessions(ctx context.Context
 	return args.Error(0)
 }
 
+func (m *MockAuthRepository) CleanupExpiredRefreshTokens(ctx context.Context, olderThan time.Duration) (int64, error) {
+	args := m.Called(ctx, olderThan)
+	if args.Get(0) == nil {
+		return 0, args.Error(1)
+	}
+	return args.Get(0).(int64), args.Error(1)
+}
+
 // Test user fixture
 func createTestUser(id string) *model.User {
 	now := time.Now().UTC()

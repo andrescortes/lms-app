@@ -29,7 +29,7 @@ func NewSQLiteDB(dbPath string) (*sql.DB, error) {
 
 	db, err := sql.Open("sqlite", dsn)
 	if err != nil {
-		return nil, fmt.Errorf("Opening connection sqlite: %w", err)
+		return nil, fmt.Errorf("opening sqlite connection: %w", err)
 	}
 
 	db.SetMaxOpenConns(4)
@@ -41,7 +41,13 @@ func NewSQLiteDB(dbPath string) (*sql.DB, error) {
 
 	if err := db.PingContext(ctx); err != nil {
 		_ = db.Close()
-		return nil, fmt.Errorf("Checking ping to sqlite: %w", err)
+		return nil, fmt.Errorf("pinging sqlite: %w", err)
+	}
+
+	// Explicitly enable foreign keys for this connection (DSN pragma may not persist across connections)
+	if _, err := db.ExecContext(ctx, "PRAGMA foreign_keys = ON"); err != nil {
+		_ = db.Close()
+		return nil, fmt.Errorf("enabling foreign keys: %w", err)
 	}
 
 	return db, nil

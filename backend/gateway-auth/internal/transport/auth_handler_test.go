@@ -77,6 +77,14 @@ func (m *MockAuthRepository) UpdatePasswordAndRevokeSessions(ctx context.Context
 	return args.Error(0)
 }
 
+func (m *MockAuthRepository) CleanupExpiredRefreshTokens(ctx context.Context, olderThan time.Duration) (int64, error) {
+	args := m.Called(ctx, olderThan)
+	if args.Get(0) == nil {
+		return 0, args.Error(1)
+	}
+	return args.Get(0).(int64), args.Error(1)
+}
+
 func createTestUser(id string) *model.User {
 	now := time.Now().UTC()
 	// Generate a proper bcrypt hash for "password123"
@@ -105,7 +113,7 @@ func createAuthResponse(user *model.User, accessToken string) *model.AuthRespons
 func newTestAuthHandler(mockRepo *MockAuthRepository) *AuthHandler {
 	jwtService := service.NewJWTService("test-secret-key", 15*time.Minute)
 	authService := service.NewAuthService(mockRepo, jwtService, 15*time.Minute, 24*time.Hour)
-	return NewAuthHandler(authService, 24*time.Hour, false)
+	return NewAuthHandler(authService, 24*time.Hour, false, "")
 }
 
 func TestAuthHandler_RegisterUser(t *testing.T) {
