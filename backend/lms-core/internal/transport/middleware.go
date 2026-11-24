@@ -18,6 +18,11 @@ type TrustedUser struct {
 	Email     string
 }
 
+// ValidCEFRLVELS defines the allowed CEFR levels.
+var ValidCEFRLVELS = map[string]struct{}{
+	"A1": {}, "A2": {}, "B1": {}, "B2": {}, "C1": {}, "C2": {},
+}
+
 // TrustedGatewayMiddleware extract headers X-User-* injected by gateway-auth
 func TrustedGatewayMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +40,12 @@ func TrustedGatewayMiddleware(next http.Handler) http.Handler {
 		level := strings.ToUpper(strings.TrimSpace(r.Header.Get("X-User-Level")))
 		if level == "" {
 			level = "A1"
+		}
+
+		// Validate CEFR level against known values
+		if _, ok := ValidCEFRLVELS[level]; !ok {
+			writeError(w, http.StatusBadRequest, "invalid CEFR level: "+level)
+			return
 		}
 
 		user := &TrustedUser{

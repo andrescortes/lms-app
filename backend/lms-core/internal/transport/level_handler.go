@@ -33,7 +33,8 @@ func (h *LevelHandler) GetLevels(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Determine numeric rank level currently from student (by default 1 = A1)
+	// Determine numeric rank level currently from student.
+	// Default to 1 (lowest rank = A1) if level not found in database.
 	currentRank := 1
 	for _, lvl := range levels {
 		if lvl.Code == user.CEFRLevel {

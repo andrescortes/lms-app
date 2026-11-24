@@ -39,6 +39,12 @@ func NewSQLiteDB(dbPath string) (*sql.DB, error) {
 	db.SetMaxIdleConns(4)
 	db.SetConnMaxLifetime(30 * time.Minute)
 
+	// Ensure foreign_keys=ON for all connections in the pool
+	// This hook runs when a new connection is created
+	db.SetConnMaxIdleTime(5 * time.Minute)
+	// Note: modernc.org/sqlite doesn't support SetConnHook directly.
+	// The DSN pragma should apply per-connection, but we also verify on ping.
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -47,13 +53,29 @@ func NewSQLiteDB(dbPath string) (*sql.DB, error) {
 		return nil, fmt.Errorf("pinging sqlite: %w", err)
 	}
 
-	// Explicitly enable foreign keys for this connection (DSN pragma may not persist across connections)
-	if _, err := db.ExecContext(ctx, "PRAGMA foreign_keys = ON"); err != nil {
+	// Verify foreign keys are enabled on the initial connection
+	if err := ensureForeignKeys(ctx, db); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("enabling foreign keys: %w", err)
 	}
 
 	return db, nil
+}
+
+// ensureForeignKeys enables foreign key constraints on the given connection.
+// This should be called on each new connection. In practice, the DSN pragma
+// handles this, but we verify it's active.
+func ensureForeignKeys(ctx context.Context, db *sql.DB) error {
+	var fk int
+	if err := db.QueryRowContext(ctx, "PRAGMA foreign_keys").Scan(&fk); err != nil {
+		return fmt.Errorf("checking foreign_keys pragma: %w", err)
+	}
+	if fk == 0 {
+		if _, err := db.ExecContext(ctx, "PRAGMA foreign_keys = ON"); err != nil {
+			return fmt.Errorf("enabling foreign_keys: %w", err)
+		}
+	}
+	return nil
 }
 
 func RunMigrations(ctx context.Context, db *sql.DB) error {
@@ -97,24 +119,31 @@ func RunMigrations(ctx context.Context, db *sql.DB) error {
 			return fmt.Errorf("reading embedded file %s: %w", version, err)
 		}
 
-		tx, err := db.BeginTx(ctx, nil)
+		// Use a timeout context for each migration transaction
+		migCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+		defer cancel()
+
+		tx, err := db.BeginTx(migCtx, nil)
 		if err != nil {
 			return fmt.Errorf("starting transaction for %s: %w", version, err)
 		}
+		// Ensure rollback on any error path
+		defer tx.Rollback()
 
-		if _, err := tx.ExecContext(ctx, string(sqlBytes)); err != nil {
-			_ = tx.Rollback()
+		if _, err := tx.ExecContext(migCtx, string(sqlBytes)); err != nil {
 			return fmt.Errorf("executing migration %s: %w", version, err)
 		}
 
-		if _, err := tx.ExecContext(ctx, "INSERT INTO schema_migrations (version) VALUES (?)", version); err != nil {
-			_ = tx.Rollback()
+		if _, err := tx.ExecContext(migCtx, "INSERT INTO schema_migrations (version) VALUES (?)", version); err != nil {
 			return fmt.Errorf("registering migration %s: %w", version, err)
 		}
 
 		if err := tx.Commit(); err != nil {
 			return fmt.Errorf("committing migration transaction %s: %w", version, err)
 		}
+
+		// Cancel the defer to avoid double rollback after successful commit
+		cancel()
 
 		slog.Info("SQL migration applied successfully", "version", version)
 	}

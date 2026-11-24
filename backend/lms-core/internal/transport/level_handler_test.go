@@ -19,10 +19,14 @@ func TestLevelHandler_GetLevels_Success(t *testing.T) {
 	handler := NewLevelHandler(mockStore)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/lms/levels", nil)
-	req.Header.Set("X-User-ID", "user-123")
-	req.Header.Set("X-User-Role", "student")
-	req.Header.Set("X-User-Level", "B1")
-	req.Header.Set("X-User-Email", "student@example.com")
+	// Set the trusted user in context (simulating middleware)
+	user := &TrustedUser{
+		ID:        "user-123",
+		Role:      "student",
+		CEFRLevel: "B1",
+		Email:     "student@example.com",
+	}
+	req = req.WithContext(context.WithValue(req.Context(), trustedUserContextKey, user))
 
 	rr := httptest.NewRecorder()
 	handler.GetLevels(rr, req)
@@ -69,12 +73,15 @@ func TestLevelHandler_GetLevels_DefaultLevel(t *testing.T) {
 
 	handler := NewLevelHandler(mockStore)
 
-	// Request without X-User-Level header (should default to A1)
+	// Request with user having no level (should default to A1 in middleware)
+	user := &TrustedUser{
+		ID:        "user-456",
+		Role:      "student",
+		CEFRLevel: "A1", // Middleware defaults to A1
+		Email:     "student2@example.com",
+	}
 	req := httptest.NewRequest(http.MethodGet, "/api/lms/levels", nil)
-	req.Header.Set("X-User-ID", "user-456")
-	req.Header.Set("X-User-Role", "student")
-	// No X-User-Level header
-	req.Header.Set("X-User-Email", "student2@example.com")
+	req = req.WithContext(context.WithValue(req.Context(), trustedUserContextKey, user))
 
 	rr := httptest.NewRecorder()
 	handler.GetLevels(rr, req)
@@ -104,7 +111,7 @@ func TestLevelHandler_GetLevels_DefaultLevel(t *testing.T) {
 	}
 }
 
-func TestLevelHandler_GetLevels_UnknownLevelDefaultsToA1(t *testing.T) {
+func TestLevelHandler_GetLevels_UnknownLevel(t *testing.T) {
 	mockStore := &MockLevelStore{
 		ListLevelsFunc: func(ctx context.Context) ([]model.CEFRLevel, error) {
 			return testLevels(), nil
@@ -114,11 +121,14 @@ func TestLevelHandler_GetLevels_UnknownLevelDefaultsToA1(t *testing.T) {
 	handler := NewLevelHandler(mockStore)
 
 	// Request with unknown level
+	user := &TrustedUser{
+		ID:        "user-789",
+		Role:      "student",
+		CEFRLevel: "XX", // Unknown level
+		Email:     "student3@example.com",
+	}
 	req := httptest.NewRequest(http.MethodGet, "/api/lms/levels", nil)
-	req.Header.Set("X-User-ID", "user-789")
-	req.Header.Set("X-User-Role", "student")
-	req.Header.Set("X-User-Level", "XX") // Unknown level
-	req.Header.Set("X-User-Email", "student3@example.com")
+	req = req.WithContext(context.WithValue(req.Context(), trustedUserContextKey, user))
 
 	rr := httptest.NewRecorder()
 	handler.GetLevels(rr, req)
@@ -158,10 +168,13 @@ func TestLevelHandler_GetLevels_StoreError(t *testing.T) {
 
 	handler := NewLevelHandler(mockStore)
 
+	user := &TrustedUser{
+		ID:        "user-123",
+		Role:      "student",
+		CEFRLevel: "A1",
+	}
 	req := httptest.NewRequest(http.MethodGet, "/api/lms/levels", nil)
-	req.Header.Set("X-User-ID", "user-123")
-	req.Header.Set("X-User-Role", "student")
-	req.Header.Set("X-User-Level", "A1")
+	req = req.WithContext(context.WithValue(req.Context(), trustedUserContextKey, user))
 
 	rr := httptest.NewRecorder()
 	handler.GetLevels(rr, req)
@@ -182,10 +195,8 @@ func TestLevelHandler_GetLevels_MissingUserID(t *testing.T) {
 	mockStore := &MockLevelStore{}
 	handler := NewLevelHandler(mockStore)
 
-	// Request without X-User-ID header
+	// Request WITHOUT user in context (simulating missing middleware)
 	req := httptest.NewRequest(http.MethodGet, "/api/lms/levels", nil)
-	req.Header.Set("X-User-Role", "student")
-	req.Header.Set("X-User-Level", "A1")
 
 	rr := httptest.NewRecorder()
 	handler.GetLevels(rr, req)
@@ -211,10 +222,13 @@ func TestLevelHandler_GetLevels_EmptyLevels(t *testing.T) {
 
 	handler := NewLevelHandler(mockStore)
 
+	user := &TrustedUser{
+		ID:        "user-123",
+		Role:      "student",
+		CEFRLevel: "A1",
+	}
 	req := httptest.NewRequest(http.MethodGet, "/api/lms/levels", nil)
-	req.Header.Set("X-User-ID", "user-123")
-	req.Header.Set("X-User-Role", "student")
-	req.Header.Set("X-User-Level", "A1")
+	req = req.WithContext(context.WithValue(req.Context(), trustedUserContextKey, user))
 
 	rr := httptest.NewRecorder()
 	handler.GetLevels(rr, req)
