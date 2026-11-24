@@ -1,0 +1,126 @@
+<div class="min-h-screen bg-slate-50 flex flex-col">
+  <!-- Barra superior de navegación -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center">
+          <mat-icon>school</mat-icon>
+        </div>
+        <span class="font-bold text-lg text-slate-900 tracking-tight">English LMS</span>
+      </div>
+
+      <div class="flex items-center gap-3 sm:gap-4">
+        <div class="hidden sm:flex flex-col items-end">
+          <span class="text-sm font-medium text-slate-900">{{ authStore.displayName() }}</span>
+          <span class="text-xs text-slate-500">{{ authStore.user()?.email }}</span>
+        </div>
+
+        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
+          Level {{ authStore.currentLevel() }}
+        </span>
+
+        <button mat-stroked-button type="button" (click)="authStore.logout()" [disabled]="authStore.isLoading()"
+          class="text-slate-700">
+          <mat-icon class="mr-1 text-base">logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
+    <section class="mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
+        Hello, {{ authStore.displayName() }}
+      </h1>
+      <p class="text-slate-600 mt-1">
+        Your CEFR learning roadmap from beginner (A1) to mastery (C2).
+      </p>
+    </section>
+
+    @if (isLoadingLevels()) {
+    <div class="flex flex-col items-center justify-center py-20 gap-3 text-slate-500">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p class="text-sm">Loading your CEFR curriculum...</p>
+    </div>
+    } @else if (levelsError()) {
+    <div
+      class="p-6 rounded-xl bg-red-50 border border-red-200 text-red-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <mat-icon>cloud_off</mat-icon>
+        <div>
+          <p class="font-medium">Could not load CEFR levels</p>
+          <p class="text-sm text-red-600">{{ levelsError() }}</p>
+        </div>
+      </div>
+      <button mat-flat-button color="primary" type="button" (click)="loadLevels()">
+        Retry
+      </button>
+    </div>
+    } @else {
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (level of levels(); track level.code) {
+      <mat-card class="p-6 rounded-2xl transition-all flex flex-col justify-between border"
+        [class.bg-white]="level.unlocked" [class.border-blue-500]="level.is_current" [class.ring-2]="level.is_current"
+        [class.ring-blue-500/20]="level.is_current" [class.shadow-md]="level.is_current"
+        [class.border-slate-200]="!level.is_current" [class.bg-slate-100/80]="!level.unlocked"
+        [class.opacity-75]="!level.unlocked">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg"
+              [class.bg-blue-600]="level.is_current" [class.text-white]="level.is_current"
+              [class.bg-emerald-100]="level.unlocked && !level.is_current"
+              [class.text-emerald-800]="level.unlocked && !level.is_current" [class.bg-slate-200]="!level.unlocked"
+              [class.text-slate-500]="!level.unlocked">
+              {{ level.code }}
+            </span>
+
+            @if (level.is_current) {
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+              Current Level
+            </span>
+            } @else if (level.unlocked) {
+            <span
+              class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+              <mat-icon class="text-sm !w-4 !h-4">check_circle</mat-icon>
+              Unlocked
+            </span>
+            } @else {
+            <span
+              class="px-3 py-1 rounded-full text-xs font-medium bg-slate-200 text-slate-600 flex items-center gap-1">
+              <mat-icon class="text-sm !w-4 !h-4">lock</mat-icon>
+              Locked
+            </span>
+            }
+          </div>
+
+          <h2 class="text-xl font-bold text-slate-900 mb-2">{{ level.name }}</h2>
+          <p class="text-sm text-slate-600 leading-relaxed mb-6">
+            {{ level.description }}
+          </p>
+        </div>
+
+        <div>
+          @if (level.is_current) {
+          <button mat-flat-button color="primary" type="button" class="w-full">
+            <span>Continue {{ level.code }}</span>
+            <mat-icon class="ml-1">arrow_forward</mat-icon>
+          </button>
+          } @else if (level.unlocked) {
+          <button mat-stroked-button color="primary" type="button" class="w-full">
+            <span>Review {{ level.code }}</span>
+          </button>
+          } @else {
+          <button mat-stroked-button disabled type="button" class="w-full">
+            <mat-icon class="mr-1 text-base">lock</mat-icon>
+            <span>Complete previous levels</span>
+          </button>
+          }
+        </div>
+      </mat-card>
+      }
+    </section>
+    }
+  </main>
+</div>
