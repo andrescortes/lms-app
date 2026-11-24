@@ -1,0 +1,26 @@
+flowchart LR
+    subgraph PUBLICO["🌐 Tráfico Público (Usuarios)"]
+        U[Navegador / Angular 22] --> CF[Cloudflare Edge + Tunnel]
+    end
+
+    subgraph CICD["🔒 Plano Privado CI/CD (GitHub Actions)"]
+        VS[VS Code Monorepo] --> GH[GitHub Actions<br/>Build Angular & Go ARM64]
+        GH --> TS[Tailscale VPN<br/>tag:ci]
+    end
+
+    subgraph POVA["📱 Tecno Pova 4 (Termux + PM2)"]
+        NGX[Nginx :8080]
+        GW[Go: gateway-auth :8081<br/>JWT + Reverse Proxy]
+        CORE[Go: lms-core :8082<br/>Niveles A1 - C2]
+        DB[(SQLite WAL / PostgreSQL)]
+
+        CF -->|HTTP localhost:8080| NGX
+        NGX -->|/ Estáticos dist/| ANG[Archivos Angular 22]
+        NGX -->|/api/*| GW
+        GW -->|/api/lms/*| CORE
+        GW --> DB
+        CORE --> DB
+        TS -->|SSH :8022 + rsync| NGX
+        TS -->|SSH :8022 + rsync| GW
+        TS -->|SSH :8022 + rsync| CORE
+    end
