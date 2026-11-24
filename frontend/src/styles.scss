@@ -1,22 +1,27 @@
-/* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
 @use 'tailwindcss';
 
 html {
-    @include mat.theme((color: (theme-type: light,
-                primary: mat.$azure-palette,
-                tertiary: mat.$blue-palette,
-            ),
-            typography: Roboto,
-            density: 0,
-        ));
+  @include mat.theme((color: (theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    ));
 }
 
 html,
 body {
-    height: 100%;
-    margin: 0;
-    background-color: #f8fafc;
-    color: #0f172a;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 100%;
+  margin: 0;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Evita que el reset de bordes de Tailwind v4 corte las etiquetas flotantes de Material */
+.mdc-notched-outline__notch {
+  border-right: none !important;
 }

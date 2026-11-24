@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,6 +30,15 @@ export class DashboardComponent implements OnInit {
   protected readonly levels = signal<CEFRLevel[]>([]);
   protected readonly isLoadingLevels = signal(true);
   protected readonly levelsError = signal<string | null>(null);
+
+  protected readonly unlockedCount = computed(
+    () => this.levels().filter((lvl) => lvl.unlocked).length
+  );
+
+  protected readonly progressPercent = computed(() => {
+    const total = this.levels().length;
+    return total > 0 ? Math.round((this.unlockedCount() / total) * 100) : 0;
+  });
 
   async ngOnInit(): Promise<void> {
     await this.loadLevels();
