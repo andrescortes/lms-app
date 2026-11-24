@@ -12,6 +12,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	_ "modernc.org/sqlite"
 )
 
 //go:embed migrations/*.sql
