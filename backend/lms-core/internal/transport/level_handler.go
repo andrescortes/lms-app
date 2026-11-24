@@ -9,10 +9,10 @@ import (
 )
 
 type LevelHandler struct {
-	levelStore *store.LevelStore
+	levelStore store.LevelStoreInterface
 }
 
-func NewLevelHandler(levelStore *store.LevelStore) *LevelHandler {
+func NewLevelHandler(levelStore store.LevelStoreInterface) *LevelHandler {
 	return &LevelHandler{
 		levelStore: levelStore,
 	}
