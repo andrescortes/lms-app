@@ -1,0 +1,80 @@
+name: Deploy Angular Frontend & Nginx
+
+on:
+    push:
+        branches:
+            - develop
+        paths:
+            - "frontend/**"
+            - "deploy/nginx.conf"
+            - ".github/workflows/deploy-frontend.yml"
+    workflow_dispatch:
+
+concurrency:
+    group: deploy-frontend
+    cancel-in-progress: true
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: "pnpm"
+                  cache-dependency-path: frontend/pnpm-lock.yaml
+
+            - name: Install dependencies
+              working-directory: frontend
+              run: pnpm install --frozen-lockfile
+
+            - name: Build Angular application
+              working-directory: frontend
+              run: pnpm build
+
+            - name: Connect to private network Tailscale
+              uses: tailscale/github-action@v4
+              with:
+                  oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+                  oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+                  tags: tag:devops
+
+            - name: Setup SSH key
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d > ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
+
+            - name: Upload Angular's static files to phone
+              run: |
+                  rsync -avz --delete \
+                    -e "ssh -p 8022 -o StrictHostKeyChecking=no" \
+                    frontend/dist/lms-web/browser/ \
+                    ${{ secrets.VPS_USER_POVA }}@${{ secrets.VPS_POVA_TS_IP }}:~/apps/lms-app/frontend/
+
+            - name: Replace binary and reset nginx service on Termux
+              run: |
+                  rsync -avz \
+                    -e "ssh -p 8022 -o StrictHostKeyChecking=no" \
+                    deploy/nginx.conf \
+                    ${{ secrets.VPS_USER_POVA }}@${{ secrets.VPS_POVA_TS_IP }}:/data/data/com.termux/files/usr/etc/nginx/nginx.conf
+
+                  ssh -p 8022 -o StrictHostKeyChecking=no \
+                    ${{ secrets.VPS_USER_POVA }}@${{ secrets.VPS_POVA_TS_IP }} << 'EOF'
+                    set -e
+                    export SVDIR="/data/data/com.termux/files/usr/var/service"
+                    nginx -t
+                    nginx -s reload 2>/dev/null || nginx
+                    sv up cloudflared 2>/dev/null || true
+                    sv status lms-core lms-gateway cloudflared
+                  EOF
