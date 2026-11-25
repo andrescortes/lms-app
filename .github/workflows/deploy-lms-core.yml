@@ -6,7 +6,7 @@ on:
             - develop
         paths:
             - "backend/lms-core/**"
-            - ".github/work/deploy-lms-core.yml"
+            - ".github/workflows/deploy-lms-core.yml"
     workflow_dispatch:
 concurrency:
     group: deploy-lms-core
