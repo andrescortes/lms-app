@@ -1,0 +1,77 @@
+name: Deploy Gateway Auth (Go ARM64)
+
+on:
+    push:
+        branches:
+            - develop
+        paths:
+            - "backend/gateway-auth/**"
+            - ".github/workflows/deploy-gateway-auth.yml"
+    workflow_dispatch:
+
+concurrency:
+    group: deploy-gateway-auth
+    cancel-in-progress: true
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Go
+              uses: actions/setup-go@v5
+              with:
+                  go-version-file: backend/gateway-auth/go.mod
+                  cache-dependency-path: backend/gateway-auth/go.sum
+
+            - name: Run tests
+              working-directory: backend/gateway-auth
+              run: go test -v ./...
+
+            - name: Compile ARM64 binary for Pova 4
+              working-directory: backend/gateway-auth
+              env:
+                  GOOS: linux
+                  GOARCH: arm64
+                  CGO_ENABLED: 0
+              run: |
+                  mkdir -p dist
+                  go build -trimpath -ldflags="-s -w" -o dist/gateway-auth ./cmd/api
+
+            - name: Connect to private network Tailscale
+              uses: tailscale/github-action@v4
+              with:
+                  oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+                  oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+                  tags: tag:devops
+
+            - name: Setup SSH key
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d > ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
+
+            - name: Upload ARM64 Binary to phone
+              run: |
+                  rsync -avz \
+                    -e "ssh -p 8022 -o StrictHostKeyChecking=no" \
+                    backend/gateway-auth/dist/gateway-auth \
+                    ${{ secrets.VPS_USER_POVA }}@${{ secrets.VPS_POVA_TS_IP }}:~/apps/lms-app/gateway-auth/gateway-auth.new
+
+            - name: Replace binary and reset Termux service
+              run: |
+                  ssh -p 8022 -o StrictHostKeyChecking=no \
+                    ${{ secrets.VPS_USER_POVA }}@${{ secrets.VPS_POVA_TS_IP }} << 'EOF'
+                    set -e
+                    export SVDIR="/data/data/com.termux/files/usr/var/service"
+                    cd ~/apps/lms-app/gateway-auth
+                    chmod +x gateway-auth.new
+                    mv gateway-auth.new gateway-auth
+                    sv up lms-gateway 2>/dev/null || true
+                    sv restart lms-gateway
+                    sleep 2
+                    sv status lms-gateway
+                  EOF
