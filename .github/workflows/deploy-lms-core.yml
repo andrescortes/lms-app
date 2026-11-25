@@ -1,0 +1,74 @@
+name: Deploy LMS Core (Go ARM64)
+
+on:
+    push:
+        branches:
+            - develop
+        paths:
+            - "backend/lms-core/**"
+            - ".github/work/deploy-lms-core.yml"
+    workflow_dispatch:
+concurrency:
+    group: deploy-lms-core
+    cancel-in-progress: true
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup go
+              uses: actions/setup-go@v4
+              with:
+                  go-version-file: backend/lms-core/go.mod
+                  cache-dependency-path: backend/lms-core/go.sum
+
+            - name: Run tests
+              working-directory: backend/lms-core
+              run: go test -v ./...
+
+            - name: Compile ARM64 binary for Pova 4
+              working-directory: backend/lms-core
+              env:
+                  GOOS: linux
+                  GOARCH: arm64
+                  CGO_ENABLED: 0
+              run: |
+                  mkdir -pv dist
+                  go build -trimpath -ldflags="-s -w" -o dist/lms-core ./cmd/api
+
+            - name: Connet to private network Tailscale
+              uses: tailscale/github-action@v4
+              with:
+                  oauth-client-id: ${{secrets.TS_OAUTH_CLIENT_ID}}
+                  oauth-secret: ${{secrets.TS_OAUTH_SECRET}}
+                  tags: tag:ci
+
+            - name: Setup SSH key
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d > ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
+
+            - name: Subir binario ARM64 al teléfono
+              run: |
+                  rsync -avz \
+                      -e "ssh -p 8022 -o StrictHostKeyChecking=no" \
+                      backend/lms-core/dist/lms-core \
+                      ${{ secrets.VPS_USER_POVA }}@${{ secrets.VPS_POVA_TS_IP }}:~/apps/lms-app/lms-core/lms-core.new
+            - name: Reemplazar binario y reiniciar servicio en Termux
+              run: |
+                  ssh -p 8022 -o StrictHostKeyChecking=no \
+                      ${{ secrets.VPS_USER_POVA }}@${{ secrets.VPS_POVA_TS_IP }} << 'EOF'
+                      set -e
+                      cd ~/apps/lms-app/lms-core
+                      chmod +x lms-core.new
+                      mv lms-core.new lms-core
+                      sv up lms-core 2>/dev/null || true
+                      sv restart lms-core
+                      sleep 2
+                      sv status lms-core
+                  EOF
